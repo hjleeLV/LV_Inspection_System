@@ -1,0 +1,117 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace IPSST_Inspection_System.GUI.Control
+{
+    public partial class Ctr_Yield : UserControl
+    {
+        public Ctr_Yield()
+        {
+            InitializeComponent();
+            Update_UI();
+        }
+
+        public void Update_UI()
+        {
+            try
+            {
+
+                bool[] t_cam_use = new bool[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    t_cam_use[i] = false;
+                }
+                if (!IPSSTApp.Instance().m_mainform.ctr_Camera_Setting1.Force_USE.Checked)
+                {
+                    splitContainer2.Panel1.Controls.Clear();
+                    splitContainer2.Panel1.Controls.Add(IPSSTApp.Instance().m_ctr_yield[0]);
+                    IPSSTApp.Instance().m_ctr_yield[0].Dock = DockStyle.Fill;
+                    t_cam_use[0] = true;
+                }
+                if (!IPSSTApp.Instance().m_mainform.ctr_Camera_Setting2.Force_USE.Checked)
+                {
+                    splitContainer3.Panel1.Controls.Clear();
+                    splitContainer3.Panel1.Controls.Add(IPSSTApp.Instance().m_ctr_yield[1]);
+                    IPSSTApp.Instance().m_ctr_yield[1].Dock = DockStyle.Fill;
+                    t_cam_use[1] = true;
+                }
+                if (!IPSSTApp.Instance().m_mainform.ctr_Camera_Setting3.Force_USE.Checked)
+                {
+                    splitContainer2.Panel2.Controls.Clear();
+                    splitContainer2.Panel2.Controls.Add(IPSSTApp.Instance().m_ctr_yield[2]);
+                    IPSSTApp.Instance().m_ctr_yield[2].Dock = DockStyle.Fill;
+                    t_cam_use[2] = true;
+                }
+                if (!IPSSTApp.Instance().m_mainform.ctr_Camera_Setting4.Force_USE.Checked)
+                {
+                    splitContainer3.Panel2.Controls.Clear();
+                    splitContainer3.Panel2.Controls.Add(IPSSTApp.Instance().m_ctr_yield[3]);
+                    IPSSTApp.Instance().m_ctr_yield[3].Dock = DockStyle.Fill;
+                    t_cam_use[3] = true;
+                }
+
+                for (int cam = 0; cam < 4; cam++)
+                {
+                    if (t_cam_use[cam])
+                    {
+                        DataSet DS = null;
+                        if (cam == 0)
+                        {
+                            DS = IPSSTApp.Instance().m_Config.ds_DATA_0;
+                        }
+                        else if (cam == 1)
+                        {
+                            DS = IPSSTApp.Instance().m_Config.ds_DATA_1;
+                        }
+                        else if (cam == 2)
+                        {
+                            DS = IPSSTApp.Instance().m_Config.ds_DATA_2;
+                        }
+                        else if (cam == 3)
+                        {
+                            DS = IPSSTApp.Instance().m_Config.ds_DATA_3;
+                        }
+
+                        IPSSTApp.Instance().m_Config.ds_YIELD.Tables[cam].Rows.Clear();
+                        //int t_row_cnt = 0;
+                        for (int i = 0; i < DS.Tables[0].Rows.Count; i++)
+                        {
+                            if (DS.Tables[0].Rows[i][0].ToString() == "True")
+                            {
+                                IPSSTApp.Instance().m_Config.ds_YIELD.Tables[cam].Rows.Add(DS.Tables[0].Rows[i][2].ToString(), "0", "0", "0");
+                                //t_row_cnt++;
+                            }
+                        }
+                        //if (t_row_cnt > 0)
+                        //{
+                        //    for (int i = 0; i < t_row_cnt; i++)
+                        //    {
+                        //        IPSSTApp.Instance().m_Config.ds_YIELD.Tables[cam].Rows.Add(DS.Tables[0].Rows[i][2].ToString(), "0", "0", "0");
+                        //    }
+                        //}
+                        IPSSTApp.Instance().m_Config.ds_YIELD.Tables[cam + 4].Rows.Clear();
+                        IPSSTApp.Instance().m_Config.ds_YIELD.Tables[cam + 4].Rows.Add("0", "0", "0", "0");
+                    }
+                    IPSSTApp.Instance().m_ctr_yield[cam].dataGridView1.ClearSelection();
+                    IPSSTApp.Instance().m_ctr_yield[cam].dataGridView2.ClearSelection();
+                }
+
+            }
+            catch
+            { }
+        }
+
+        private void Ctr_Yield_SizeChanged(object sender, EventArgs e)
+        {
+            splitContainer1.SplitterDistance = splitContainer1.Width / 2;
+            splitContainer2.SplitterDistance = splitContainer1.Height / 2;
+            splitContainer3.SplitterDistance = splitContainer1.Height / 2;
+        }
+    }
+}

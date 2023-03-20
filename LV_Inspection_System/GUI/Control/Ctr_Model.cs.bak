@@ -1,0 +1,264 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Windows.Forms;
+using IPSST_Inspection_System.GUI;
+using OfficeOpenXml;
+
+namespace IPSST_Inspection_System.GUI.Control
+{
+    public partial class Ctr_Model : UserControl
+    {
+        public bool m_checkNew = false;
+
+        public Ctr_Model()
+        {
+            InitializeComponent();
+        }
+
+        public void cmdNew_Click(object sender, EventArgs e)
+        {
+            // prompt for a new name
+            Frm_Model_Name frm = new Frm_Model_Name();
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                if (frm.ModelName == "")
+                {
+                    m_checkNew = false;
+                    return;
+                }
+
+                string pre_model_name = IPSSTApp.Instance().m_Config.m_Model_Name;
+                //save it
+                string shortname = frm.ModelName;
+
+                IPSSTApp.Instance().m_Config.m_Model_Name = shortname;
+                Properties.Settings.Default.Last_Model_Name = shortname;
+
+                if (cmbModels.FindStringExact(shortname) >= 0) // 기존 모델일때
+                {
+                    DebugLogger.Instance().LogWarning("존재하는 모델입니다.");
+                    cmbModels.SelectedIndex = cmbModels.FindStringExact(shortname);
+                    return;
+                } else
+                {
+                    DirectoryInfo dir = new DirectoryInfo(IPSSTApp.Instance().excute_path + "\\Models");
+                    // 폴더가 존재하지 않으면
+                    if (dir.Exists == false)
+                    {
+                        // 새로 생성합니다.
+                        dir.Create();
+                    }
+                    dir = new DirectoryInfo(IPSSTApp.Instance().excute_path + "\\Models\\" + shortname);
+                    // 폴더가 존재하지 않으면
+                    if (dir.Exists == false)
+                    {
+                        // 새로 생성합니다.
+                        dir.Create();
+                    }
+
+                    if (pre_model_name != "")
+                    {
+                        string fileName = ""; string destFile = "";
+                        string sourcePath = IPSSTApp.Instance().excute_path + "\\Models\\" + pre_model_name;
+                        string targetPath = IPSSTApp.Instance().excute_path + "\\Models\\" + shortname;
+                        if (System.IO.Directory.Exists(sourcePath))
+                        {
+                            string[] files = System.IO.Directory.GetFiles(sourcePath);
+
+                            // Copy the files and overwrite destination files if they already exist.
+                            foreach (string s in files)
+                            {
+                                // Use static Path methods to extract only the file name from the path.
+                                fileName = System.IO.Path.GetFileName(s);
+                                destFile = System.IO.Path.Combine(targetPath, fileName);
+                                System.IO.File.Copy(s, destFile, true);
+                            }
+                        }
+                        sourcePath = IPSSTApp.Instance().excute_path + "\\Models\\" + shortname + "\\" + pre_model_name + ".xlsx";
+                        targetPath = IPSSTApp.Instance().excute_path + "\\Models\\" + shortname + "\\" + shortname + ".xlsx";
+
+                        if (File.Exists(sourcePath))
+                        {
+                            System.IO.File.Move(sourcePath, targetPath);
+                        } else
+                        {
+                            IPSSTApp.Instance().m_Config.Exel_basic_Setting_Create();
+                        }
+                    } else
+                    {
+                        IPSSTApp.Instance().m_Config.Exel_basic_Setting_Create();
+                    }
+
+                    read_model_list();
+                }
+            }
+            else
+            {
+                m_checkNew = false;
+                return;
+            }
+            for (int i = 0; i < cmbModels.Items.Count; i++)
+            {
+                if (cmbModels.Items[i].ToString() == frm.ModelName)
+                {
+                    cmbModels.SelectedIndex = i;
+                }
+            }
+            m_checkNew = true;
+
+        }
+
+        private void cmdDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string shortname = lstModels.SelectedItem.ToString();
+                if (shortname.ToLower().Contains("default"))
+                {
+                    MessageBox.Show("Cannot delete this profile!");
+                }
+                else
+                {
+                    if (MessageBox.Show("모델 [" + shortname + "] 을 삭제할까요?", " Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        DirectoryInfo tempDirInfo = new DirectoryInfo(IPSSTApp.Instance().excute_path + "\\Models\\" + shortname);
+                        
+                        if (tempDirInfo.Exists == true)
+                        {
+                            foreach (DirectoryInfo di in tempDirInfo.GetDirectories())
+                            {
+                                foreach (FileInfo fi in di.GetFiles())
+                                {
+                                    if ((fi.Attributes & FileAttributes.ReadOnly) > 0)
+                                    {
+                                        fi.Attributes = FileAttributes.Normal;
+                                    }
+                                }
+                            }
+                            IPSSTApp.Instance().m_Config.m_Model_Name = "";
+                            Properties.Settings.Default.Last_Model_Name = "";
+                            tempDirInfo.Delete(true);
+                        }
+                    }
+                    read_model_list();
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogger.Instance().LogError(ex.Message);
+            }
+        }
+
+        public void read_model_list()
+        {
+            try
+            {
+                cmbModels.ResetText();
+                cmbModels.Items.Clear();
+                lstModels.Items.Clear();
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(IPSSTApp.Instance().excute_path + "\\Models");
+
+                foreach (System.IO.DirectoryInfo f in di.GetDirectories())
+                {
+                    cmbModels.Items.Add(f.Name);
+                    lstModels.Items.Add(f.Name);
+                    //MessageBox.Show(f.Name);
+                }
+                if (cmbModels.Items.Count > 0)
+                {
+                    if (Properties.Settings.Default.Last_Model_Name != "")
+                    {
+                        IPSSTApp.Instance().m_Config.m_Model_Name = Properties.Settings.Default.Last_Model_Name;
+                        int t_num = cmbModels.FindStringExact(Properties.Settings.Default.Last_Model_Name);
+                        //cmbModels.SelectedIndex = t_num;
+                        if (cmbModels.SelectedIndex != t_num)
+                        {
+                            lstModels.SelectedIndex = t_num;
+                        }
+                    }
+                    else
+                    {
+                        lstModels.SelectedIndex = 0;
+                    }
+                }
+                else
+                {
+                    IPSSTApp.Instance().m_Config.m_Model_Name = "";
+                    Properties.Settings.Default.Last_Model_Name = "";
+                }
+                DebugLogger.Instance().LogRecord("Model 불러오기 완료!");
+            }
+            catch (System.Exception ex)
+            {
+                DebugLogger.Instance().LogError(ex);	
+            }
+        }
+
+        private void cmbModels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            IPSSTApp.Instance().m_Config.m_Model_Name = cmbModels.Items[cmbModels.SelectedIndex].ToString();
+            IPSSTApp.Instance().m_Config.Create_Save_Folders();
+            Properties.Settings.Default.Last_Model_Name = IPSSTApp.Instance().m_Config.m_Model_Name;
+            IPSSTApp.Instance().m_mainform.TitleBar.TitleBarCaption = "IPSST VISION SYSTEM(부광 산업기계)" + " [Model : " + Properties.Settings.Default.Last_Model_Name.ToString() + "]";
+            if (lstModels.SelectedIndex != cmbModels.SelectedIndex)
+            {
+                lstModels.SelectedIndex = cmbModels.SelectedIndex;
+                read_model_list();
+            }
+
+            // 여기에 로드할 것들 넣을것
+            IPSSTApp.Instance().m_mainform.ctr_PLC1.button_LOAD_Click(sender,e);
+            IPSSTApp.Instance().m_mainform.ctr_Log1.button_LOGLOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Parameters1.button_PARALOAD_Click(sender, e);
+            
+        }
+
+        private void lstModels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbModels.SelectedIndex != lstModels.SelectedIndex && cmbModels.Items.Count > 0 && lstModels.Items.Count > 0)
+            {
+                cmbModels.SelectedIndex = lstModels.SelectedIndex;
+            }
+        }
+
+        public void cmdSave_Click(object sender, EventArgs e)
+        {
+            IPSSTApp.Instance().m_Config.Save_Judge_Data();
+            IPSSTApp.Instance().m_mainform.ctr_Parameters1.button_PARASAVE_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_PLC1.button_SAVE_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Log1.button_LOGSAVE_Click(sender, e);
+
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting1.toolStripButton_SAVE_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting2.toolStripButton_SAVE_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting3.toolStripButton_SAVE_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting4.toolStripButton_SAVE_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting5.toolStripButton_SAVE_Click(sender, e);
+            //IPSSTApp.Instance().m_mainform.ctr_Camera_Setting6.toolStripButton_SAVE_Click(sender, e);
+            //IPSSTApp.Instance().m_mainform.ctr_Camera_Setting7.toolStripButton_SAVE_Click(sender, e);
+            //IPSSTApp.Instance().m_mainform.ctr_Camera_Setting8.toolStripButton_SAVE_Click(sender, e);
+        }
+
+        private void cmdLoad_Click(object sender, EventArgs e)
+        {
+            IPSSTApp.Instance().m_Config.Load_Judge_Data();
+            IPSSTApp.Instance().m_mainform.ctr_Parameters1.button_PARALOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_PLC1.button_LOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Log1.button_LOGLOAD_Click(sender, e);
+
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting1.toolStripButton_LOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting2.toolStripButton_LOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting3.toolStripButton_LOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting4.toolStripButton_LOAD_Click(sender, e);
+            IPSSTApp.Instance().m_mainform.ctr_Camera_Setting5.toolStripButton_LOAD_Click(sender, e);
+            //IPSSTApp.Instance().m_mainform.ctr_Camera_Setting6.toolStripButton_LOAD_Click(sender, e);
+            //IPSSTApp.Instance().m_mainform.ctr_Camera_Setting7.toolStripButton_LOAD_Click(sender, e);
+            //IPSSTApp.Instance().m_mainform.ctr_Camera_Setting8.toolStripButton_LOAD_Click(sender, e);
+        }
+    }
+}

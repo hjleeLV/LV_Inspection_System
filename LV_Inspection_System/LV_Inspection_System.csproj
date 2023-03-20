@@ -1,0 +1,664 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\OpenCvSharp4.runtime.win.4.5.2.20210404\build\net\OpenCvSharp4.runtime.win.props" Condition="Exists('..\packages\OpenCvSharp4.runtime.win.4.5.2.20210404\build\net\OpenCvSharp4.runtime.win.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C11F3EA5-8C8F-455D-A016-734A3EBC2E7F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LV_Inspection_System</RootNamespace>
+    <AssemblyName>LVInspector</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <FileAlignment>1024</FileAlignment>
+    <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>LVIWeb_Alpha.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'x64|x86'">
+    <OutputPath>bin\x86\x64\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <FileAlignment>1024</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'x64|x64'">
+    <OutputPath>bin\x64\x64\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AForge">
+      <HintPath>Dlls\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Controls">
+      <HintPath>Dlls\AForge.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging">
+      <HintPath>Dlls\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging.Formats">
+      <HintPath>Dlls\AForge.Imaging.Formats.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging.IPPrototyper">
+      <HintPath>Dlls\AForge.Imaging.IPPrototyper.dll</HintPath>
+    </Reference>
+    <Reference Include="AsyncClientServerLib">
+      <HintPath>Dlls\AsyncClientServerLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Automation.BDaq">
+      <HintPath>..\..\..\..\..\Advantech\DAQNavi\Automation.BDaq\1.0.0.0\Automation.BDaq.dll</HintPath>
+    </Reference>
+    <Reference Include="CLIDelegate, Version=1.0.7541.33930, Culture=neutral, PublicKeyToken=71f71440696c7e6b, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\CLIDelegate.dll</HintPath>
+    </Reference>
+    <Reference Include="ClockCtrl">
+      <HintPath>Dlls\ClockCtrl.dll</HintPath>
+    </Reference>
+    <Reference Include="ColorSliderJCD, Version=1.0.0.2, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\ColorSliderJCD.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyModbus">
+      <HintPath>Dlls\EasyModbus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>Dlls\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Matrox.MatroxImagingLibrary">
+      <HintPath>..\..\..\..\..\..\Program Files\Matrox Imaging\MIL\MIL.NET\Matrox.MatroxImagingLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="McProtocol">
+      <HintPath>Dlls\McProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NeoTabControlLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\NeoTabControlLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="NeoTabControlLibrary.CommonObjects, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\NeoTabControlLibrary.CommonObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp">
+      <HintPath>..\packages\OpenCvSharp4.4.5.2.20210404\lib\net461\OpenCvSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCvSharp.Extensions">
+      <HintPath>..\packages\OpenCvSharp4.4.5.2.20210404\lib\net461\OpenCvSharp.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PopupControl">
+      <HintPath>Dlls\PopupControl.dll</HintPath>
+    </Reference>
+    <Reference Include="PylonC.NET, Version=4.2.0.0, Culture=neutral, PublicKeyToken=a77e8471c5919d5a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\PylonC.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Python.Runtime, Version=3.7.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Python.Runtime.NETStandard.3.7.1\lib\netstandard2.0\Python.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketServerLib">
+      <HintPath>Dlls\SocketServerLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.5.0.2\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ThridLibray, Version=1.0.0.31445, Culture=neutral, PublicKeyToken=407bb547be8622a9, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls\ThridLibray.dll</HintPath>
+    </Reference>
+    <Reference Include="ToggleSwitch">
+      <HintPath>Dlls\ToggleSwitch.dll</HintPath>
+    </Reference>
+    <Reference Include="XCoolForm">
+      <HintPath>Dlls\XCoolForm.dll</HintPath>
+    </Reference>
+    <Reference Include="ZedGraph">
+      <HintPath>Dlls\ZedGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GUI\Control\ctl_IntTracbar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Admin_Param.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Admin_Param.Designer.cs">
+      <DependentUpon>Ctr_Admin_Param.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Camera_Setting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Camera_Setting.designer.cs">
+      <DependentUpon>Ctr_Camera_Setting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_CPCPK.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_CPCPK.designer.cs">
+      <DependentUpon>Ctr_CPCPK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_DataGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_DataGrid.Designer.cs">
+      <DependentUpon>Ctr_DataGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Display_1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Display_1.Designer.cs">
+      <DependentUpon>Ctr_Display_1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Graph.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Graph.Designer.cs">
+      <DependentUpon>Ctr_Graph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_History.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_History.designer.cs">
+      <DependentUpon>Ctr_History.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Log.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Log.Designer.cs">
+      <DependentUpon>Ctr_Log.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_LogView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_LogView.Designer.cs">
+      <DependentUpon>Ctr_LogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Manual.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Manual.Designer.cs">
+      <DependentUpon>Ctr_Manual.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_MIL_LINK.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_MIL_LINK.Designer.cs">
+      <DependentUpon>Ctr_MIL_LINK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Model.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Model.designer.cs">
+      <DependentUpon>Ctr_Model.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Mysql.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Mysql.Designer.cs">
+      <DependentUpon>Ctr_Mysql.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_NGLog.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_NGLog.Designer.cs">
+      <DependentUpon>Ctr_NGLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_PLC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_PLC.Designer.cs">
+      <DependentUpon>Ctr_PLC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Popup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Popup.Designer.cs">
+      <DependentUpon>Ctr_Popup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_ROI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_ROI.Designer.cs">
+      <DependentUpon>Ctr_ROI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Display_2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Display_2.Designer.cs">
+      <DependentUpon>Ctr_Display_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Yield.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Yield.Designer.cs">
+      <DependentUpon>Ctr_Yield.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Yield_Log.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\Ctr_Yield_Log.Designer.cs">
+      <DependentUpon>Ctr_Yield_Log.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\GeniCam_SliderUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\Control\GeniCam_SliderUserControl.designer.cs">
+      <DependentUpon>GeniCam_SliderUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Control\ImageBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\Form_BigImage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Form_BigImage.designer.cs">
+      <DependentUpon>Form_BigImage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Form_Masking.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Form_Masking.designer.cs">
+      <DependentUpon>Form_Masking.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_DragImageControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_DragImageControl.Designer.cs">
+      <DependentUpon>Frm_DragImageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Help.Designer.cs">
+      <DependentUpon>Frm_Help.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Main.Designer.cs">
+      <DependentUpon>Frm_Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Model_Name.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Model_Name.designer.cs">
+      <DependentUpon>Frm_Model_Name.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Password.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Password.designer.cs">
+      <DependentUpon>Frm_Password.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_QuickMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_QuickMenu.Designer.cs">
+      <DependentUpon>Frm_QuickMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_ROI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_ROI.Designer.cs">
+      <DependentUpon>Frm_ROI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Splash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Splash.designer.cs">
+      <DependentUpon>Frm_Splash.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Textbox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Textbox.designer.cs">
+      <DependentUpon>Frm_Textbox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Frm_Trackbar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Frm_Trackbar.Designer.cs">
+      <DependentUpon>Frm_Trackbar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LVApp.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UTIL\Advantech_DIO.cs" />
+    <Compile Include="UTIL\AI_Processing.cs" />
+    <Compile Include="UTIL\DebugLogger.cs" />
+    <Compile Include="UTIL\DragHandle.cs" />
+    <Compile Include="UTIL\DragHandleAnchor.cs" />
+    <Compile Include="UTIL\DragHandleCollection.cs" />
+    <Compile Include="UTIL\GenICam_Library.cs" />
+    <Compile Include="UTIL\LV_Config.cs" />
+    <Compile Include="UTIL\Logger.cs" />
+    <Compile Include="UTIL\Mil_Library.cs" />
+    <Compile Include="UTIL\Util_Class.cs" />
+    <Compile Include="UTIL\XmlThemeLoader.cs" />
+    <EmbeddedResource Include="GUI\Control\ctl_IntTracbar.resx">
+      <DependentUpon>ctl_IntTracbar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Admin_Param.resx">
+      <DependentUpon>Ctr_Admin_Param.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Camera_Setting.resx">
+      <DependentUpon>Ctr_Camera_Setting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_CPCPK.resx">
+      <DependentUpon>Ctr_CPCPK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_DataGrid.resx">
+      <DependentUpon>Ctr_DataGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Display_1.resx">
+      <DependentUpon>Ctr_Display_1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Graph.resx">
+      <DependentUpon>Ctr_Graph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_History.resx">
+      <DependentUpon>Ctr_History.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Log.resx">
+      <DependentUpon>Ctr_Log.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_LogView.resx">
+      <DependentUpon>Ctr_LogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Manual.resx">
+      <DependentUpon>Ctr_Manual.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_MIL_LINK.resx">
+      <DependentUpon>Ctr_MIL_LINK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Model.resx">
+      <DependentUpon>Ctr_Model.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Mysql.resx">
+      <DependentUpon>Ctr_Mysql.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_NGLog.resx">
+      <DependentUpon>Ctr_NGLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_PLC.resx">
+      <DependentUpon>Ctr_PLC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Popup.resx">
+      <DependentUpon>Ctr_Popup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_ROI.resx">
+      <DependentUpon>Ctr_ROI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Display_2.resx">
+      <DependentUpon>Ctr_Display_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Yield.resx">
+      <DependentUpon>Ctr_Yield.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\Ctr_Yield_Log.resx">
+      <DependentUpon>Ctr_Yield_Log.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Control\GeniCam_SliderUserControl.resx">
+      <DependentUpon>GeniCam_SliderUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Form_BigImage.resx">
+      <DependentUpon>Form_BigImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Form_Masking.resx">
+      <DependentUpon>Form_Masking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_DragImageControl.resx">
+      <DependentUpon>Frm_DragImageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Help.resx">
+      <DependentUpon>Frm_Help.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Main.resx">
+      <DependentUpon>Frm_Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Model_Name.resx">
+      <DependentUpon>Frm_Model_Name.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Password.resx">
+      <DependentUpon>Frm_Password.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_QuickMenu.resx">
+      <DependentUpon>Frm_QuickMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_ROI.resx">
+      <DependentUpon>Frm_ROI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Splash.resx">
+      <DependentUpon>Frm_Splash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Textbox.resx">
+      <DependentUpon>Frm_Textbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Frm_Trackbar.resx">
+      <DependentUpon>Frm_Trackbar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LVIWeb_Alpha.ico" />
+    <None Include="Resources\icons8-stop-64.png" />
+    <None Include="Resources\camera-lens-icon.png" />
+    <None Include="Resources\left_down1.png" />
+    <None Include="Resources\right_click.png" />
+    <None Include="Resources\right_down.png" />
+    <None Include="Resources\left_click.png" />
+    <None Include="Resources\left_down.png" />
+    <None Include="Resources\Button_BG2.png" />
+    <None Include="Resources\Panel.png" />
+    <None Include="Resources\Display.png" />
+    <None Include="Resources\IPS오토.png" />
+    <None Include="Resources\Button_BG.png" />
+    <None Include="Resources\Save-icon.png" />
+    <None Include="Resources\Load-icon.png" />
+    <None Include="Resources\disconnect-icon.png" />
+    <None Include="Resources\connect-icon.png" />
+    <None Include="Resources\Cam_Initialize.png" />
+    <None Include="Resources\4.png" />
+    <None Include="Resources\3.png" />
+    <None Include="Resources\2.png" />
+    <None Include="Resources\1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AlphaForms\AlphaForms_2010.csproj">
+      <Project>{e5b368ee-995a-4a7f-9cba-25d81d07f97d}</Project>
+      <Name>AlphaForms_2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ctrBaslerCam\ctrBaslerCam.csproj">
+      <Project>{1831139B-7357-4BD3-BAD1-FC2F7BA1DD24}</Project>
+      <Name>ctrBaslerCam</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cyotek.Windows.Forms.ImageBox\Cyotek.Windows.Forms.ImageBox.csproj">
+      <Project>{4159C8D3-C18D-4BED-8BE6-9BAD1B0CA4F6}</Project>
+      <Name>Cyotek.Windows.Forms.ImageBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImPro_Library_Clr\ImPro_Library_Clr.vcxproj">
+      <Project>{6CD5059C-3230-4DDE-94A7-96A7C6DD2E48}</Project>
+      <Name>ImPro_Library_Clr</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pylon.NETSupportLibrary\Pylon.NETSupportLibrary.csproj">
+      <Project>{3EAFC9F5-D49F-4F9F-86C8-FBD231B07D2E}</Project>
+      <Name>Pylon.NETSupportLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Queens_ImageControl\ImageControlBox.vbproj">
+      <Project>{73B6253B-FFAD-47B8-A66C-059C99752689}</Project>
+      <Name>ImageControlBox</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4%28x86 및 x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\OpenCvSharp4.runtime.win.4.5.2.20210404\build\net\OpenCvSharp4.runtime.win.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp4.runtime.win.4.5.2.20210404\build\net\OpenCvSharp4.runtime.win.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
