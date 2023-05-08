@@ -1145,7 +1145,7 @@ namespace LV_Inspection_System.GUI.Control
 
         private void comboBox_SAVEMETHOD_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            LVApp.Instance().m_Config.m_Cam_Log_Method = comboBox_SAVEMETHOD.SelectedIndex;
         }
 
         private void textBox_SAVE_DATE_TextChanged(object sender, EventArgs e)

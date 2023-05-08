@@ -14,7 +14,7 @@
 #include "CircleFitByTaubin.cpp"
 
 #define PI 3.14159265
-#define MAX_CONTOUR 10000.0
+#define MAX_CONTOUR 1000.0
 
 struct compare_Size {
 	bool operator() (Point4D a, Point4D b) { return (a.CY  < b.CY);}
@@ -13512,15 +13512,12 @@ if (Result_Debugging)
 						
 						for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++) // iterate through each contour.
 						{
-							//if (hierarchy[i][3] == -1)
-							{
-								double fArea = (int)(contourArea(contours[i]) + 0.5);//t_Circle_Blob_Info.Pixels.size();
-								if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] > fArea || BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] < fArea)
+							double fArea = (int)(contourArea(contours[i]) + 0.5);//t_Circle_Blob_Info.Pixels.size();
+								if (fArea <= 2.0 || BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] > fArea || BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] < fArea)
 								{
 									drawContours( Out_binary, contours,i, CV_RGB(0,0,0), CV_FILLED, 8, hierarchy);
 								}
 							}
-						}
 					}
 					//if (s==2)
 					//{
@@ -13549,7 +13546,8 @@ if (Result_Debugging)
 							//	break;
 							//}
 							//if contour[i] is not a hole
-							if (hierarchy[i][3] == -1)
+							
+							if (hierarchy[i][3] == -1 && (int)(contourArea(contours[i])) > 0)
 							{
 								Circle_Blob_Info t_Circle_Blob_Info;
 								drawContours(labels, contours, i, Scalar(t_cnt),2, 8, hierarchy);

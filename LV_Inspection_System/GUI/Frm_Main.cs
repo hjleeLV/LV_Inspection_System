@@ -3113,6 +3113,14 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting1.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(4);
 
+                DebugLogger.Instance().LogRecord("AREA CAM0 Grab: " + ctr_Camera_Setting1.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam1.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
                 if (m_Job_Mode0 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
                     //GC.Collect();
@@ -3133,7 +3141,8 @@ namespace LV_Inspection_System.GUI
                         {
                             ctrCam1.t_check_grab = true;
                             //NewImg = GetCopyOf(ctrCam1.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = GetCopyOf0(ctrCam1.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf0(ctrCam1.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam1.m_bitmap.Clone() as Bitmap;
                             ctrCam1.t_check_grab = false;
                             if (NewImg == null)
                             {
@@ -3141,6 +3150,7 @@ namespace LV_Inspection_System.GUI
                                 add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
                                 return;
                             }
+
                             if (Capture_framebuffer[Cam_Num].Count > 0)
                             {
                                 Capture_framebuffer[Cam_Num].Clear();
@@ -3217,7 +3227,7 @@ namespace LV_Inspection_System.GUI
                 }
                 else
                 {
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
@@ -3303,13 +3313,28 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting1.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(4);
 
+                DebugLogger.Instance().LogRecord("MIL CAM0 Grab: " + ctr_Camera_Setting1.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    if (LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex] != null)
+                //    {
+                //        Bitmap NewImg = null;
+                //        {
+                //            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex]);
+                //            LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, NewImg, 0);
+                //        }
+                //    }
+                //}
+
                 if (m_Job_Mode0 == 0)
                 {
                     if (LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex] != null)
                     {
                         Bitmap NewImg = null;
                         {
-                            NewImg = GetCopyOf0(LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex]);
+                            //NewImg = GetCopyOf0(LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex]);
+                            NewImg = LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex].Clone() as Bitmap;
                             if (NewImg == null)
                             {
                                 Add_PLC_Tx_Message(Cam_Num, 10);
@@ -3362,7 +3387,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         return;
@@ -3442,13 +3467,28 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting2.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(5);
 
+                DebugLogger.Instance().LogRecord("MIL CAM1 Grab: " + ctr_Camera_Setting2.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    if (LVApp.Instance().m_MIL.CAM1_MilGrabBMPList[LVApp.Instance().m_MIL.CAM1_MilGrabBufferIndex] != null)
+                //    {
+                //        Bitmap NewImg = null;
+                //        {
+                //            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM1_MilGrabBMPList[LVApp.Instance().m_MIL.CAM1_MilGrabBufferIndex]);
+                //            LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, NewImg, 0);
+                //        }
+                //    }
+                //}
+
                 if (m_Job_Mode1 == 0)
                 {
                     if (LVApp.Instance().m_MIL.CAM1_MilGrabBMPList[LVApp.Instance().m_MIL.CAM1_MilGrabBufferIndex] != null)
                     {
                         Bitmap NewImg = null;
                         {
-                            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM1_MilGrabBMPList[LVApp.Instance().m_MIL.CAM1_MilGrabBufferIndex]);
+                            //NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM1_MilGrabBMPList[LVApp.Instance().m_MIL.CAM1_MilGrabBufferIndex]);
+                            NewImg = LVApp.Instance().m_MIL.CAM1_MilGrabBMPList[LVApp.Instance().m_MIL.CAM1_MilGrabBufferIndex].Clone() as Bitmap;
                             if (NewImg == null)
                             {
                                 Add_PLC_Tx_Message(Cam_Num, 10);
@@ -3501,7 +3541,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         return;
@@ -3581,13 +3621,28 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting3.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(6);
 
+                DebugLogger.Instance().LogRecord("MIL CAM2 Grab: " + ctr_Camera_Setting3.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    if (LVApp.Instance().m_MIL.CAM2_MilGrabBMPList[LVApp.Instance().m_MIL.CAM2_MilGrabBufferIndex] != null)
+                //    {
+                //        Bitmap NewImg = null;
+                //        {
+                //            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM2_MilGrabBMPList[LVApp.Instance().m_MIL.CAM2_MilGrabBufferIndex]);
+                //            LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, NewImg, 0);
+                //        }
+                //    }
+                //}
+
                 if (m_Job_Mode2 == 0)
                 {
                     if (LVApp.Instance().m_MIL.CAM2_MilGrabBMPList[LVApp.Instance().m_MIL.CAM2_MilGrabBufferIndex] != null)
                     {
                         Bitmap NewImg = null;
                         {
-                            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM2_MilGrabBMPList[LVApp.Instance().m_MIL.CAM2_MilGrabBufferIndex]);
+                            //NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM2_MilGrabBMPList[LVApp.Instance().m_MIL.CAM2_MilGrabBufferIndex]);
+                            NewImg = LVApp.Instance().m_MIL.CAM2_MilGrabBMPList[LVApp.Instance().m_MIL.CAM2_MilGrabBufferIndex].Clone() as Bitmap;
                             if (NewImg == null)
                             {
                                 Add_PLC_Tx_Message(Cam_Num, 10);
@@ -3640,7 +3695,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         return;
@@ -3720,13 +3775,28 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting4.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(7);
 
+                DebugLogger.Instance().LogRecord("MIL CAM3 Grab: " + ctr_Camera_Setting4.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    if (LVApp.Instance().m_MIL.CAM3_MilGrabBMPList[LVApp.Instance().m_MIL.CAM3_MilGrabBufferIndex] != null)
+                //    {
+                //        Bitmap NewImg = null;
+                //        {
+                //            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM3_MilGrabBMPList[LVApp.Instance().m_MIL.CAM3_MilGrabBufferIndex]);
+                //            LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, NewImg, 0);
+                //        }
+                //    }
+                //}
+
                 if (m_Job_Mode3 == 0)
                 {
                     if (LVApp.Instance().m_MIL.CAM3_MilGrabBMPList[LVApp.Instance().m_MIL.CAM3_MilGrabBufferIndex] != null)
                     {
                         Bitmap NewImg = null;
                         {
-                            NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM3_MilGrabBMPList[LVApp.Instance().m_MIL.CAM3_MilGrabBufferIndex]);
+                            //NewImg = GetCopyOf1(LVApp.Instance().m_MIL.CAM3_MilGrabBMPList[LVApp.Instance().m_MIL.CAM3_MilGrabBufferIndex]);
+                            NewImg = LVApp.Instance().m_MIL.CAM3_MilGrabBMPList[LVApp.Instance().m_MIL.CAM3_MilGrabBufferIndex].Clone() as Bitmap;
                             if (NewImg == null)
                             {
                                 Add_PLC_Tx_Message(Cam_Num, 10);
@@ -3779,7 +3849,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         return;
@@ -3859,6 +3929,14 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting2.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(5);
 
+                DebugLogger.Instance().LogRecord("AREA CAM1 Grab: " + ctr_Camera_Setting2.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam2.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
                 if (m_Job_Mode1 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
                     //GC.Collect(); 
@@ -3881,7 +3959,8 @@ namespace LV_Inspection_System.GUI
                         {
                             ctrCam2.t_check_grab = true;
                             //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam2.m_bitmap.Clone() as Bitmap;
                             ctrCam2.t_check_grab = false;
                             if (NewImg == null)
                             {
@@ -3966,7 +4045,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         return;
@@ -4053,6 +4132,14 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting3.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(6);
 
+                DebugLogger.Instance().LogRecord("AREA CAM2 Grab: " + ctr_Camera_Setting3.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam3.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
                 if (m_Job_Mode2 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
                     //GC.Collect();
@@ -4077,7 +4164,8 @@ namespace LV_Inspection_System.GUI
                         {
                             ctrCam3.t_check_grab = true;
                             //NewImg = GetCopyOf(ctrCam3.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = GetCopyOf2(ctrCam3.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf2(ctrCam3.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam3.m_bitmap.Clone() as Bitmap;
                             ctrCam3.t_check_grab = false;
                             if (NewImg == null)
                             {
@@ -4160,7 +4248,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
 
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
@@ -4252,6 +4340,14 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting4.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(7);
 
+                DebugLogger.Instance().LogRecord("AREA CAM3 Grab: " + ctr_Camera_Setting4.Grab_Num.ToString());
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam4.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
                 if (m_Job_Mode3 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
                     //GC.Collect();
@@ -4276,7 +4372,8 @@ namespace LV_Inspection_System.GUI
                         {
                             ctrCam4.t_check_grab = true;
                             //NewImg = GetCopyOf(ctrCam4.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = GetCopyOf3(ctrCam4.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf3(ctrCam4.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam4.m_bitmap.Clone() as Bitmap;
                             ctrCam4.t_check_grab = false;
                             if (NewImg == null)
                             {
@@ -4361,7 +4458,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
 
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
@@ -6710,6 +6807,8 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode0 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
+                        DebugLogger.Instance().LogRecord("CAM0 PROC Start");
+
                         LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                         //if (t_onecycle_check)
                         //{
@@ -7014,6 +7113,8 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode0 = 0;
+                        DebugLogger.Instance().LogRecord("CAM0 PROC End");
+
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -7254,6 +7355,7 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode1 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
+                        DebugLogger.Instance().LogRecord("CAM1 PROC Start");
                         LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                         //if (t_onecycle_check)
                         //{
@@ -7554,6 +7656,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode1 = 0;
+                        DebugLogger.Instance().LogRecord("CAM1 PROC End");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -7804,6 +7907,8 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode2 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
+                        DebugLogger.Instance().LogRecord("CAM2 PROC Start");
+
                         LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                         //if (t_onecycle_check)
                         //{
@@ -8103,6 +8208,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode2 = 0;
+                        DebugLogger.Instance().LogRecord("CAM2 PROC End");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -8353,6 +8459,7 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode3 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
+                        DebugLogger.Instance().LogRecord("CAM3 PROC Start");
                         LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                         //if (t_onecycle_check)
                         //{
@@ -8655,6 +8762,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode3 = 0;
+                        DebugLogger.Instance().LogRecord("CAM3 PROC End");
                     }
 
                     if (!m_Threads_Check[Cam_Num])

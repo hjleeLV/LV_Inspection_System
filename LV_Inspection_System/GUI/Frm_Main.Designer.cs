@@ -2893,7 +2893,7 @@
             // timer_Refresh_Amount
             // 
             this.timer_Refresh_Amount.Enabled = true;
-            this.timer_Refresh_Amount.Interval = 500;
+            this.timer_Refresh_Amount.Interval = 700;
             this.timer_Refresh_Amount.Tick += new System.EventHandler(this.timer_Refresh_Amount_Tick);
             // 
             // button_Main_View
