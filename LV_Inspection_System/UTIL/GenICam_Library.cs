@@ -154,7 +154,7 @@ namespace LV_Inspection_System.UTIL
 
                 //CAM[Cam_Num].Dev.TriggerSet.Start();
 
-                //// PixelFormat 
+                //// PixelFormat
                 //using (IEnumParameter p = CAM[Cam_Num].Dev.ParameterCollection[new EnumName("PixelFormat")])
                 //{
                 //    CAM[Cam_Num].ImagePixelFormat_List.Clear();
@@ -183,7 +183,7 @@ namespace LV_Inspection_System.UTIL
                 //    }
                 //}
 
-                // set ExposureTime 
+                // set ExposureTime
                 if (CAM[Cam_Num].ExposureTime < 0)
                 {
                     CAM[Cam_Num].ExposureTime = 0;
@@ -268,7 +268,7 @@ namespace LV_Inspection_System.UTIL
                     p.SetValue(0);
                 }
 
-                // set Width 
+                // set Width
                 if (CAM[Cam_Num].Width >= 0)
                 {
                     using (IIntegraParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.ImageWidth])
@@ -303,7 +303,7 @@ namespace LV_Inspection_System.UTIL
                     }
                 }
 
-                // set Height 
+                // set Height
                 if (CAM[Cam_Num].Height >= 0)
                 {
                     using (IIntegraParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.ImageHeight])
@@ -339,7 +339,7 @@ namespace LV_Inspection_System.UTIL
                     }
                 }
 
-                // set X_Offset 
+                // set X_Offset
                 if (CAM[Cam_Num].X_Offset >= 0)
                 {
                     using (IIntegraParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.ImageOffsetX])
@@ -369,7 +369,7 @@ namespace LV_Inspection_System.UTIL
                     CAM[Cam_Num].X_Offset = 0;
                 }
 
-                // set Y_Offset 
+                // set Y_Offset
                 if (CAM[Cam_Num].Y_Offset >= 0)
                 {
                     using (IIntegraParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.ImageOffsetY])
@@ -427,7 +427,7 @@ namespace LV_Inspection_System.UTIL
                 CAM[Cam_Num].Dev.GrabUsingGrabLoopThread();
             }
             CAM[Cam_Num].Dev.StreamGrabber.Start();
-            
+
             using (IEnumParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.TriggerMode])
             {
                 p.SetValue(TriggerModeEnum.On);
@@ -594,8 +594,8 @@ namespace LV_Inspection_System.UTIL
                     return false;
                 }
 
-                // 打开设备 
-                // open device 
+                // 打开设备
+                // open device
                 if (!CAM[Cam_Num].Dev.Open())
                 {
                     return false;
@@ -605,8 +605,8 @@ namespace LV_Inspection_System.UTIL
 
                 Update_Parameter(Cam_Num);
 
-                // 注册连接事件 
-                // register event callback 
+                // 注册连接事件
+                // register event callback
                 if (Cam_Num == 0)
                 {
                     CAM[Cam_Num].Dev.CameraOpened += OnCameraOpen_0;
@@ -637,7 +637,7 @@ namespace LV_Inspection_System.UTIL
                 }
 
 
-                //// DeviceModelName 
+                //// DeviceModelName
                 //{
                 //    using (IStringParameter p = CAM[Cam_Num].Dev.ParameterCollection[new StringName("DeviceModelName")])
                 //    {
@@ -646,7 +646,7 @@ namespace LV_Inspection_System.UTIL
                 //    }
                 //}
 
-                //// AcquisitionFrameCount 
+                //// AcquisitionFrameCount
                 //{
                 //    using (IIntegraParameter p = CAM[Cam_Num].Dev.ParameterCollection[new IntegerName("AcquisitionFrameCount")])
                 //    {
@@ -655,7 +655,7 @@ namespace LV_Inspection_System.UTIL
                 //    }
                 //}
 
-                //// ExposureTime 
+                //// ExposureTime
                 //{
                 //    using (IFloatParameter p = CAM[Cam_Num].Dev.ParameterCollection[new FloatName("ExposureTime")])
                 //    {
@@ -664,7 +664,7 @@ namespace LV_Inspection_System.UTIL
                 //    }
                 //}
 
-                //// SharpnessAuto 
+                //// SharpnessAuto
                 //{
                 //    using (IEnumParameter p = CAM[Cam_Num].Dev.ParameterCollection[new EnumName("SharpnessEnabled")])
                 //    {

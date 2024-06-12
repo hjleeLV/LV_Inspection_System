@@ -1471,6 +1471,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+                                }
                             }
                             else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 1)
                             {
@@ -1482,6 +1487,11 @@ namespace LV_Inspection_System.GUI
                                 else
                                 {
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                             }
@@ -1497,6 +1507,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                                }
                             }
                             else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 3)
                             {
@@ -1508,6 +1523,11 @@ namespace LV_Inspection_System.GUI
                                 else
                                 {
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                                }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
@@ -1526,6 +1546,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+                                }
                             }
                             else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 1)
                             {
@@ -1537,6 +1562,11 @@ namespace LV_Inspection_System.GUI
                                 else
                                 {
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                             }
@@ -1552,6 +1582,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                                }
                             }
                             else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 3)
                             {
@@ -1563,6 +1598,11 @@ namespace LV_Inspection_System.GUI
                                 else
                                 {
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                                }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
@@ -1581,6 +1621,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+                                }
                             }
                             else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 1)
                             {
@@ -1592,6 +1637,11 @@ namespace LV_Inspection_System.GUI
                                 else
                                 {
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                             }
@@ -1607,6 +1657,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                                }
                             }
                             else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 3)
                             {
@@ -1620,6 +1675,11 @@ namespace LV_Inspection_System.GUI
                                     string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                {
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                                }
                             }
                         }
                         //Thread.Sleep(5);
@@ -1629,7 +1689,7 @@ namespace LV_Inspection_System.GUI
                 //{
                 //    LVApp.Instance().SAVE_IMAGE_List.RemoveAt(0);
                 //}
-                //this.Invoke(_dt); 
+                //this.Invoke(_dt);
             }
             catch
             {
@@ -1993,7 +2053,7 @@ namespace LV_Inspection_System.GUI
                         else
                         {
                             ctr_LogView1.txtLog.Text = "";
-                        }                        //richTextBox_Main.ResetText();                
+                        }                        //richTextBox_Main.ResetText();
                     }
                     string display_str = "[" + DateTime.Now.ToString("HH:mm:ss.fff") + "] " + message + "\r\n" + ctr_LogView1.txtLog.Text;
                     ctr_LogView1.txtLog.Text = display_str;
@@ -2522,7 +2582,7 @@ namespace LV_Inspection_System.GUI
                         else
                         {
                             richTextBox_LOG.Text = "";
-                        }                        //richTextBox_Main.ResetText();                
+                        }                        //richTextBox_Main.ResetText();
                     }
                     string display_str = "[" + DateTime.Now.ToString("HH:mm:ss.fff") + "] " + str + "\r\n" + richTextBox_LOG.Text;
                     richTextBox_LOG.Text = display_str;
@@ -3113,13 +3173,7 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting1.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(4);
 
-                DebugLogger.Instance().LogRecord("AREA CAM0 Grab: " + ctr_Camera_Setting1.Grab_Num.ToString());
-
-                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
-                //{
-                //    Bitmap img = (Bitmap)ctrCam1.m_bitmap.Clone();
-                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
-                //}
+                //DebugLogger.Instance().LogRecord("AREA CAM0 Grab: " + ctr_Camera_Setting1.Grab_Num.ToString());
 
                 if (m_Job_Mode0 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
@@ -3127,36 +3181,74 @@ namespace LV_Inspection_System.GUI
                     //m_Job_Mode1 = 2;
                     if (ctrCam1.m_bitmap != null)
                     {
-                        //Capture_Count[Cam_Num]++;
-                        //if (Capture_Count[Cam_Num] >= 1)
-                        //{
-                        //    Capture_Count[Cam_Num] = 0;
-                        //}
-                        //else
-                        //{
-                        //}
-                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam1.m_bitmap.Clone());
                         Bitmap NewImg = null;
                         //lock (ctrCam1.m_bitmap)
                         {
                             ctrCam1.t_check_grab = true;
-                            //NewImg = GetCopyOf(ctrCam1.m_bitmap);//.Clone() as Bitmap;
-                            //NewImg = GetCopyOf0(ctrCam1.m_bitmap);//.Clone() as Bitmap;
                             NewImg = ctrCam1.m_bitmap.Clone() as Bitmap;
                             ctrCam1.t_check_grab = false;
                             if (NewImg == null)
                             {
-                                Add_PLC_Tx_Message(Cam_Num, 10);
-                                add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                return;
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    return;
+                                }
                             }
 
-                            if (Capture_framebuffer[Cam_Num].Count > 0)
+                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
                             {
-                                Capture_framebuffer[Cam_Num].Clear();
+                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
                             }
-                            //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                            Capture_framebuffer[Cam_Num].Add(NewImg);
+
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    return;
+                                }
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                }
+                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
+
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
+                                }
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                                    {
+                                        Capture_framebuffer[Cam_Num].Clear();
+                                    }
+                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
+                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+                            }
                         }
                         //{
                         //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam1.m_bitmap.Clone());
@@ -3939,7 +4031,7 @@ namespace LV_Inspection_System.GUI
 
                 if (m_Job_Mode1 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
-                    //GC.Collect(); 
+                    //GC.Collect();
                     if (ctrCam2.m_bitmap != null)
                     {
                         //Capture_Count[Cam_Num]++;
@@ -3964,15 +4056,64 @@ namespace LV_Inspection_System.GUI
                             ctrCam2.t_check_grab = false;
                             if (NewImg == null)
                             {
-                                Add_PLC_Tx_Message(Cam_Num, 10);
-                                add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                return;
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    return;
+                                }
                             }
-                            if (Capture_framebuffer[Cam_Num].Count > 0)
+                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
                             {
-                                Capture_framebuffer[Cam_Num].Clear();
+                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
                             }
-                            Capture_framebuffer[Cam_Num].Add(NewImg);
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    return;
+                                }
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                }
+                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
+
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
+                                }
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                                    {
+                                        Capture_framebuffer[Cam_Num].Clear();
+                                    }
+                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
+                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+                            }
                         }
 
                         //{
@@ -4163,21 +4304,70 @@ namespace LV_Inspection_System.GUI
                         //lock (ctrCam3.m_bitmap)
                         {
                             ctrCam3.t_check_grab = true;
-                            //NewImg = GetCopyOf(ctrCam3.m_bitmap);//.Clone() as Bitmap;
-                            //NewImg = GetCopyOf2(ctrCam3.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
                             NewImg = ctrCam3.m_bitmap.Clone() as Bitmap;
                             ctrCam3.t_check_grab = false;
                             if (NewImg == null)
                             {
-                                Add_PLC_Tx_Message(Cam_Num, 10);
-                                add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                return;
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    return;
+                                }
                             }
-                            if (Capture_framebuffer[Cam_Num].Count > 0)
+                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
                             {
-                                Capture_framebuffer[Cam_Num].Clear();
+                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
                             }
-                            Capture_framebuffer[Cam_Num].Add(NewImg);
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    return;
+                                }
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                }
+                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
+
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
+                                }
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                                    {
+                                        Capture_framebuffer[Cam_Num].Clear();
+                                    }
+                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
+                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+                            }
                         }
                         //Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam3.m_bitmap.Clone());
                         //}
@@ -4371,21 +4561,70 @@ namespace LV_Inspection_System.GUI
                         //lock (ctrCam4.m_bitmap)
                         {
                             ctrCam4.t_check_grab = true;
-                            //NewImg = GetCopyOf(ctrCam4.m_bitmap);//.Clone() as Bitmap;
-                            //NewImg = GetCopyOf3(ctrCam4.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
                             NewImg = ctrCam4.m_bitmap.Clone() as Bitmap;
                             ctrCam4.t_check_grab = false;
                             if (NewImg == null)
                             {
-                                Add_PLC_Tx_Message(Cam_Num, 10);
-                                add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                return;
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    return;
+                                }
                             }
-                            if (Capture_framebuffer[Cam_Num].Count > 0)
+                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
                             {
-                                Capture_framebuffer[Cam_Num].Clear();
+                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
                             }
-                            Capture_framebuffer[Cam_Num].Add(NewImg);
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    return;
+                                }
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                }
+                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
+
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
+                                }
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                                    {
+                                        Capture_framebuffer[Cam_Num].Clear();
+                                    }
+                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
+                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+                            }
                         }
 
                         //{
@@ -5235,7 +5474,7 @@ namespace LV_Inspection_System.GUI
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 0] += 100;
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 1] += 30;
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[1, 0] += 20;
-            //LVApp.Instance().m_Config.m_OK_NG_Cnt[1, 1] += 129; 
+            //LVApp.Instance().m_Config.m_OK_NG_Cnt[1, 1] += 129;
             if (!m_Monitoringthread_Check)
             {
                 if (Monitoringthread.IsAlive)
@@ -6918,11 +7157,12 @@ namespace LV_Inspection_System.GUI
                             {
                                 //lock (Result_framebuffer[Cam_Num])
                                 {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                     Result_framebuffer[Cam_Num].Add((Bitmap)Capture_frame.Clone());
+                                    //m_Result_Job_Mode0 = 1;
                                 }
-                                //m_Result_Job_Mode0 = 1;
+                                //Capture_frame.Dispose();
                             }
-                            //Capture_frame.Dispose();
                         }
                         else // 검사하면 아래로
                         {
@@ -6957,6 +7197,9 @@ namespace LV_Inspection_System.GUI
                             }
 
                             ctr_Manual1.Run_Inspection(Cam_Num, ref Capture_frame);
+
+                            LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
+
                             //int Judge = 40;
                             int Judge = LVApp.Instance().m_Config.Judge_DataSet(Cam_Num);
                             // Judge :10, 20, 30:NG, 40:OK. -1: NOOBJ
@@ -7462,6 +7705,7 @@ namespace LV_Inspection_System.GUI
                         {
                             if (m_Result_Job_Mode1 == 0)
                             {
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                 //lock (Result_framebuffer[Cam_Num])
                                 {
                                     Result_framebuffer[Cam_Num].Add((Bitmap)Capture_frame.Clone());
@@ -7503,6 +7747,7 @@ namespace LV_Inspection_System.GUI
                             }
 
                             ctr_Manual1.Run_Inspection(Cam_Num, ref Capture_frame);
+                            LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
 
                             int Judge = LVApp.Instance().m_Config.Judge_DataSet(Cam_Num);
                             bool t_Judge = true;
@@ -8015,6 +8260,7 @@ namespace LV_Inspection_System.GUI
                         {
                             if (m_Result_Job_Mode2 == 0)
                             {
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                 //lock (Result_framebuffer[Cam_Num])
                                 {
                                     Result_framebuffer[Cam_Num].Add((Bitmap)Capture_frame.Clone());
@@ -8056,6 +8302,7 @@ namespace LV_Inspection_System.GUI
                             }
 
                             ctr_Manual1.Run_Inspection(Cam_Num, ref Capture_frame);
+                            LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
 
                             int Judge = LVApp.Instance().m_Config.Judge_DataSet(Cam_Num);
                             bool t_Judge = true;
@@ -8565,6 +8812,7 @@ namespace LV_Inspection_System.GUI
                         {
                             if (m_Result_Job_Mode3 == 0)
                             {
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                 //lock (Result_framebuffer[Cam_Num])
                                 {
                                     Result_framebuffer[Cam_Num].Add((Bitmap)Capture_frame.Clone());
@@ -8606,6 +8854,7 @@ namespace LV_Inspection_System.GUI
                             }
 
                             ctr_Manual1.Run_Inspection(Cam_Num, ref Capture_frame);
+                            LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
 
                             int Judge = LVApp.Instance().m_Config.Judge_DataSet(Cam_Num);
                             bool t_Judge = true;

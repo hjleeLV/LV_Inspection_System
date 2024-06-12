@@ -120,10 +120,10 @@ bool CImPro_Library::EasyFind_Check()
 //		return false;
 //	}
 //	// verify normal user password
-//	res1 = LC_passwd(handle, 1, (unsigned char *) "33577748");  
+//	res1 = LC_passwd(handle, 1, (unsigned char *) "33577748");
 //	if(res1) {
 //		LC_close(handle);
-//		AfxMessageBox("There is no dongle license key! Please buy the S/W license!");		
+//		AfxMessageBox("There is no dongle license key! Please buy the S/W license!");
 //		m_License_Check = -1;
 //		return false;
 //	}
@@ -163,14 +163,14 @@ bool CImPro_Library::EasyFind_Check()
 //	// opening LC device
 //	res1 = LC_open(0x3f3f3f3f, 0, &handle);
 //	if(res1) {
-//		AfxMessageBox("Please check the S/W license!");		
+//		AfxMessageBox("Please check the S/W license!");
 //		return res1;
 //	}
 //	// verify normal user password
-//	res1 = LC_passwd(handle, 1, (unsigned char *) "33577748");  
+//	res1 = LC_passwd(handle, 1, (unsigned char *) "33577748");
 //	if(res1) {
 //		LC_close(handle);
-//		AfxMessageBox("Please check the S/W license!");		
+//		AfxMessageBox("Please check the S/W license!");
 //		return res1;
 //	}
 //	LC_close(handle);
@@ -178,7 +178,7 @@ bool CImPro_Library::EasyFind_Check()
 //	return res1;
 //}
 
-double CImPro_Library::f_angle(Point P1, Point P2) 
+double CImPro_Library::f_angle(Point P1, Point P2)
 {
 	double dy = P1.y - P2.y;
 	double dx = P1.x - P2.x;
@@ -187,7 +187,7 @@ double CImPro_Library::f_angle(Point P1, Point P2)
 	return theta;
 }
 
-double CImPro_Library::f_angle360(Point P1, Point P2) 
+double CImPro_Library::f_angle360(Point P1, Point P2)
 {
 	double theta = f_angle(P1, P2); // range (-180, 180]
 	if (theta < 0) theta = 360 + theta; // range [0, 360)
@@ -459,7 +459,7 @@ void CImPro_Library::J_Fitting_Ellipse(Mat &Binary,double* Circle_Info)
 	{
 		vector<Rect> boundRect( contours.size() );
 		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-		{  
+		{
 			boundRect[k] = boundingRect( Mat(contours[k]) );
 			if (m_max_object_value<= boundRect[k].width*boundRect[k].height)
 			{
@@ -508,8 +508,8 @@ void CImPro_Library::J_Fitting_Ellipse(Mat &Binary,double* Circle_Info)
 	//} else
 	//{
 	sEllipse c_ellipse;
-	for( size_t k = 0; k < contours.size(); k++ ) 
-	{	
+	for( size_t k = 0; k < contours.size(); k++ )
+	{
 		const int no_data = (int)contours[max_num].size();
 		sPoint *data = new sPoint[no_data];
 
@@ -563,7 +563,7 @@ int CImPro_Library::J_Delete_Small_Binary(Mat &Binary, int m_small)
 	if (contours.size() > 0)
 	{
 		//#pragma omp parallel for
-		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ ) 
+		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
 		{
 			t_Binary = Mat::zeros(Binary.size(), CV_8UC1);
 			drawContours( t_Binary, contours, k, color, CV_FILLED, 8, hierarchy );
@@ -662,7 +662,7 @@ void CImPro_Library::J_Rotate_PRE(cv::Mat& src, double angle, cv::Mat& dst, int 
 	}
 }
 
-void CImPro_Library::drawArrow(Mat &image, CvPoint p, CvPoint q, CvScalar color, int arrowMagnitude, int thickness, int line_type, int shift) 
+void CImPro_Library::drawArrow(Mat &image, CvPoint p, CvPoint q, CvScalar color, int arrowMagnitude, int thickness, int line_type, int shift)
 {
 	//Draw the principle line
 	line(image,p, q, color, thickness, line_type, shift);
@@ -730,8 +730,8 @@ void CImPro_Library::J_FastMatchTemplate(Mat& srca,  // The reference image
 		}
 		else
 		{
-			// On the next layers, template matching is performed on pre-defined 
-			// ROI areas.  We define the ROI using the template matching result 
+			// On the next layers, template matching is performed on pre-defined
+			// ROI areas.  We define the ROI using the template matching result
 			// from the previous layer.
 
 			Mat mask;
@@ -744,7 +744,7 @@ void CImPro_Library::J_FastMatchTemplate(Mat& srca,  // The reference image
 			vector<vector<Point> > contours;
 			findContours(mask8u, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
-			// Use the contours to define region of interest and 
+			// Use the contours to define region of interest and
 			// perform template matching on the areas
 			if (contours.size() != 0)
 			{
@@ -752,9 +752,9 @@ void CImPro_Library::J_FastMatchTemplate(Mat& srca,  // The reference image
 				{
 					Rect r = boundingRect(contours[i]);
 					matchTemplate(
-						ref(r + (tpl.size() - Size(1,1))), 
-						tpl, 
-						res(r), 
+						ref(r + (tpl.size() - Size(1,1))),
+						tpl,
+						res(r),
 						match_method
 						);
 				}
@@ -854,9 +854,9 @@ Point2f CImPro_Library::draw_warped_roi(Mat& image, const int width, const int h
 Vec3f rotationMatrixToEulerAngles(Mat &R)
 {
     float sy = sqrt(R.at<double>(0,0) * R.at<double>(0,0) +  R.at<double>(1,0) * R.at<double>(1,0) );
- 
+
     bool singular = sy < 1e-6; // If
- 
+
     float x, y, z;
     if (!singular)
     {
@@ -870,7 +870,7 @@ Vec3f rotationMatrixToEulerAngles(Mat &R)
         y = atan2(-R.at<double>(2,0), (double)sy);
         z = 0;
     }
-    return Vec3f(x, y, z);   
+    return Vec3f(x, y, z);
 }
 
 Point2f CImPro_Library::J_Model_Find(int Cam_num)
@@ -973,9 +973,9 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 			Rect match_Roi = Tem_ROI;
 			Mat cp_Cam_Img2 = Mat::zeros(Size(match_Roi.size().width / t_second_resize_rate, match_Roi.size().height / t_second_resize_rate), CV_8UC1);
 			Mat cp_Tem_Img2 = Mat::zeros(Size(match_Roi.size().width / t_second_resize_rate, match_Roi.size().height / t_second_resize_rate), CV_8UC1);
-#pragma omp parallel sections num_threads(2)  
+#pragma omp parallel sections num_threads(2)
 			{
-#pragma omp section  
+#pragma omp section
 				{
 					if (t_second_resize_rate != 1)
 					{
@@ -988,7 +988,7 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 
 					//Canny(cp_Cam_Img2, cp_Cam_Img2, BOLT_Param[Cam_num].nFindLightBalance[0] * 100, BOLT_Param[Cam_num].nFindLightBalance[0] * 300); // you can change this
 				}
-#pragma omp section  
+#pragma omp section
 				{
 					if (t_second_resize_rate != 1)
 					{
@@ -1168,7 +1168,7 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 		float c_x = -1;float c_y = -1;float c_angle = 0;float c_scale = 0;float c_score = 0;
 		//AfxMessageBox("1");
 		if (m_Cam_Find[Cam_num].GetLearningDone())
-		{	
+		{
 			//AfxMessageBox("2");
 			Mat temp_img = Gray_Img[Cam_num].clone();
 			EBW8Image1[Cam_num].SetImagePtr(temp_img.cols,temp_img.rows,temp_img.data);
@@ -1269,9 +1269,9 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 				//CString msg;
 				//msg.Format(L"%d_Cx=%1.3f,Cy=%1.3f,Ca=%1.3f,Cs=%1.3f",Cam_num,c_x,c_y,c_angle,c_scale);
 				//AfxMessageBox(msg);
-				//imwrite("01_0.bmp",temp_img);			
-				//imwrite("01_1.bmp",Gray_Img[Cam_num]);			
-				//imwrite("01_2.bmp",Template_Img[Cam_num]);			
+				//imwrite("01_0.bmp",temp_img);
+				//imwrite("01_1.bmp",Gray_Img[Cam_num]);
+				//imwrite("01_2.bmp",Template_Img[Cam_num]);
 				//E_Cam_Img[Cam_num].Save("00_1.bmp");
 			}
 			else
@@ -1284,17 +1284,17 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 	return Point2f(-1, -1);
 }
 
-void CImPro_Library::J_fitLineToPoints( CvPoint* points, 
-		      int num_points, 
-		      Point2d & pt1, 
+void CImPro_Library::J_fitLineToPoints( CvPoint* points,
+		      int num_points,
+		      Point2d & pt1,
 		      Point2d & pt2, float & theta )
 {
   float mean_x = 0, mean_y = 0;
   int ii;
-  
+
   CvMat* xx = cvCreateMat( num_points, 1, CV_32FC1 );
-  CvMat* yy = cvCreateMat( num_points, 1, CV_32FC1 );  
-  
+  CvMat* yy = cvCreateMat( num_points, 1, CV_32FC1 );
+
   for ( ii = 0; ii < num_points; ii++ )
   {
     cvmSet( xx, ii, 0, points[ii].x );
@@ -1308,7 +1308,7 @@ void CImPro_Library::J_fitLineToPoints( CvPoint* points,
   mean = cvAvg( yy, 0 );
   mean_y = mean.val[0];
 
-  float vals[4] = { 0.0, 0.0, 0.0, 0.0 };  
+  float vals[4] = { 0.0, 0.0, 0.0, 0.0 };
 
   for ( ii = 0; ii < num_points; ii++ )
   {
@@ -1317,7 +1317,7 @@ void CImPro_Library::J_fitLineToPoints( CvPoint* points,
     vals[3] += pow( cvmGet( yy, ii, 0 ) - mean_y, 2 );
   }
 
-  vals[2] = vals[1];    
+  vals[2] = vals[1];
 
   CvMat D = cvMat( 2, 2, CV_32FC1, vals );
   CvMat *eigenVec = cvCreateMat( 2, 2, CV_32FC1 );
@@ -1325,7 +1325,7 @@ void CImPro_Library::J_fitLineToPoints( CvPoint* points,
   cvZero( eigenVec );
   cvZero( eigenVal );
 
-  cvEigenVV( &D, eigenVec, eigenVal, DBL_EPSILON, -1, -1 );  
+  cvEigenVV( &D, eigenVec, eigenVal, DBL_EPSILON, -1, -1 );
 
   //cout << "Eigen values: " << endl;
   //cout << "cvmGet( eigenVal, 0, 0 )=" << cvmGet( eigenVal, 0, 0 ) << ", cvmGet( eigenval, 1, 0 )=" << cvmGet( eigenVal, 1, 0 ) << endl;
@@ -1348,7 +1348,7 @@ void CImPro_Library::J_fitLineToPoints( CvPoint* points,
   cvMinMaxLoc( xx, &minval, &maxval, &minloc, &maxloc, 0 );
   float max_x = maxval;
   float min_x = minval;
-  
+
   cvMinMaxLoc( yy, &minval, &maxval, &minloc, &maxloc, 0 );
   float max_y = maxval;
   float min_y = minval;
@@ -1361,7 +1361,7 @@ void CImPro_Library::J_fitLineToPoints( CvPoint* points,
 
   pt1.x = (double)x1;
   pt1.y = (double)y1;
-  
+
   pt2.x = (double)x2;
   pt2.y = (double)y2;
 
@@ -1497,7 +1497,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 			// 설정된 ROI 유효성 검사
 			if (BOLT_Param[Cam_num].nUse[s] == 0 || BOLT_Param[Cam_num].nRect[s].width <= 0 || BOLT_Param[Cam_num].nRect[s].height <= 0
-				|| BOLT_Param[Cam_num].nRect[s].width > Gray_Img[Cam_num].cols || BOLT_Param[Cam_num].nRect[s].height > Gray_Img[Cam_num].rows || 
+				|| BOLT_Param[Cam_num].nRect[s].width > Gray_Img[Cam_num].cols || BOLT_Param[Cam_num].nRect[s].height > Gray_Img[Cam_num].rows ||
 				Template_Img[Cam_num].rows != Gray_Img[Cam_num].rows || Template_Img[Cam_num].cols != Gray_Img[Cam_num].cols)
 			{
 				if (s > 0)
@@ -1774,7 +1774,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				//	//AfxMessageBox(msg);
 				//}
 				CP_Gray_Img = BOLT_Param[Cam_num].Gray_Obj_Img(tROI).clone();
-				
+
 				//imwrite("Gray_Obj_Img.bmp",BOLT_Param[Cam_num].Gray_Obj_Img);
 				//if (Cam_num == 1)
 				//{
@@ -1795,7 +1795,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 			if (Result_Debugging)
 			{
 				msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Gray_Img.bmp",Cam_num,s);
-				imwrite(W2A(msg),CP_Gray_Img);		
+				imwrite(W2A(msg),CP_Gray_Img);
 			}
 
 			if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -2365,8 +2365,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											rectangle(Dst_Img[Cam_num], Point(left,top), Point(left+width,top+height),  
-												CV_RGB(0,255,0),1 );  
+											rectangle(Dst_Img[Cam_num], Point(left,top), Point(left+width,top+height),
+												CV_RGB(0,255,0),1 );
 
 											int x = left+width/2; //중심좌표
 											int y = top+height/2;
@@ -2489,7 +2489,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										y = top;
 									}
 
-									
+
 									BOLT_Param[Cam_num].Offset_Object_Postion = Point(x - BOLT_Param[Cam_num].Object_Postion.x, y - BOLT_Param[Cam_num].Object_Postion.y);
 
 									if(abs(BOLT_Param[Cam_num].Offset_Object_Postion.x) > Out_binary.cols/3 || abs(BOLT_Param[Cam_num].Offset_Object_Postion.y) > Out_binary.rows/3)
@@ -2642,8 +2642,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//			{
 							//				if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							//				{
-							//					rectangle(Dst_Img[Cam_num], Point(left,top), Point(left+width,top+height),  
-							//						CV_RGB(0,255,0),1 );  
+							//					rectangle(Dst_Img[Cam_num], Point(left,top), Point(left+width,top+height),
+							//						CV_RGB(0,255,0),1 );
 
 							//					int x = left+width/2; //중심좌표
 							//					int y = top+height/2;
@@ -2719,7 +2719,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//						m_max_object_value = area;
 							//						m_max_object_num = i;
 							//					}
-							//				}	
+							//				}
 							//			}
 							//		} // end : if (hierarchy[i][3] == -1)
 							//	} //  end : for (int i = 0; i < contours.size(); i++)
@@ -2892,7 +2892,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						{// SIDE
 							if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::CLASS_TYPE || BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::BELT_TYPE) //유리판일때
 							{
-								if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::BELT_TYPE) 
+								if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::BELT_TYPE)
 								{
 									if (BOLT_Param[Cam_num].nThickness[0] > 0)
 									{
@@ -3187,7 +3187,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										}
 									}
 								}
-								else 
+								else
 								{
 									if (t_Left_x >= 0 && t_Left_y > 0 && t_Right_x >= 0 && t_Right_y > 0)
 									{
@@ -3205,7 +3205,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//if (Result_Debugging) // 오링 사이드 바닦 라인 이미지
 								//{
 								//	msg.Format(L"Save\\Debugging\\Cam%d_%2d_Line_Thres_ROI_Gray_Img.bmp",Cam_num, s);
-								//	imwrite(W2A(msg),Out_binary);		
+								//	imwrite(W2A(msg),Out_binary);
 								//}
 								/*imwrite("00.bmp",Out_binary);*/
 
@@ -3239,7 +3239,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								vector<Rect> boundRect( contours.size() );
 								int m_max_object_num = -1;int m_max_object_value = 0;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect[k] = boundingRect( Mat(contours[k]) );
 									if (m_max_object_value <= boundRect[k].width*boundRect[k].height)//
 										//&& boundRect[k].x > 0 && boundRect[k].x + boundRect[k].width < Out_binary.cols-1
@@ -3552,7 +3552,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										vector<Rect> boundRect1( contours.size() );
 										m_max_object_num = -1;m_max_object_value = 0;
 										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-										{  
+										{
 											boundRect1[k] = boundingRect( Mat(contours[k]) );
 											if (m_max_object_value <= boundRect1[k].width*boundRect1[k].height
 												&& boundRect1[k].x > 0 && boundRect1[k].x + boundRect1[k].width < Out_binary.cols-1
@@ -3914,13 +3914,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								Mat Out_binary_tmp = t_morph.clone();
 								erode(t_morph,Out_binary_tmp,element_v,Point(-1,-1), 2);
 								dilate(Out_binary_tmp,t_morph,element_v,Point(-1,-1), 2);
-								
+
 								//msg.Format(L"01.bmp");
 								//imwrite(W2A(msg),t_morph);
 
 								//imwrite("00.bmp",t_morph);
 
-								Mat stats, centroids, label;  
+								Mat stats, centroids, label;
 								int numOfLables = connectedComponentsWithStats(t_morph, label, stats, centroids, 8,CV_32S);
 								int m_Head_Idx = -1; int m_Head_value = 0;
 								int m_Body_Idx = -1; int m_Body_value = 0;
@@ -3952,11 +3952,11 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								Point2f t_Body_Center(0,0);
 								if (m_Head_Idx > -1 && m_Body_Idx > -1)
 								{
-									//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표		
+									//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표
 									//t_Head_Center.y = centroids.at<double>(m_Head_Idx, 1);
-									t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표		
+									t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표
 									t_Head_Center.y = (float)stats.at<int>(m_Head_Idx, CC_STAT_TOP) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_HEIGHT))/2;
-									t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표		
+									t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표
 									t_Body_Center.y = centroids.at<double>(m_Body_Idx, 1);
 								}
 								else
@@ -4283,7 +4283,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								drawContours( Out_binary,co_ordinates,0, Scalar(0),CV_FILLED, 8 );
 								//imwrite("01.bmp",Out_binary);
 								tt_Sub_ROI.x = 0;tt_Sub_ROI.y = min(t_Left_y,t_Right_y)-1;tt_Sub_ROI.width = Out_binary.cols;tt_Sub_ROI.height = max((t_B_Left_y - t_Left_y),(t_B_Right_y - t_Right_y))+10;
-								
+
 
 								if (tt_Sub_ROI.y < 0 || tt_Sub_ROI.y + tt_Sub_ROI.height >= Out_binary.rows || tt_Sub_ROI.height < 0)
 								{
@@ -4324,7 +4324,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								dilate(Out_binary_tmp,Out_binary(tt_Sub_ROI),element_v,Point(-1,-1), 2);
 								//imwrite("02.bmp",Out_binary);
 
-								
+
 								numOfLables = connectedComponentsWithStats(Out_binary, label, stats, centroids, 8,CV_32S);
 								m_Head_Idx = -1; m_Head_value = 0;
 								m_Body_Idx = -1; m_Body_value = 0;
@@ -4366,7 +4366,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									}
 								}
 
-								
+
 								//imwrite("03.bmp",Out_binary);
 								//imwrite("04.bmp",BOLT_Param[Cam_num].Gray_Obj_Img);
 								if (m_Head_Idx > -1 && m_Body_Idx > -1)
@@ -4390,13 +4390,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											for (int x = 0; x < Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]).cols; ++x) {
 												if (tlabel[x] == m_Head_Idx)
 												{
-													pixel[x][2] = 0;  
+													pixel[x][2] = 0;
 													pixel[x][1] = 255;
 													pixel[x][0] = 0;
 												}
 												else if (tlabel[x] == m_Body_Idx)
 												{
-													pixel[x][2] = 0;  
+													pixel[x][2] = 0;
 													pixel[x][1] = 255;
 													pixel[x][0] = 0;
 												}
@@ -4411,25 +4411,25 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											for (int x = 0; x < Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]).cols; ++x) {
 												if (tlabel[x] == m_Head_Idx)
 												{
-													pixel[x][2] = 0;  
+													pixel[x][2] = 0;
 													pixel[x][1] = 100;
 													pixel[x][0] = 0;
 												}
 												else if (tlabel[x] == m_Body_Idx)
 												{
-													pixel[x][2] = 0;  
+													pixel[x][2] = 0;
 													pixel[x][1] = 100;
 													pixel[x][0] = 0;
 												}
 											}
 										}
 									}
-									//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표		
+									//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표
 									//t_Head_Center.y = centroids.at<double>(m_Head_Idx, 1);
 
-									t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표		
+									t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표
 									t_Head_Center.y = (float)stats.at<int>(m_Head_Idx, CC_STAT_TOP) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_HEIGHT))/2;
-									t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표		
+									t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표
 									t_Body_Center.y = centroids.at<double>(m_Body_Idx, 1);
 
 									BOLT_Param[Cam_num].Offset_Object_Postion = Point(t_Head_Center.x - BOLT_Param[Cam_num].Object_Postion.x,
@@ -4571,7 +4571,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								m_max_object_value = 0;
 								Rect tt_rect;Rect t_Side_rect;Rect t_Head_rect;
 								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value<= tt_rect.width*tt_rect.height )
 										//&& tt_rect.x > 1 && tt_rect.y > 1 && tt_rect.x + tt_rect.width < Out_binary.cols-2 && tt_rect.y + tt_rect.height < Out_binary.rows-2)
@@ -4582,7 +4582,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								}
 								m_max_object_value = 0;
 								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value<= tt_rect.width*tt_rect.height && m_max_object_num != k)
 										//&& tt_rect.x > 1 && tt_rect.y > 1 && tt_rect.x + tt_rect.width < Out_binary.cols-2 && tt_rect.y + tt_rect.height < Out_binary.rows-2)
@@ -4754,7 +4754,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										x = left + width/2; y = top;
 									}
-									
+
 									//x += BOLT_Param[Cam_num].nRect[s].x; y += BOLT_Param[Cam_num].nRect[s].y;
 									//msg.Format(L"%d, %d, %d, %d", x, BOLT_Param[Cam_num].Object_Postion.x, y, BOLT_Param[Cam_num].Object_Postion.y);
 									//AfxMessageBox(msg);
@@ -4910,7 +4910,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									J_Rotate_PRE(Out_binary,t_angle,Target_Thres_ROI_Gray_Img,1);
 								}
-								
+
 								//J_Rotate_PRE(CP_Gray_Img,t_angle,BOLT_Param[Cam_num].Gray_Obj_Img,1);
 								//J_Rotate_PRE(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),t_angle,Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),1);
 
@@ -4973,7 +4973,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
 								{
 									tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
-									if (m_max_object_value<= tt_rect.width*tt_rect.height 
+									if (m_max_object_value<= tt_rect.width*tt_rect.height
 										)//&& tt_rect.x > 1 && tt_rect.y >= 0 && tt_rect.x + tt_rect.width < Out_binary.cols-2 && tt_rect.y + tt_rect.height < Out_binary.rows-2)
 									{
 										m_max_object_value = tt_rect.width*tt_rect.height;
@@ -5125,10 +5125,10 @@ if (Result_Debugging)
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
 			// [시작] 측정 알고리즘
-			// 측정 방향 0:Horizontal Length, 
-			//			 1:Vertical Length, 
-			//           2:Cross Dimension, 
-			//           3:Diameter, 
+			// 측정 방향 0:Horizontal Length,
+			//			 1:Vertical Length,
+			//           2:Cross Dimension,
+			//           3:Diameter,
 			//           4:Brightness of Area
 			//           5:Difference of Brightness
 			//           6:BLOB Size
@@ -5713,7 +5713,7 @@ if (Result_Debugging)
 					}
 				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::W_LENGTH_TB) // Horizontal Length
-				{					
+				{
 					if (BOLT_Param[Cam_num].nROI0_FilterSize[s] > 0)
 					{
 						Mat Out_binary_temp = Mat::zeros(Out_binary.size(), CV_8UC1);
@@ -5864,7 +5864,7 @@ if (Result_Debugging)
 							int t_left = 999999;
 							int t_right = 0;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
 								{
@@ -6242,7 +6242,7 @@ if (Result_Debugging)
 							start_p = -1;end_p = Out_binary.cols - 1;
 						}
 					}
-				} 
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::H_LENGTH_TB) // Vertical Length
 				{
 					if (BOLT_Param[Cam_num].nROI0_FilterSize[s] > 0)
@@ -6393,7 +6393,7 @@ if (Result_Debugging)
 							int t_top = 0;
 							int t_bottom = 999999;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
 								{
@@ -6612,7 +6612,7 @@ if (Result_Debugging)
 							int t_top = 0;
 							int t_bottom = 999999;int t_top_blo_ind = -1;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
 								{
@@ -6640,7 +6640,7 @@ if (Result_Debugging)
 							if (t_bottom != 999999 && t_top_blo_ind > -1)
 							{
 								Rect tt_rect = boundingRect( Mat(contours[t_top_blo_ind]));
-								t_top = tt_rect.y +tt_rect.height; 
+								t_top = tt_rect.y +tt_rect.height;
 
 								v_Dist = (double)(t_top - t_bottom)*BOLT_Param[Cam_num].nResolution[1];
 								dist_vec.push_back(v_Dist);
@@ -6840,7 +6840,7 @@ if (Result_Debugging)
 						//	Point2f rect_points[4];
 						//	double t_angle=0;Rect tt_rect;
 						//	for( int k = 0; k < contours.size(); k++ )
-						//	{  
+						//	{
 						//		tt_rect = boundingRect( Mat(contours[k]) );
 						//		minRect = minAreaRect(contours[k]);
 						//		if (m_max_object_value <= minRect.size.width*minRect.size.height
@@ -6860,7 +6860,7 @@ if (Result_Debugging)
 						//		{
 						//			//for( int j = 0; j < 4; j++ )
 						//			//{
-						//			//	line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) , 
+						//			//	line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//			//	Point2f(rect_points[(j+1)%4].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[(j+1)%4].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 						//			//}
 						//		}
@@ -6869,7 +6869,7 @@ if (Result_Debugging)
 						//			drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, m_max_object_num, CV_RGB(0,255,0), 1, 1, hierarchy);
 						//			for( int j = 0; j < 4; j++ )
 						//			{
-						//				line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) , 
+						//				line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//					Point2f(rect_points[(j+1)%4].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[(j+1)%4].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 						//			}
 						//		}
@@ -6888,21 +6888,21 @@ if (Result_Debugging)
 						//		label = Mat::zeros(Out_binary.size(), CV_8UC1);
 						//		for( int j = 0; j < 4; j++ )
 						//		{
-						//			line( label, Point2f(rect_points[j].x,rect_points[j].y) , 
+						//			line( label, Point2f(rect_points[j].x,rect_points[j].y) ,
 						//				CenterLoc,CV_RGB(255,255,255), 1, 8 );
 						//		}
 						//		bitwise_and(label,Dist_Img,Dist_Img);
-						//		Mat stats, centroids;  
-						//		int numOfLables = connectedComponentsWithStats(Dist_Img, label,   
+						//		Mat stats, centroids;
+						//		int numOfLables = connectedComponentsWithStats(Dist_Img, label,
 						//			stats, centroids, 8,CV_32S);
-						//		for (int j = 1; j < numOfLables; j++) 
+						//		for (int j = 1; j < numOfLables; j++)
 						//		{
 						//			double x = centroids.at<double>(j, 0); //중심좌표
-						//			double y = centroids.at<double>(j, 1);	
+						//			double y = centroids.at<double>(j, 1);
 						//			dist_vec.push_back(0.5*(BOLT_Param[Cam_num].nResolution[0]+BOLT_Param[Cam_num].nResolution[1])*sqrt(((double)CenterLoc.x-x)*((double)CenterLoc.x-x) + ((double)CenterLoc.y-y)*((double)CenterLoc.y-y)));
 						//			if (m_Text_View[Cam_num] && !ROI_Mode)
 						//			{
-						//				//line( Dst_Img[Cam_num], Point2f(x + BOLT_Param[Cam_num].nRect[s].x,y + BOLT_Param[Cam_num].nRect[s].y) , 
+						//				//line( Dst_Img[Cam_num], Point2f(x + BOLT_Param[Cam_num].nRect[s].x,y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//				//	Point2f(CenterLoc.x + BOLT_Param[Cam_num].nRect[s].x,CenterLoc.y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(0,100,255), 1, 8 );
 						//				//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(x,y),2,CV_RGB(255,0,0),1);
 						//				//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
@@ -6910,7 +6910,7 @@ if (Result_Debugging)
 						//			}
 						//			if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						//			{
-						//				line( Dst_Img[Cam_num], Point2f(x + BOLT_Param[Cam_num].nRect[s].x,y + BOLT_Param[Cam_num].nRect[s].y) , 
+						//				line( Dst_Img[Cam_num], Point2f(x + BOLT_Param[Cam_num].nRect[s].x,y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//					Point2f(CenterLoc.x + BOLT_Param[Cam_num].nRect[s].x,CenterLoc.y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(0,100,255), 1, 8 );
 						//				circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(x,y),2,CV_RGB(255,0,0),1);
 						//				msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
@@ -6935,7 +6935,7 @@ if (Result_Debugging)
 						//	RotatedRect minRect;
 						//	Rect tt_rect;
 						//	for( int k = 0; k < contours.size(); k++ )
-						//	{  
+						//	{
 						//		tt_rect = boundingRect( Mat(contours[k]) );
 						//		minRect = minAreaRect(contours[k]);
 						//		if (m_max_object_value <= minRect.size.width*minRect.size.height
@@ -6952,7 +6952,7 @@ if (Result_Debugging)
 						//		{
 						//			//for( int j = 0; j < 4; j++ )
 						//			//{
-						//			//	line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) , 
+						//			//	line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//			//	Point2f(rect_points[(j+1)%4].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[(j+1)%4].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 						//			//}
 						//		}
@@ -6996,7 +6996,7 @@ if (Result_Debugging)
 						//		vector<double> vBMag;vector<double> vBAngle;
 
 						//		for (int k = 0; k < contours.size(); k++)
-						//		{  
+						//		{
 						//			Line_Img = Mat::zeros(Out_binary.size(), CV_8UC1);
 						//			tt_rect = boundingRect( Mat(contours[k]) );
 						//			drawContours( Line_Img,  contours, k, CV_RGB(255,255,255), 1, 1, hierarchy);
@@ -7009,7 +7009,7 @@ if (Result_Debugging)
 
 						//			if (vCX.size() > 0)
 						//			{
-						//				cartToPolar(vCX, vCY, vCMag, vCAngle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.  
+						//				cartToPolar(vCX, vCY, vCMag, vCAngle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
 						//			}
 
 						//			vBX.clear();vBY.clear();
@@ -7031,7 +7031,7 @@ if (Result_Debugging)
 
 						//			if (vBX.size() > 0)
 						//			{
-						//				cartToPolar(vBX, vBY, vBMag, vBAngle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.  
+						//				cartToPolar(vBX, vBY, vBMag, vBAngle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
 						//			}
 
 						//			double t_max = 0;double t_d = 0;
@@ -7049,7 +7049,7 @@ if (Result_Debugging)
 						//			////minRect.points( rect_points );
 						//			////for (int j = 0; j < 4; j++)
 						//			////{
-						//			////	line( Line_Img, Point2f(rect_points[j].x,rect_points[j].y) , 
+						//			////	line( Line_Img, Point2f(rect_points[j].x,rect_points[j].y) ,
 						//			////	Point2f(rect_points[(j+1)%4].x,rect_points[(j+1)%4].y),CV_RGB(255,255,255), 3, 8 );
 						//			////}
 						//			//bitwise_and(Line_Img,Out_binary,Line_Img);
@@ -7066,7 +7066,7 @@ if (Result_Debugging)
 						//			//				if (t_d > t_max)
 						//			//				{
 						//			//					t_max = t_d;
-						//			//					minLoc.x = x;minLoc.y = y; 
+						//			//					minLoc.x = x;minLoc.y = y;
 						//			//				}
 						//			//			}
 						//			//		}
@@ -7121,7 +7121,7 @@ if (Result_Debugging)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									//if (hierarchy[k][3] == -1)
 									{
 										tt_rect = boundingRect( Mat(contours[k]) );
@@ -7208,7 +7208,7 @@ if (Result_Debugging)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
 										for (int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-										{  
+										{
 											minRect = minAreaRect(contours[k]);
 											t_max_temp =  sqrt(((minRect.center.x - (double)t_max_dist_point.x)*(minRect.center.x - (double)t_max_dist_point.x) + (minRect.center.y - (double)t_max_dist_point.y)*(minRect.center.y - (double)t_max_dist_point.y)));
 											if (t_min >= t_max_temp)
@@ -7275,7 +7275,7 @@ if (Result_Debugging)
 											{
 												if (k < t_vec_point.size())
 												{
-													t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_vec_point[k].x - Incircle_Info.center.x)*(t_vec_point[k].x - Incircle_Info.center.x) 
+													t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_vec_point[k].x - Incircle_Info.center.x)*(t_vec_point[k].x - Incircle_Info.center.x)
 														+ BOLT_Param[Cam_num].nResolution[1]*BOLT_Param[Cam_num].nResolution[1]*(t_vec_point[k].y - Incircle_Info.center.y)*(t_vec_point[k].y - Incircle_Info.center.y)));
 													dist_vec.push_back(t_max);
 													if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -7319,7 +7319,7 @@ if (Result_Debugging)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									tt_rect = boundingRect( Mat(contours[k]) );
 									minRect = minAreaRect(contours[k]);
 									if (m_max_object_value <= (int)(minRect.size.width*minRect.size.height)
@@ -7395,7 +7395,7 @@ if (Result_Debugging)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
 										for (int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-										{  
+										{
 											minRect = minAreaRect(contours[k]);
 											t_max_temp =  sqrt(((minRect.center.x - (double)t_max_dist_point.x)*(minRect.center.x - (double)t_max_dist_point.x) + (minRect.center.y - (double)t_max_dist_point.y)*(minRect.center.y - (double)t_max_dist_point.y)));
 											if (t_min >= t_max_temp)
@@ -7463,7 +7463,7 @@ if (Result_Debugging)
 										if (BOLT_Param[Cam_num].nCrossMethod[s] == 1)
 										{//좌상에서 우하
 											// 좌상, 우하 찾기
-											cv::Point2f t_PTs[2]; 
+											cv::Point2f t_PTs[2];
 											double t_tv = 0; t_max = 9999999999;
 											for (int k = 0; k < t_vec_point.size();k++)
 											{
@@ -7479,7 +7479,7 @@ if (Result_Debugging)
 											t_tv = 0; t_max = 9999999999;
 											for (int k = 0; k < t_vec_point.size();k++)
 											{
-												t_tv = sqrt(((t_vec_point[k].x - (float)Out_binary.cols) * (t_vec_point[k].x - (float)Out_binary.cols)  + 
+												t_tv = sqrt(((t_vec_point[k].x - (float)Out_binary.cols) * (t_vec_point[k].x - (float)Out_binary.cols)  +
 													(t_vec_point[k].y - (float)Out_binary.rows) * (t_vec_point[k].y - (float)Out_binary.rows)));
 												if (t_max > t_tv)
 												{
@@ -7489,7 +7489,7 @@ if (Result_Debugging)
 												}
 											}
 
-											t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_PTs[0].x - t_PTs[1].x) *(t_PTs[0].x - t_PTs[1].x) 
+											t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_PTs[0].x - t_PTs[1].x) *(t_PTs[0].x - t_PTs[1].x)
 												+ BOLT_Param[Cam_num].nResolution[1]*BOLT_Param[Cam_num].nResolution[1]*(t_PTs[0].y - t_PTs[1].y)*(t_PTs[0].y - t_PTs[1].y)));
 											dist_vec.push_back(t_max);
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -7516,7 +7516,7 @@ if (Result_Debugging)
 										else if (BOLT_Param[Cam_num].nCrossMethod[s] == 2)
 										{//좌하에서 우상
 											// 좌하, 우상 찾기
-											cv::Point2f t_PTs[2]; 
+											cv::Point2f t_PTs[2];
 											double t_tv = 0; t_max = 9999999999;
 											for (int k = 0; k < t_vec_point.size();k++)
 											{
@@ -7532,7 +7532,7 @@ if (Result_Debugging)
 											t_tv = 0; t_max = 9999999999;
 											for (int k = 0; k < t_vec_point.size();k++)
 											{
-												t_tv = sqrt(((t_vec_point[k].x - (float)Out_binary.cols) * (t_vec_point[k].x - (float)Out_binary.cols)  + 
+												t_tv = sqrt(((t_vec_point[k].x - (float)Out_binary.cols) * (t_vec_point[k].x - (float)Out_binary.cols)  +
 													(t_vec_point[k].y) * (t_vec_point[k].y)));
 												if (t_max > t_tv)
 												{
@@ -7542,7 +7542,7 @@ if (Result_Debugging)
 												}
 											}
 
-											t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_PTs[0].x - t_PTs[1].x) *(t_PTs[0].x - t_PTs[1].x) 
+											t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_PTs[0].x - t_PTs[1].x) *(t_PTs[0].x - t_PTs[1].x)
 												+ BOLT_Param[Cam_num].nResolution[1]*BOLT_Param[Cam_num].nResolution[1]*(t_PTs[0].y - t_PTs[1].y)*(t_PTs[0].y - t_PTs[1].y)));
 											dist_vec.push_back(t_max);
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -7572,7 +7572,7 @@ if (Result_Debugging)
 											{
 												if (k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2 < t_vec_point.size())
 												{
-													t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_vec_point[k].x - t_vec_point[k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2].x)*(t_vec_point[k].x - t_vec_point[k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2].x) 
+													t_max = sqrt((BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(t_vec_point[k].x - t_vec_point[k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2].x)*(t_vec_point[k].x - t_vec_point[k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2].x)
 														+ BOLT_Param[Cam_num].nResolution[1]*BOLT_Param[Cam_num].nResolution[1]*(t_vec_point[k].y - t_vec_point[k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2].y)*(t_vec_point[k].y - t_vec_point[k+BOLT_Param[Cam_num].nCrossAngleNumber[s]/2].y)));
 													dist_vec.push_back(t_max);
 													if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -7619,7 +7619,7 @@ if (Result_Debugging)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								minRect = minAreaRect(contours[k]);
 								if (m_max_object_value <= minRect.size.width*minRect.size.height
@@ -7637,7 +7637,7 @@ if (Result_Debugging)
 							{
 								//for( int j = 0; j < 4; j++ )
 								//{
-								//	line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) , 
+								//	line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) ,
 								//	Point2f(rect_points[(j+1)%4].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[(j+1)%4].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 								//}
 							}
@@ -7652,7 +7652,7 @@ if (Result_Debugging)
 							Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
 							drawContours( Out_binary,  contours, m_max_object_num, CV_RGB(255,255,255), CV_FILLED, 8, BOLT_Param[Cam_num].Object_hierarchy);
 							//imwrite("01.bmp",Out_binary);
-							
+
 							Mat Out_binary_temp = Mat::zeros(Out_binary.size(), CV_8UC1);
 							dilate(Out_binary,Out_binary_temp,element,Point(-1,-1),5);
 							erode(Out_binary_temp,Out_binary,element,Point(-1,-1),5);
@@ -7833,7 +7833,7 @@ if (Result_Debugging)
 										}
 									}
 								}
-							}							
+							}
 							else if (BOLT_Param[Cam_num].nDiameter_Direction[s] == 3)
 							{
 								// 검색을 하에서 상
@@ -8095,7 +8095,7 @@ if (Result_Debugging)
 						}
 					}
 					else if (BOLT_Param[Cam_num].nDiameter_Method[s] >= 1 && BOLT_Param[Cam_num].nDiameter_Method[s] <= 3)
-					{ // 1:중심에서 최소거리,2:중심에서 최대거리,3:중심에서 최대-최소거리 
+					{ // 1:중심에서 최소거리,2:중심에서 최대거리,3:중심에서 최대-최소거리
 						double top_min_dist = 0;
 						double top_max_dist = 0;
 						Mat Defect_Dark_Img;
@@ -8115,7 +8115,7 @@ if (Result_Debugging)
 							Rect boundRect;
 							int m_max_object_num = -1;int m_max_object_value = 0;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect(contours[k]);
 								if (m_max_object_value <= boundRect.width*boundRect.height)
@@ -8128,7 +8128,7 @@ if (Result_Debugging)
 							if (m_max_object_num >= 0)
 							{
 								vector<Point3D> t_dist;
-								Point2f t_Center = Point2f( mu[m_max_object_num].m10/mu[m_max_object_num].m00 , mu[m_max_object_num].m01/mu[m_max_object_num].m00 ); 
+								Point2f t_Center = Point2f( mu[m_max_object_num].m10/mu[m_max_object_num].m00 , mu[m_max_object_num].m01/mu[m_max_object_num].m00 );
 								Mat t_M_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
 								Out_binary = Mat::zeros(t_M_Out_binary.size(), CV_8UC1);
 								drawContours( Out_binary, contours, m_max_object_num, Scalar(255,255,255),CV_FILLED, 8, hierarchy);
@@ -8168,7 +8168,7 @@ if (Result_Debugging)
 
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
-										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX,t_dist[0].CY),CV_RGB(0,100,255), 1, 8 );
 										msg.Format(L"Min.Dist(%1.3f)",top_min_dist);
 										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+30), fontFace, 0.4, CV_RGB(0,150,255), 1, 8);
@@ -8180,7 +8180,7 @@ if (Result_Debugging)
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX,t_dist[0].CY),CV_RGB(0,100,255), 1, 8 );
 										msg.Format(L"Min.Dist(%1.3f)",top_min_dist);
 										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+30), fontFace, 0.4, CV_RGB(0,150,255), 1, 8);
@@ -8199,7 +8199,7 @@ if (Result_Debugging)
 									{
 										if (t_dist.size() > 1)
 										{
-											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size()-1].CX,t_dist[t_dist.size()-1].CY),CV_RGB(255,100,0), 1, 8 );
 											msg.Format(L"Max.Dist(%1.3f)",top_max_dist);
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+50), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
@@ -8213,7 +8213,7 @@ if (Result_Debugging)
 									{
 										if (t_dist.size() > 1)
 										{
-											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size()-1].CX,t_dist[t_dist.size()-1].CY),CV_RGB(255,100,0), 1, 8 );
 											msg.Format(L"Max.Dist(%1.3f)",top_max_dist);
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+50), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
@@ -8230,7 +8230,7 @@ if (Result_Debugging)
 
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
-										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX,t_dist[0].CY),CV_RGB(0,100,255), 1, 8 );
 										msg.Format(L"Min.Dist(%1.3f)",top_min_dist);
 										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+30), fontFace, 0.4, CV_RGB(0,150,255), 1, 8);
@@ -8242,7 +8242,7 @@ if (Result_Debugging)
 
 										if (t_dist.size() > 1)
 										{
-											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size()-1].CX,t_dist[t_dist.size()-1].CY),CV_RGB(255,100,0), 1, 8 );
 											msg.Format(L"Max.Dist(%1.3f)",top_max_dist);
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+50), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
@@ -8254,7 +8254,7 @@ if (Result_Debugging)
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+										line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX,t_dist[0].CY),CV_RGB(0,100,255), 1, 8 );
 										msg.Format(L"Min.Dist(%1.3f)",top_min_dist);
 										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+30), fontFace, 0.4, CV_RGB(0,150,255), 1, 8);
@@ -8265,7 +8265,7 @@ if (Result_Debugging)
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,1,CV_RGB(255,255,0),1);
 										if (t_dist.size() > 1)
 										{
-											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 
+											line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size()-1].CX,t_dist[t_dist.size()-1].CY),CV_RGB(255,100,0), 1, 8 );
 											msg.Format(L"Max.Dist(%1.3f)",top_max_dist);
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+5,BOLT_Param[Cam_num].nRect[s].y+50), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
@@ -8287,7 +8287,7 @@ if (Result_Debugging)
 								}
 							}
 						} // else if (BOLT_Param[Cam_num].nDiameter_Method[s] >= 1 && BOLT_Param[Cam_num].nDiameter_Method[s] <= 3)
-				} 
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::BRIGHTNESS_AREA_TB) // Brightness of Area
 				{
 					//J_Delete_Boundary(Out_binary,1);
@@ -8306,7 +8306,7 @@ if (Result_Debugging)
 									{
 										dist_vec.push_back((double)CP_Gray_Img.at<uchar>(i,j));
 									}
-								}	
+								}
 							}
 						}
 						else
@@ -8319,7 +8319,7 @@ if (Result_Debugging)
 									{
 										dist_vec.push_back((double)CP_Gray_Img.at<uchar>(i,j));
 									}
-								}	
+								}
 							}
 						}
 					}
@@ -8383,10 +8383,10 @@ if (Result_Debugging)
 							J_Delete_Boundary(Out_binary,1);
 						}
 
-						Mat stats, centroids, label;  
+						Mat stats, centroids, label;
 						int numOfLables = connectedComponentsWithStats(Out_binary, label, stats, centroids, 8,CV_32S);
 						int area = 0;int left = 0;int top = 0;int right = 0;int bottom = 0;
-						for (int j = 1; j < numOfLables; j++) 
+						for (int j = 1; j < numOfLables; j++)
 						{
 							area = stats.at<int>(j, CC_STAT_AREA);
 							if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] > (double)area || BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] < (double)area)
@@ -8443,7 +8443,7 @@ if (Result_Debugging)
 										{
 											dist_vec.push_back((double)HSV_channel[1].at<uchar>(i,j));
 										}
-									}	
+									}
 								}
 							}
 							else
@@ -8456,7 +8456,7 @@ if (Result_Debugging)
 										{
 											dist_vec.push_back((double)HSV_channel[1].at<uchar>(i,j));
 										}
-									}	
+									}
 								}
 							}
 						}
@@ -8474,7 +8474,7 @@ if (Result_Debugging)
 					if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					{
 						findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
-						
+
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
@@ -8524,7 +8524,7 @@ if (Result_Debugging)
 										R1_CNT++;
 										R1_V += (double)CP_Gray_Img.at<uchar>(i,j);
 									}
-								}	
+								}
 							}
 							if (R1_CNT > 0)
 							{
@@ -8542,7 +8542,7 @@ if (Result_Debugging)
 										R1_CNT++;
 										R1_V += (double)CP_Gray_Img.at<uchar>(i,j);
 									}
-								}	
+								}
 							}
 							if (R1_CNT > 0)
 							{
@@ -8578,7 +8578,7 @@ if (Result_Debugging)
 										R2_CNT++;
 										R2_V += (double)CP_Gray_Img.at<uchar>(i,j);
 									}
-								}	
+								}
 							}
 							if (R2_CNT > 0)
 							{
@@ -8596,7 +8596,7 @@ if (Result_Debugging)
 										R2_CNT++;
 										R2_V += (double)CP_Gray_Img.at<uchar>(i,j);
 									}
-								}	
+								}
 							}
 							if (R2_CNT > 0)
 							{
@@ -8694,7 +8694,7 @@ if (Result_Debugging)
 										R1_CNT++;
 										R1_V += (double)CP_Gray_Img.at<uchar>(i,j);
 									}
-								}	
+								}
 							}
 							if (R1_CNT > 0)
 							{
@@ -8712,7 +8712,7 @@ if (Result_Debugging)
 										R1_CNT++;
 										R1_V += (double)CP_Gray_Img.at<uchar>(i,j);
 									}
-								}	
+								}
 							}
 							if (R1_CNT > 0)
 							{
@@ -8791,7 +8791,7 @@ if (Result_Debugging)
 					{
 						Rect boundRect;
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							boundRect = boundingRect(contours[k]);
 							if (m_max_object_value <= boundRect.width*boundRect.height)
 								//&& boundRect.x > 1 && boundRect.y > 1 && boundRect.x+boundRect.width < Out_binary.cols-1 && boundRect.y + boundRect.height < Out_binary.rows-1)
@@ -8814,7 +8814,7 @@ if (Result_Debugging)
 
 						Edge_Out_binary(Ori_boundRect) = 255;
 						subtract(Edge_Out_binary,Temp_Out_binary,Edge_Out_binary);
-						
+
 						double area = (double)countNonZero(Temp_Out_binary);
 						if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= area)
 						{
@@ -8858,12 +8858,12 @@ if (Result_Debugging)
 								{
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y + Ori_boundRect.height), 
+										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y + Ori_boundRect.height),
 											CV_RGB(0,0,255),1);
 									}
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
-										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y + Ori_boundRect.height), 
+										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y),Point(Ori_boundRect.x + Ori_boundRect.width/2,Ori_boundRect.y + Ori_boundRect.height),
 											CV_RGB(0,0,255),1);
 									}
 								}
@@ -8904,12 +8904,12 @@ if (Result_Debugging)
 								{
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x,Ori_boundRect.y + Ori_boundRect.height/2),Point(Ori_boundRect.x + Ori_boundRect.width,Ori_boundRect.y + Ori_boundRect.height/2), 
+										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x,Ori_boundRect.y + Ori_boundRect.height/2),Point(Ori_boundRect.x + Ori_boundRect.width,Ori_boundRect.y + Ori_boundRect.height/2),
 											CV_RGB(0,0,255),1);
 									}
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
-										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x,Ori_boundRect.y + Ori_boundRect.height/2),Point(Ori_boundRect.x + Ori_boundRect.width,Ori_boundRect.y + Ori_boundRect.height/2), 
+										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Point(Ori_boundRect.x,Ori_boundRect.y + Ori_boundRect.height/2),Point(Ori_boundRect.x + Ori_boundRect.width,Ori_boundRect.y + Ori_boundRect.height/2),
 											CV_RGB(0,0,255),1);
 									}
 								}
@@ -8924,7 +8924,7 @@ if (Result_Debugging)
 								{
 									Rect boundRect;
 									for( int k = 0; k < (int)(min((double)contours.size(),2.0)); k++ )
-									{  
+									{
 										boundRect = boundingRect(contours[k]);
 										if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 0)
 										{ // 상
@@ -9919,11 +9919,11 @@ if (Result_Debugging)
 							if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_INV) // V1이하
 							{
 								threshold(CP_Gray_Img,Out_binary,BOLT_Param[Cam_num].nThres_V1[s],255,CV_THRESH_BINARY_INV);
-							} 
+							}
 							else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY) // V2이상
 							{
 								threshold(CP_Gray_Img,Out_binary,BOLT_Param[Cam_num].nThres_V2[s],255,CV_THRESH_BINARY);
-							} 
+							}
 							else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_BETWEEN) // V1~V2사이
 							{
 								inRange(CP_Gray_Img, Scalar(BOLT_Param[Cam_num].nThres_V1[s]),Scalar(BOLT_Param[Cam_num].nThres_V2[s]),Out_binary);
@@ -9965,7 +9965,7 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-								{	
+								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 									drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -10027,8 +10027,8 @@ if (Result_Debugging)
 						//	J_Delete_Boundary(Out_binary,1);
 						//}
 
-						//Mat stats, centroids, label;  
-						//int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+						//Mat stats, centroids, label;
+						//int numOfLables = connectedComponentsWithStats(Out_binary, label,
 						//	stats, centroids, 8,CV_32S);
 						findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
 						int t_cnt = 0;double area = 0;int t_w = 0;int t_h = 0;int t_x = 0;int t_y = 0;
@@ -10280,7 +10280,7 @@ if (Result_Debugging)
 								}
 								continue;
 							}
-							for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++) 
+							for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
 							{
 								//area = stats.at<int>(j, CC_STAT_AREA);
 								//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -10345,13 +10345,13 @@ if (Result_Debugging)
 											//drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
 											//rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(t_x,t_y,t_w,t_h),CV_RGB(255,0,0),1);
 											//for (int yy = t_y; yy < t_y + t_h; ++yy) {
-												
+
 											//	int *tlabel = label.ptr<int>(yy);
 											//	Vec3b* pixel = Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]).ptr<Vec3b>(yy);
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10370,7 +10370,7 @@ if (Result_Debugging)
 												//for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//	if (tlabel[xx] == j)
 												//	{
-												//		pixel[xx][2] = 255;  
+												//		pixel[xx][2] = 255;
 												//		pixel[xx][1] = 0;
 												//		pixel[xx][0] = 0;
 												//	}
@@ -10444,7 +10444,7 @@ if (Result_Debugging)
 												t_ED_P.x = -1;t_ED_P.y = -1;
 											}
 										}
-										
+
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
@@ -10456,7 +10456,7 @@ if (Result_Debugging)
 												for (int xx = t_x; xx < t_x + t_w; ++xx) {
 													if (tlabel[xx] == j)
 													{
-														pixel[xx][2] = 255;  
+														pixel[xx][2] = 255;
 														pixel[xx][1] = 0;
 														pixel[xx][0] = 0;
 													}
@@ -10478,7 +10478,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10523,7 +10523,7 @@ if (Result_Debugging)
 													}
 												}
 												for (int jj = t_y + t_h - 1;jj >= t_y;jj--)
-												{													
+												{
 													if (jj >= 0 && jj < Temp_Out_binary.rows)
 													{
 														if (Temp_Out_binary.at<uchar>(jj,ii) > 0)
@@ -10566,7 +10566,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10589,7 +10589,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10605,7 +10605,7 @@ if (Result_Debugging)
 										}
 										t_cnt++;
 									}
-								} 
+								}
 								else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 3)
 								{
 									if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= area)
@@ -10621,7 +10621,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10669,7 +10669,7 @@ if (Result_Debugging)
 										////	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 										////		if (tlabel[xx] == j)
 										////		{
-										////			pixel[xx] = 255;  
+										////			pixel[xx] = 255;
 										////		}
 										////	}
 										////}
@@ -10696,7 +10696,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -10749,7 +10749,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10787,7 +10787,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -10830,7 +10830,7 @@ if (Result_Debugging)
 										//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 										//		if (tlabel[xx] == j)
 										//		{
-										//			pixel[xx] = 255;  
+										//			pixel[xx] = 255;
 										//		}
 										//	}
 										//}
@@ -10882,7 +10882,7 @@ if (Result_Debugging)
 											Point2f Right_Circle_Point(-1,-1);
 
 
-											double t_Dist = 9999; 
+											double t_Dist = 9999;
 											for (int i = 0; i < 4;i++)
 											{
 												double t_Dist_temp =  sqrt(((float)t_Rect.x - Rot_Rect_points[i].x)*((float)t_Rect.x - Rot_Rect_points[i].x) + ((float)t_Rect.y - Rot_Rect_points[i].y)*((float)t_Rect.y - Rot_Rect_points[i].y));
@@ -10954,16 +10954,16 @@ if (Result_Debugging)
 											Top_Mid_Point.y /= Mid_CNT;
 											Mid_CNT = 0;
 											//fitLine(vec_Top_Point,lines_Top, CV_DIST_L2,0,0.01,0.01);
-											//double d = sqrt((double)lines_Top[0] * lines_Top[0] + (double)lines_Top[1] * lines_Top[1]); 
-											//float t = (float)(Edge_t_Mask.cols + Edge_t_Mask.rows); 
+											//double d = sqrt((double)lines_Top[0] * lines_Top[0] + (double)lines_Top[1] * lines_Top[1]);
+											//float t = (float)(Edge_t_Mask.cols + Edge_t_Mask.rows);
 											//Point pt1, pt2;
 
 											//if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											//{
-											//	pt1.x = cvRound(lines_Top[2] - (lines_Top[0]/d) * t); 
-											//	pt1.y = cvRound(lines_Top[3] - (lines_Top[1]/d) * t); 
-											//	pt2.x = cvRound(lines_Top[2] + (lines_Top[0]/d) * t); 
-											//	pt2.y = cvRound(lines_Top[3] + (lines_Top[1]/d) * t); 
+											//	pt1.x = cvRound(lines_Top[2] - (lines_Top[0]/d) * t);
+											//	pt1.y = cvRound(lines_Top[3] - (lines_Top[1]/d) * t);
+											//	pt2.x = cvRound(lines_Top[2] + (lines_Top[0]/d) * t);
+											//	pt2.y = cvRound(lines_Top[3] + (lines_Top[1]/d) * t);
 											//	cv::line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),pt1,pt2,CV_RGB(255,255,0),2);
 											//}
 
@@ -11002,11 +11002,11 @@ if (Result_Debugging)
 
 											//if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											//{
-											//	d = sqrt((double)lines_Bottom[0] * lines_Bottom[0] + (double)lines_Bottom[1] * lines_Bottom[1]); 
-											//	pt1.x = cvRound(lines_Bottom[2] - (lines_Bottom[0]/d) * t); 
-											//	pt1.y = cvRound(lines_Bottom[3] - (lines_Bottom[1]/d) * t); 
-											//	pt2.x = cvRound(lines_Bottom[2] + (lines_Bottom[0]/d) * t); 
-											//	pt2.y = cvRound(lines_Bottom[3] + (lines_Bottom[1]/d) * t); 
+											//	d = sqrt((double)lines_Bottom[0] * lines_Bottom[0] + (double)lines_Bottom[1] * lines_Bottom[1]);
+											//	pt1.x = cvRound(lines_Bottom[2] - (lines_Bottom[0]/d) * t);
+											//	pt1.y = cvRound(lines_Bottom[3] - (lines_Bottom[1]/d) * t);
+											//	pt2.x = cvRound(lines_Bottom[2] + (lines_Bottom[0]/d) * t);
+											//	pt2.y = cvRound(lines_Bottom[3] + (lines_Bottom[1]/d) * t);
 											//	cv::line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),pt1,pt2,CV_RGB(255,255,0),2);
 											//}
 
@@ -11044,11 +11044,11 @@ if (Result_Debugging)
 
 											//if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											//{
-											//	d = sqrt((double)lines_Left[0] * lines_Left[0] + (double)lines_Left[1] * lines_Left[1]); 
-											//	pt1.x = cvRound(lines_Left[2] - (lines_Left[0]/d) * t); 
-											//	pt1.y = cvRound(lines_Left[3] - (lines_Left[1]/d) * t); 
-											//	pt2.x = cvRound(lines_Left[2] + (lines_Left[0]/d) * t); 
-											//	pt2.y = cvRound(lines_Left[3] + (lines_Left[1]/d) * t); 
+											//	d = sqrt((double)lines_Left[0] * lines_Left[0] + (double)lines_Left[1] * lines_Left[1]);
+											//	pt1.x = cvRound(lines_Left[2] - (lines_Left[0]/d) * t);
+											//	pt1.y = cvRound(lines_Left[3] - (lines_Left[1]/d) * t);
+											//	pt2.x = cvRound(lines_Left[2] + (lines_Left[0]/d) * t);
+											//	pt2.y = cvRound(lines_Left[3] + (lines_Left[1]/d) * t);
 											//	cv::line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),pt1,pt2,CV_RGB(255,255,0),2);
 											//}
 
@@ -11088,11 +11088,11 @@ if (Result_Debugging)
 
 											//if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											//{
-											//	d = sqrt((double)lines_Right[0] * lines_Right[0] + (double)lines_Right[1] * lines_Right[1]); 
-											//	pt1.x = cvRound(lines_Right[2] - (lines_Right[0]/d) * t); 
-											//	pt1.y = cvRound(lines_Right[3] - (lines_Right[1]/d) * t); 
-											//	pt2.x = cvRound(lines_Right[2] + (lines_Right[0]/d) * t); 
-											//	pt2.y = cvRound(lines_Right[3] + (lines_Right[1]/d) * t); 
+											//	d = sqrt((double)lines_Right[0] * lines_Right[0] + (double)lines_Right[1] * lines_Right[1]);
+											//	pt1.x = cvRound(lines_Right[2] - (lines_Right[0]/d) * t);
+											//	pt1.y = cvRound(lines_Right[3] - (lines_Right[1]/d) * t);
+											//	pt2.x = cvRound(lines_Right[2] + (lines_Right[0]/d) * t);
+											//	pt2.y = cvRound(lines_Right[3] + (lines_Right[1]/d) * t);
 											//	cv::line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),pt1,pt2,CV_RGB(255,255,0),2);
 											//}
 
@@ -11312,7 +11312,7 @@ if (Result_Debugging)
 										//			for (int xx = t_x; xx < t_x + t_w; ++xx) {
 										//				if (tlabel[xx] == j)
 										//				{
-										//					pixel[xx][2] = 255;  
+										//					pixel[xx][2] = 255;
 										//					pixel[xx][1] = 0;
 										//					pixel[xx][0] = 0;
 										//				}
@@ -11332,7 +11332,7 @@ if (Result_Debugging)
 										//		for (int xx = t_x; xx < t_x + t_w; ++xx) {
 										//			if (tlabel[xx] == j)
 										//			{
-										//				pixel[xx][2] = 255;  
+										//				pixel[xx][2] = 255;
 										//				pixel[xx][1] = 0;
 										//				pixel[xx][0] = 0;
 										//			}
@@ -11417,11 +11417,11 @@ if (Result_Debugging)
 						if (BOLT_Param[Cam_num].nDirecFilterCNT[s] <= 0)
 						{
 							BOLT_Param[Cam_num].nDirecFilterCNT[s] = 1;
-						} 
+						}
 						else if (BOLT_Param[Cam_num].nDirecFilterCNT[s] >= 100)
 						{
 							BOLT_Param[Cam_num].nDirecFilterCNT[s] = 100;
-						} 
+						}
 						if (BOLT_Param[Cam_num].nDirecFilter[s] == FILTER_DIRECTION::ALL)
 						{
 							//medianBlur(CP_Gray_Img,t_Blur,BOLT_Param[Cam_num].nDirecFilterCNT[s]);
@@ -11457,7 +11457,7 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-								{	
+								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 									drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -11541,11 +11541,11 @@ if (Result_Debugging)
 							findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
 
 							//if (contours.size() > 0)
-							//{									
+							//{
 							//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							//}
-							//Mat stats, centroids, label;  
-							//int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+							//Mat stats, centroids, label;
+							//int numOfLables = connectedComponentsWithStats(Out_binary, label,
 							//	stats, centroids, 8,CV_32S);
 							//if (numOfLables > 200)
 							//{
@@ -11568,7 +11568,7 @@ if (Result_Debugging)
 									//findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
 									//#pragma omp parallel for
 									if (contours.size() > 0)
-									{									
+									{
 										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
@@ -11584,7 +11584,7 @@ if (Result_Debugging)
 							//if (numOfLables > 0)
 							//{
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++) 
+								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -11656,7 +11656,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11680,7 +11680,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11696,7 +11696,7 @@ if (Result_Debugging)
 										}
 									}
 
-																
+
 									else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 1)
 									{//가로길이
 										if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= (double)t_w*BOLT_Param[Cam_num].nResolution[0] && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= (double)t_w*BOLT_Param[Cam_num].nResolution[0])
@@ -11713,7 +11713,7 @@ if (Result_Debugging)
 													for (int ii = t_x;ii < t_x + t_w;ii++)
 													{
 														if (ii >= 0 && ii < Temp_Out_binary.cols)
-														{													
+														{
 															if (Temp_Out_binary.at<uchar>(jj,ii) > 0)
 															{
 																if (t_ST_P.x == -1)
@@ -11728,7 +11728,7 @@ if (Result_Debugging)
 													for (int ii =  t_x + t_w - 1;ii >= t_x;ii--)
 													{
 														if (ii >= 0 && ii < Temp_Out_binary.cols)
-														{													
+														{
 															if (Temp_Out_binary.at<uchar>(jj,ii) > 0)
 															{
 																if (t_ED_P.x == -1)
@@ -11768,7 +11768,7 @@ if (Result_Debugging)
 													for (int xx = t_x; xx < t_x + t_w; ++xx) {
 														if (tlabel[xx] == j)
 														{
-															pixel[xx][2] = 255;  
+															pixel[xx][2] = 255;
 															pixel[xx][1] = 0;
 															pixel[xx][0] = 0;
 														}
@@ -11790,7 +11790,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11878,7 +11878,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11901,7 +11901,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11917,7 +11917,7 @@ if (Result_Debugging)
 											}
 											t_cnt++;
 										}
-									} 
+									}
 									else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 3)
 									{
 										if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= area)
@@ -11933,7 +11933,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11953,7 +11953,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -11990,7 +11990,7 @@ if (Result_Debugging)
 											////	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											////		if (tlabel[xx] == j)
 											////		{
-											////			pixel[xx] = 255;  
+											////			pixel[xx] = 255;
 											////		}
 											////	}
 											////}
@@ -12015,7 +12015,7 @@ if (Result_Debugging)
 													//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 													//		if (tlabel[xx] == j)
 													//		{
-													//			pixel[xx][2] = 255;  
+													//			pixel[xx][2] = 255;
 													//			pixel[xx][1] = 0;
 													//			pixel[xx][0] = 0;
 													//		}
@@ -12038,7 +12038,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12084,7 +12084,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12104,7 +12104,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12136,7 +12136,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12157,7 +12157,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12226,7 +12226,7 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-								{	
+								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 									drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -12312,11 +12312,11 @@ if (Result_Debugging)
 							//imwrite("00.bmp", Out_binary);
 							findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
 							//if (contours.size() > 0)
-							//{									
+							//{
 							//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							//}
-							//Mat stats, centroids, label;  
-							//int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+							//Mat stats, centroids, label;
+							//int numOfLables = connectedComponentsWithStats(Out_binary, label,
 							//	stats, centroids, 8,CV_32S);
 							//if (numOfLables > 200)
 							//{
@@ -12356,7 +12356,7 @@ if (Result_Debugging)
 							/*if (numOfLables > 0)
 							{*/
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++) 
+								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -12428,7 +12428,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12452,7 +12452,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12527,7 +12527,7 @@ if (Result_Debugging)
 													t_ED_P.x = -1;t_ED_P.y = -1;
 												}
 											}
-										
+
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
@@ -12539,7 +12539,7 @@ if (Result_Debugging)
 													for (int xx = t_x; xx < t_x + t_w; ++xx) {
 														if (tlabel[xx] == j)
 														{
-															pixel[xx][2] = 255;  
+															pixel[xx][2] = 255;
 															pixel[xx][1] = 0;
 															pixel[xx][0] = 0;
 														}
@@ -12561,7 +12561,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12649,7 +12649,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12672,7 +12672,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12688,7 +12688,7 @@ if (Result_Debugging)
 											}
 											t_cnt++;
 										}
-									} 
+									}
 									else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 3)
 									{
 										if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= area)
@@ -12704,7 +12704,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12725,7 +12725,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12762,7 +12762,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx] = 255;  
+											//			pixel[xx] = 255;
 											//		}
 											//	}
 											//}
@@ -12787,7 +12787,7 @@ if (Result_Debugging)
 													//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 													//		if (tlabel[xx] == j)
 													//		{
-													//			pixel[xx][2] = 255;  
+													//			pixel[xx][2] = 255;
 													//			pixel[xx][1] = 0;
 													//			pixel[xx][0] = 0;
 													//		}
@@ -12810,7 +12810,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12856,7 +12856,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12877,7 +12877,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12909,7 +12909,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12931,7 +12931,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -12983,13 +12983,13 @@ if (Result_Debugging)
 							J_Delete_Boundary(Out_binary,1);
 						}
 
-						Mat stats, centroids, label;  
-						int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+						Mat stats, centroids, label;
+						int numOfLables = connectedComponentsWithStats(Out_binary, label,
 							stats, centroids, 8,CV_32S);
 						int t_cnt = 0;
 						if (numOfLables > 0)
 						{
-							for (int j = 1; j < numOfLables; j++) 
+							for (int j = 1; j < numOfLables; j++)
 							{
 								int area = stats.at<int>(j, CC_STAT_AREA);
 								if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= (double)area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= (double)area)
@@ -13036,7 +13036,7 @@ if (Result_Debugging)
 								findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
 								//#pragma omp parallel for
 								if (contours.size() > 0)
-								{							
+								{
 									//std::sort(contours.begin(), contours.end(), compareContourAreas);
 									for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
 									{
@@ -13091,13 +13091,13 @@ if (Result_Debugging)
 						}
 						if (BOLT_Param[Cam_num].nDirecFilterDarkThres[s] > 0)
 						{
-							Mat stats, centroids, label;  
-							int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+							Mat stats, centroids, label;
+							int numOfLables = connectedComponentsWithStats(Out_binary, label,
 								stats, centroids, 8,CV_32S);
 							int t_cnt = 0;
 							if (numOfLables > 0)
 							{
-								for (int j = 1; j < numOfLables; j++) 
+								for (int j = 1; j < numOfLables; j++)
 								{
 									int area = stats.at<int>(j, CC_STAT_AREA);
 									if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= (double)area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= (double)area)
@@ -13199,13 +13199,13 @@ if (Result_Debugging)
 						}
 						if (BOLT_Param[Cam_num].nDirecFilterBrightThres[s] > 0)
 						{
-							Mat stats, centroids, label;  
-							int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+							Mat stats, centroids, label;
+							int numOfLables = connectedComponentsWithStats(Out_binary, label,
 								stats, centroids, 8,CV_32S);
 							int t_cnt = 0;
 							if (numOfLables > 0)
 							{
-								for (int j = 1; j < numOfLables; j++) 
+								for (int j = 1; j < numOfLables; j++)
 								{
 									int area = stats.at<int>(j, CC_STAT_AREA);
 									if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= (double)area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= (double)area)
@@ -13312,7 +13312,7 @@ if (Result_Debugging)
 							vector<Rect> boundRect( contours.size() );
 							int m_max_object_num = -1;int m_max_object_value = 0;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								boundRect[k] = boundingRect( Mat(contours[k]) );
 								if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
 									//	&& pointPolygonTest( contours[k], Point(tROI.width/2,tROI.height/2), false ) == 1)
@@ -13333,7 +13333,7 @@ if (Result_Debugging)
 							}
 						}
 					}
-					
+
 					double t_Circle1_mindist = (double)BOLT_Param[Cam_num].nCircle1Radius[s] - (double)(BOLT_Param[Cam_num].nCircle1Thickness[s])/2;
 					double t_Circle1_maxdist = (double)BOLT_Param[Cam_num].nCircle1Radius[s] + (double)(BOLT_Param[Cam_num].nCircle1Thickness[s])/2;
 					double t_Circle2_mindist = (double)BOLT_Param[Cam_num].nCircle2Radius[s] - (double)(BOLT_Param[Cam_num].nCircle2Thickness[s])/2;
@@ -13375,7 +13375,7 @@ if (Result_Debugging)
 							}
 						}
 					}
-	
+
 					if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					{
 						circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,2,CV_RGB(255,100,0),2);
@@ -13390,7 +13390,7 @@ if (Result_Debugging)
 						//if (contours.size() > 0)
 						//{
 						//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						//	
+						//
 						//	for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						//	{
 						//		drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,100,0), CV_FILLED, 8, hierarchy);
@@ -13455,7 +13455,7 @@ if (Result_Debugging)
 							vector<vector<Point>> hull1(contours.size());
 							//#pragma omp parallel for
 							for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-							{	
+							{
 								convexHull( Mat(contours[k]), hull1[k], false );
 								//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 								drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -13509,7 +13509,7 @@ if (Result_Debugging)
 					if (contours.size() > 0)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						
+
 						for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++) // iterate through each contour.
 						{
 							double fArea = (int)(contourArea(contours[i]) + 0.5);//t_Circle_Blob_Info.Pixels.size();
@@ -13525,12 +13525,57 @@ if (Result_Debugging)
 					//}
 					//J_Fill_Hole(Out_binary);
 
+					// 위에서 부터 검색해서 SSF이고 Omit이 없으면 초기화함.
+
+					bool t_SSF_Omit_Exist_check = false;
+					bool t_SSF_NonOmit_check = false;
+					for (int ss = 1; ss < 41; ss++)
+					{
+						if (BOLT_Param[Cam_num].nCircleOutputMethod[ss] == 9)
+						{
+							t_SSF_Omit_Exist_check = true;
+						}
+
+						if (ss == s - 1 && t_SSF_Omit_Exist_check)
+						{// 그전까지 Omit은 초기화 함.
+							if (BOLT_Param[Cam_num].nCircleOutputMethod[s - 1] == 9 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::CIRCLE_BLOB_SIZE_TB)
+							{
+								BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
+								//AfxMessageBox(L"Omit Initialized");
+							}
+							break;
+						}
+					}
+
+					// Omit 예외 처리
+					if (BOLT_Param[Cam_num].nCircleOutputMethod[s] != 9)
+					{
+						if (countNonZero(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s])) > 0)
+						{
+							//imwrite("00.bmp", BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]));
+							//imwrite("01.bmp", Out_binary);
+							subtract(Out_binary, BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), Out_binary);
+							//imwrite("02.bmp", Out_binary);
+							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+							{
+								findContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]).clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+								if (contours.size() > 0)
+								{
+									for (int k = 0; k < contours.size(); k++)
+									{
+										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255, 255, 0), 1, 8, hierarchy);
+									}
+								}
+							}
+						}
+					}
+
 					findContours(Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_NONE);
 
 					if (contours.size() > 0)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
-					
+
 						//Mat labels(Out_binary.size(), CV_16U);
 						Mat labels = Mat::zeros(Out_binary.size(), CV_8U);
 						vector<Circle_Blob_Info> vec_Circle_Blob_Info;
@@ -13546,16 +13591,16 @@ if (Result_Debugging)
 							//	break;
 							//}
 							//if contour[i] is not a hole
-							
+
 							if (hierarchy[i][3] == -1 && (int)(contourArea(contours[i])) > 0)
 							{
 								Circle_Blob_Info t_Circle_Blob_Info;
 								drawContours(labels, contours, i, Scalar(t_cnt),2, 8, hierarchy);
-								Rect t_rect = boundingRect(contours[i]);          
+								Rect t_rect = boundingRect(contours[i]);
 								int left = t_rect.x;
 								int top = t_rect.y;
 								int width = t_rect.width;
-								int height = t_rect.height;           
+								int height = t_rect.height;
 								int x_end = left + width;
 								int y_end = top + height;
 								bool t_circle1_min_check = false;
@@ -13563,7 +13608,7 @@ if (Result_Debugging)
 								bool t_circle2_min_check = false;
 								bool t_circle2_max_check = false;
 								t_Circle1_connect_cnt = t_Circle2_connect_cnt = 0;
-								
+
 								////#pragma omp parallel for
 								for (int x = left; x < x_end; x++)
 								{
@@ -13658,9 +13703,9 @@ if (Result_Debugging)
 						vector<double> Circle_Blob_mag;
 						vector<double> Circle_Blob_angle;
 
-						cartToPolar(vX, vY, Circle_Blob_mag, Circle_Blob_angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.  
+						cartToPolar(vX, vY, Circle_Blob_mag, Circle_Blob_angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
 						for(int i=0; i<vX.size(); i++)
-						{					
+						{
 							vec_Circle_Blob_Info[i].fDistanceFromCenter = Circle_Blob_mag[i];
 							vec_Circle_Blob_Info[i].fAngleFromCenter = Circle_Blob_angle[i];
 							if(((int)vec_Circle_Blob_Info[i].fAngleFromCenter > 90 && (int)vec_Circle_Blob_Info[i].fAngleFromCenter <= 180) ||
@@ -13671,7 +13716,7 @@ if (Result_Debugging)
 								vec_Circle_Blob_Info[i].fWidth = vec_Circle_Blob_Info[i].fHeight;
 								vec_Circle_Blob_Info[i].fHeight = fTemp;
 							}
-							
+
 							float fTemp1 = vec_Circle_Blob_Info[i].fHeight;
 							float fTemp2 = vec_Circle_Blob_Info[i].fWidth;
 
@@ -13701,6 +13746,30 @@ if (Result_Debugging)
 							// 여기에 로직 추가
 							if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= (double)vec_Circle_Blob_Info[i].fArea && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= (double)vec_Circle_Blob_Info[i].fArea)
 							{
+								if (BOLT_Param[Cam_num].nCircleOutputMethod[s] == 9)
+								{
+									RotatedRect t_Mask_ROI = vec_Circle_Blob_Info[i].minRect;
+									cv::Point2f vertices2f[4];
+									t_Mask_ROI.points(vertices2f);
+
+									vector<vector<Point>> squre_point(1, vector<Point>(4));
+
+									for (int ij = 0; ij < 4; ++ij) {
+										squre_point[0][ij] = vertices2f[ij];
+									}
+
+									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0, 255, 0), 8);
+									//fillPoly(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), squre_point[0], CV_RGB(255, 255, 255), CV_FILLED);
+									drawContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), squre_point, 0, CV_RGB(255, 255, 255), CV_FILLED, 8);
+
+									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+									{
+										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), squre_point, 0, CV_RGB(255, 255, 0), CV_FILLED, 8);
+										//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), squre_point[0], CV_RGB(255, 255, 0), CV_FILLED);
+									}
+									//drawContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 255, 255), CV_FILLED, 8, SSF_hierarchy);
+								}
+
 								if (BOLT_Param[Cam_num].nNumConnectedCircleBLOB[s] > 0)
 								{// 바운더리 걸리는거 있을때
 									if (BOLT_Param[Cam_num].nNumConnectedCircleBLOB[s] <= vec_Circle_Blob_Info[i].fBoundaryHitNum)
@@ -13711,7 +13780,7 @@ if (Result_Debugging)
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours,vec_Circle_Blob_Info[i].contourNum, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
-												//for (int pp = 0; pp < vec_Circle_Blob_Info[i].Pixels.size(); ++pp) 
+												//for (int pp = 0; pp < vec_Circle_Blob_Info[i].Pixels.size(); ++pp)
 												//{
 												//	Vec3b* pixel = Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]).ptr<Vec3b>(vec_Circle_Blob_Info[i].Pixels[pp].y);
 												//	pixel[vec_Circle_Blob_Info[i].Pixels[pp].x][2] = 255;
@@ -13726,7 +13795,7 @@ if (Result_Debugging)
 
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours,vec_Circle_Blob_Info[i].contourNum, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
 
-												//for (int pp = 0; pp < vec_Circle_Blob_Info[i].Pixels.size(); ++pp) 
+												//for (int pp = 0; pp < vec_Circle_Blob_Info[i].Pixels.size(); ++pp)
 												//{
 												//	Vec3b* pixel = Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]).ptr<Vec3b>(vec_Circle_Blob_Info[i].Pixels[pp].y);
 												//	pixel[vec_Circle_Blob_Info[i].Pixels[pp].x][2] = 255;
@@ -14127,7 +14196,7 @@ if (Result_Debugging)
 							vector<Rect> boundRect( contours.size() );
 							int m_max_object_num = -1;int m_max_object_value = 0;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								boundRect[k] = boundingRect( Mat(contours[k]) );
 								if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
 									//	&& pointPolygonTest( contours[k], Point(tROI.width/2,tROI.height/2), false ) == 1)
@@ -14276,8 +14345,8 @@ if (Result_Debugging)
 						J_Delete_Boundary(Out_binary,1);
 					}
 
-					Mat stats, centroids, label;  
-					int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+					Mat stats, centroids, label;
+					int numOfLables = connectedComponentsWithStats(Out_binary, label,
 						stats, centroids, 8,CV_32S);
 					int t_cnt = 0;double t_dist = 0;
 					int area = 0;int left = 0;int top = 0;int right = 0;int bottom = 0;
@@ -14287,7 +14356,7 @@ if (Result_Debugging)
 					//bool t_circle2_max_check = false;
 					if (numOfLables >= 1)
 					{
-						for (int j = 1; j < numOfLables; j++) 
+						for (int j = 1; j < numOfLables; j++)
 						{
 							area = stats.at<int>(j, CC_STAT_AREA);
 							left = stats.at<int>(j, CC_STAT_LEFT);
@@ -14300,7 +14369,7 @@ if (Result_Debugging)
 								t_Circle1_connect_cnt = 0;
 								//t_Circle2_connect_cnt = 0;
 								t_circle1_min_check = false;
-								t_circle1_max_check = false;							
+								t_circle1_max_check = false;
 								//t_circle2_min_check = false;
 								//t_circle2_max_check = false;
 								for (int y = top; y < bottom; ++y) {
@@ -14443,7 +14512,7 @@ if (Result_Debugging)
 						double V_R = 0;float R_diameter = 0;
 						int m_max_object_num = -1;double m_max_object_value = 0;
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							if (hierarchy[k][3] == -1)
 							{
 								boundRect[k] = minAreaRect(contours[k]);
@@ -14492,10 +14561,10 @@ if (Result_Debugging)
 								//double t_v = 100.0*min(circlef.a,circlef.b) / max(circlef.a,circlef.b);
 								//msg.Format(L"%1.2f",t_v);
 								//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,100,0), 1, 8);
-								
+
 								if (BOLT_Param[Cam_num].nOutput[s] == 0)
 								{
-									
+
 								}
 								else if (BOLT_Param[Cam_num].nOutput[s] == 1)
 								{
@@ -14513,7 +14582,7 @@ if (Result_Debugging)
 									minRect.points( rect_points );
 									for( int j = 0; j < 4; j++ )
 									{
-										line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) , 
+										line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) ,
 											Point2f(rect_points[(j+1)%4].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[(j+1)%4].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(200,15,15), 1, 8 );
 									}
 								}
@@ -14526,7 +14595,7 @@ if (Result_Debugging)
 									minRect.points( rect_points );
 									for( int j = 0; j < 4; j++ )
 									{
-										line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) , 
+										line( Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y) ,
 											Point2f(rect_points[(j+1)%4].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[(j+1)%4].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(200,15,15), 1, 8 );
 									}
 									msg.Format(L"Min(%1.3f)",min(minRect.size.width,minRect.size.height)*(BOLT_Param[Cam_num].nResolution[0]+BOLT_Param[Cam_num].nResolution[1])*0.5);
@@ -14571,7 +14640,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -14660,7 +14729,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -14756,14 +14825,14 @@ if (Result_Debugging)
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),BOLT_Param[Cam_num].nROI1[s],CV_RGB(100,0,255),1);
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),BOLT_Param[Cam_num].nROI2[s],CV_RGB(100,0,255),1);
 					}
-					if (BOLT_Param[Cam_num].nROI1[s].x >= 0 && BOLT_Param[Cam_num].nROI1[s].y >= 0 && 
+					if (BOLT_Param[Cam_num].nROI1[s].x >= 0 && BOLT_Param[Cam_num].nROI1[s].y >= 0 &&
 						BOLT_Param[Cam_num].nROI1[s].x + BOLT_Param[Cam_num].nROI1[s].width < Out_binary.cols-1 &&
 						BOLT_Param[Cam_num].nROI1[s].y + BOLT_Param[Cam_num].nROI1[s].height < Out_binary.rows-1)
 					{
 						ROI1_Img = Out_binary(BOLT_Param[Cam_num].nROI1[s]).clone();
 						ROI1_check = true;
 					}
-					if (BOLT_Param[Cam_num].nROI2[s].x >= 0 && BOLT_Param[Cam_num].nROI2[s].y >= 0 && 
+					if (BOLT_Param[Cam_num].nROI2[s].x >= 0 && BOLT_Param[Cam_num].nROI2[s].y >= 0 &&
 						BOLT_Param[Cam_num].nROI2[s].x + BOLT_Param[Cam_num].nROI2[s].width < Out_binary.cols-1 &&
 						BOLT_Param[Cam_num].nROI2[s].y + BOLT_Param[Cam_num].nROI2[s].height < Out_binary.rows-1)
 					{
@@ -14926,7 +14995,7 @@ if (Result_Debugging)
 									ROI2_Center = vec_ROI2_Point[t_ROI2_IDX];
 									v_Dist = (t_dist_max-t_dist_min)*BOLT_Param[Cam_num].nResolution[0];
 									dist_vec.push_back(v_Dist);
-								}							
+								}
 								else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::SUMOFALL) // 합계
 								{
 									t_dist = 0;t_ROI1_IDX = 0;
@@ -15121,7 +15190,7 @@ if (Result_Debugging)
 									ROI2_Center = vec_ROI2_Point[t_ROI2_IDX];
 									v_Dist = (t_dist_max-t_dist_min)*BOLT_Param[Cam_num].nResolution[1];
 									dist_vec.push_back(v_Dist);
-								}							
+								}
 								else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::SUMOFALL) // 합계
 								{
 									t_dist = 0;t_ROI1_IDX = 0;
@@ -15209,7 +15278,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 							dist_vec.clear();
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -15225,7 +15294,7 @@ if (Result_Debugging)
 										if (BOLT_Param[Cam_num].nThreadSizeMethod[s] == 0)
 										{
 											t_R = mu[k].m00;
-											
+
 										}
 										else if (BOLT_Param[Cam_num].nThreadSizeMethod[s] == 1)
 										{
@@ -15289,7 +15358,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 							dist_vec.clear();
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -15364,7 +15433,7 @@ if (Result_Debugging)
 							vector<Rect> boundRect( contours.size() );
 							int m_max_object_num = -1;int m_max_object_value = 0;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								boundRect[k] = boundingRect( Mat(contours[k]) );
 								if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
 									//	&& pointPolygonTest( contours[k], Point(tROI.width/2,tROI.height/2), false ) == 1)
@@ -15468,10 +15537,10 @@ if (Result_Debugging)
 					//	dilate(Out_binary,Out_binary,element,Point(-1,-1), BOLT_Param[Cam_num].nROI0_FilterSize[s]);
 					//}
 
-					Mat stats, centroids, label;  
+					Mat stats, centroids, label;
 					int numOfLables = connectedComponentsWithStats(Out_binary, label, stats, centroids, 8,CV_32S);
 					int area = 0;int left = 0;int top = 0;int right = 0;int bottom = 0;int cnt = 0;
-					for (int j = 1; j < numOfLables; j++) 
+					for (int j = 1; j < numOfLables; j++)
 					{
 						area = stats.at<int>(j, CC_STAT_AREA);
 						if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] > (double)area || BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] < (double)area)
@@ -15550,7 +15619,7 @@ if (Result_Debugging)
 								{
 									dist_vec.push_back((double)HSV_channel[1].at<uchar>(i,j));
 								}
-							}	
+							}
 						}
 					}
 					if (BOLT_Param[Cam_num].nColorOutput[s] == 2)
@@ -15570,7 +15639,7 @@ if (Result_Debugging)
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						vector<vector<Point>> hull1(contours1.size());
 						for(size_t k=0; k<(int)(min((double)contours1.size(),MAX_CONTOUR)); k++)
-						{	
+						{
 							convexHull( Mat(contours1[k]), hull1[k], false );
 							//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 							drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -15602,13 +15671,13 @@ if (Result_Debugging)
 						dilate(Convex_Img,Convex_Img,element,Point(-1,-1), BOLT_Param[Cam_num].nROI0_FilterSize[s]);
 					}
 
-					Mat stats, centroids, label;  
-					int numOfLables = connectedComponentsWithStats(Convex_Img, label,   
+					Mat stats, centroids, label;
+					int numOfLables = connectedComponentsWithStats(Convex_Img, label,
 						stats, centroids, 8,CV_32S);
 					int t_cnt = 0;int area = 0;int t_w = 0;int t_h = 0;
 					if (numOfLables > 0)
 					{
-						for (int j = 1; j < numOfLables; j++) 
+						for (int j = 1; j < numOfLables; j++)
 						{
 							area = stats.at<int>(j, CC_STAT_AREA);
 							t_w = stats.at<int>(j, CC_STAT_WIDTH);
@@ -15715,7 +15784,7 @@ if (Result_Debugging)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							tt_rect = boundingRect( Mat(contours[k]) );
 							minRect = minAreaRect(contours[k]);
 							if (m_max_object_value <= minRect.size.width*minRect.size.height
@@ -15734,7 +15803,7 @@ if (Result_Debugging)
 						Mat Outcircle_Img = Mat::zeros(CP_Gray_Img.size(), CV_8UC1);
 						ellipse(Outcircle_Img, Outcircle_Info, CV_RGB(255,255,255), CV_FILLED, 8);
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s && BOLT_Param[Cam_num].nOutput[s] != 2)
-						{						
+						{
 							ellipse(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Outcircle_Info, CV_RGB(0,255,0), 1, 8);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Outcircle_Info.center,1,CV_RGB(0,255,0),1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Outcircle_Info.center,2,CV_RGB(255,0,0),1);
@@ -15750,7 +15819,7 @@ if (Result_Debugging)
 						if (BOLT_Param[Cam_num].nThresMethod_InnerCircle[s] == THRES_METHOD::BINARY_INV) // V1이하
 						{
 							threshold(CP_Gray_Img,Out_binary,BOLT_Param[Cam_num].nThres_InnerCircle[s],255,CV_THRESH_BINARY_INV);
-						} 
+						}
 						else if (BOLT_Param[Cam_num].nThresMethod_InnerCircle[s] == THRES_METHOD::BINARY) // V2이상
 						{
 							threshold(CP_Gray_Img,Out_binary,BOLT_Param[Cam_num].nThres_InnerCircle[s],255,CV_THRESH_BINARY);
@@ -15857,7 +15926,7 @@ if (Result_Debugging)
 						//{
 						//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						//	for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						//	{  
+						//	{
 						//		tt_rect = boundingRect( Mat(contours[k]) );
 						//		minRect = minAreaRect(contours[k]);
 						//		if (m_max_object_value <= minRect.size.width*minRect.size.height
@@ -15887,7 +15956,7 @@ if (Result_Debugging)
 							//{
 							//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							//	for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							//	{  
+							//	{
 							//		tt_rect = boundingRect( Mat(contours[k]) );
 							//		minRect = minAreaRect(contours[k]);
 							//		if (m_max_object_value <= minRect.size.width*minRect.size.height
@@ -15905,14 +15974,14 @@ if (Result_Debugging)
 							double minval = 0, maxval = 0;
 							cv::Point minLoc, CenterLoc;
 							//cv::minMaxLoc(Dist_Img, &minval, &maxval, &minLoc, &CenterLoc);
-						
+
 							maxval = (Incircle_Info.size.width+Incircle_Info.size.height)/2;
 							CenterLoc = Incircle_Info.center;
 							if (BOLT_Param[Cam_num].nOutput[s] == 0)
 							{
 								minval = sqrt(BOLT_Param[Cam_num].nResolution[0]*BOLT_Param[Cam_num].nResolution[0]*(Outcircle_Info.center.x - (float)CenterLoc.x)*(Outcircle_Info.center.x - (float)CenterLoc.x)
 									+ BOLT_Param[Cam_num].nResolution[1]*BOLT_Param[Cam_num].nResolution[1]*(Outcircle_Info.center.y - (float)CenterLoc.y)*(Outcircle_Info.center.y - (float)CenterLoc.y));
-							} 
+							}
 							else if (BOLT_Param[Cam_num].nOutput[s] == 1)
 							{
 								minval = sqrt((Outcircle_Info.center.x - (float)CenterLoc.x)*(Outcircle_Info.center.x - (float)CenterLoc.x)
@@ -15997,7 +16066,7 @@ if (Result_Debugging)
 					}
 				}
 			}
-			else 
+			else
 			{// SIDE /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::AI_INSPECTION_S) // AI
 				{
@@ -16005,7 +16074,7 @@ if (Result_Debugging)
 					{
 						SYSTEMTIME cur_time;
 						GetLocalTime(&cur_time);
-						msg.Format(L"%s\\CAM%d\\ROI%02d_%02d%02d%02d_%03d.png", Model_Save_Folder, Cam_num, s, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);						
+						msg.Format(L"%s\\CAM%d\\ROI%02d_%02d%02d%02d_%03d.png", Model_Save_Folder, Cam_num, s, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
 						imwrite(W2A(msg), Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 						//AfxMessageBox(msg);
 					}
@@ -16405,7 +16474,7 @@ if (Result_Debugging)
 					}
 				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::W_LENGTH_S) // Horizontal Length
-				{					
+				{
 					if (BOLT_Param[Cam_num].nROI0_FilterSize[s] > 0)
 					{
 						Mat Out_binary_temp = Mat::zeros(Out_binary.size(), CV_8UC1);
@@ -16558,7 +16627,7 @@ if (Result_Debugging)
 							int t_left = 999999;
 							int t_right = 0;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
 								{
@@ -16936,7 +17005,7 @@ if (Result_Debugging)
 							start_p = -1;end_p = Out_binary.cols - 1;
 						}
 					}
-				} 
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::H_LENGTH_S) // Vertical Length
 				{
 					if (BOLT_Param[Cam_num].nROI0_FilterSize[s] > 0)
@@ -17090,7 +17159,7 @@ if (Result_Debugging)
 							int t_top = 0;
 							int t_bottom = 999999;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
 								{
@@ -17309,7 +17378,7 @@ if (Result_Debugging)
 							int t_top = 0;
 							int t_bottom = 999999;int t_bottom_blo_ind = -1;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
 								{
@@ -17338,7 +17407,7 @@ if (Result_Debugging)
 							{
 								//AfxMessageBox("1");
 								Rect tt_rect = boundingRect( Mat(contours[t_bottom_blo_ind]));
-								t_bottom = tt_rect.y +tt_rect.height; 
+								t_bottom = tt_rect.y +tt_rect.height;
 
 								double t_v = 0;double t_cnt = 0;
 								for(int ii = tt_rect.x + tt_rect.width/2 - 3;ii <= tt_rect.x + tt_rect.width/2 + 3;ii++)
@@ -17549,32 +17618,32 @@ if (Result_Debugging)
 					dilate(t_binary,t_binary,element,Point(-1,-1), 2);
 					erode(t_binary,t_binary,element,Point(-1,-1), 2);
 					//imwrite("00.bmp",t_binary);
-					Mat stats, centroids, label;  
-					int numOfLables = connectedComponentsWithStats(t_binary, label,   
+					Mat stats, centroids, label;
+					int numOfLables = connectedComponentsWithStats(t_binary, label,
 						stats, centroids, 8,CV_32S);
 					Point2f rect_points[2];
 					if (numOfLables >= 2)
 					{
-						for (int j = 1; j <= 2; j++) 
+						for (int j = 1; j <= 2; j++)
 						{
 							//double x = centroids.at<double>(j, 0); //중심좌표
 							//double y = centroids.at<double>(j, 1);
 
-							double x = (double)stats.at<int>(j, CC_STAT_LEFT) + ((double)stats.at<int>(j, CC_STAT_WIDTH))/2; //중심좌표		
+							double x = (double)stats.at<int>(j, CC_STAT_LEFT) + ((double)stats.at<int>(j, CC_STAT_WIDTH))/2; //중심좌표
 							double y = (double)stats.at<int>(j, CC_STAT_TOP) + ((double)stats.at<int>(j, CC_STAT_HEIGHT))/2;
 
 							rect_points[j-1] = Point2f(x,y);
 						}
 						if (m_Text_View[Cam_num] && !ROI_Mode)
 						{
-							line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) , 
+							line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) ,
 								Point2f(rect_points[1].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[1].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[0].x,rect_points[0].y),2,CV_RGB(255,0,0),1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[1].x,rect_points[1].y),2,CV_RGB(255,0,0),1);
 						}
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
-							line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) , 
+							line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) ,
 								Point2f(rect_points[1].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[1].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[0].x,rect_points[0].y),2,CV_RGB(255,0,0),1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[1].x,rect_points[1].y),2,CV_RGB(255,0,0),1);
@@ -17582,17 +17651,17 @@ if (Result_Debugging)
 						dist_vec.push_back(abs((double)(rect_points[0].x - rect_points[1].x)*BOLT_Param[Cam_num].nResolution[0]));
 					}
 					//Mat t_binary = BOLT_Param[Cam_num].Thres_Obj_Img(tROI).clone();
-					//Mat stats, centroids, label;  
+					//Mat stats, centroids, label;
 					//int area, left, top, width, height = { 0, };
 					//int m_min_object_num = -1; int m_min_object_value = 999999;
 					//int m_max_object_num = -1; int m_max_object_value = 0;
 
 					//Point2f rect_points[2];
-					//int numOfLables = connectedComponentsWithStats(t_binary, label,   
+					//int numOfLables = connectedComponentsWithStats(t_binary, label,
 					//	stats, centroids, 8,CV_32S);
 					//if (numOfLables > 1)
 					//{
-					//	for (int j = 1; j < numOfLables; j++) 
+					//	for (int j = 1; j < numOfLables; j++)
 					//	{
 					//		top = stats.at<int>(j, CC_STAT_TOP);
 					//		if (top <= m_min_object_value)
@@ -17601,7 +17670,7 @@ if (Result_Debugging)
 					//			m_min_object_num = j;
 					//		}
 					//	}
-					//	for (int j = 1; j < numOfLables; j++) 
+					//	for (int j = 1; j < numOfLables; j++)
 					//	{
 					//		area = stats.at<int>(j, CC_STAT_AREA);
 					//		if (area >= m_max_object_value && m_min_object_num != j)
@@ -17620,24 +17689,24 @@ if (Result_Debugging)
 					//	rect_points[1] = Point2f(x,y);
 
 					//	height = stats.at<int>(m_max_object_value, CC_STAT_HEIGHT);
-					//	
+					//
 					//	if (m_Text_View[Cam_num] && !ROI_Mode)
 					//	{
-					//		line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) , 
+					//		line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) ,
 					//			Point2f(rect_points[1].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[1].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 					//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[0].x,rect_points[0].y),2,CV_RGB(255,0,0),1);
 					//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[1].x,rect_points[1].y),2,CV_RGB(255,0,0),1);
 					//	}
 					//	if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					//	{
-					//		line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) , 
+					//		line( Dst_Img[Cam_num], Point2f(rect_points[0].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[0].y + BOLT_Param[Cam_num].nRect[s].y) ,
 					//			Point2f(rect_points[1].x + BOLT_Param[Cam_num].nRect[s].x,rect_points[1].y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(255,255,0), 1, 8 );
 					//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[0].x,rect_points[0].y),2,CV_RGB(255,0,0),1);
 					//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(rect_points[1].x,rect_points[1].y),2,CV_RGB(255,0,0),1);
 					//	}
 					//	dist_vec.push_back((double)(rect_points[0].x - rect_points[1].x)*BOLT_Param[Cam_num].nResolution[0]);
 					//}
-				} 
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::ANGLE_BT_S) // Angle of Bottom
 				{
 					if (BOLT_Param[Cam_num].nAngleHeightFilterSize[s] > 0)
@@ -17652,7 +17721,7 @@ if (Result_Debugging)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value<= tt_TROI.height*tt_TROI.width)
 							{
@@ -17674,7 +17743,7 @@ if (Result_Debugging)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value<= tt_TROI.height*tt_TROI.width)
 							{
@@ -17705,14 +17774,14 @@ if (Result_Debugging)
 						Point t_Right_Bottom(-1,-1);Point t_Right_Top(-1,-1);
 						double Height_left_end_nail = 0;
 						double Height_right_end_nail = 0;
-						m_max_object_num = -1;m_max_object_value = 0;Rect tt_TROI;					
-						int m_max_object_num2 = -1;int m_max_object_value2 = 0;					
+						m_max_object_num = -1;m_max_object_value = 0;Rect tt_TROI;
+						int m_max_object_num2 = -1;int m_max_object_value2 = 0;
 						Rect tt_ROI0;
 						Rect tt_ROI1;
 						if (contours.size() > 0)
 						{
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								tt_TROI = boundingRect(contours[k]);
 								if (m_max_object_value<= tt_TROI.height * tt_TROI.width)
 								{
@@ -17726,7 +17795,7 @@ if (Result_Debugging)
 						//AfxMessageBox(msg);
 
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value2<= tt_TROI.height * tt_TROI.width && k != m_max_object_num)
 							{
@@ -17790,7 +17859,7 @@ if (Result_Debugging)
 							}
 						}
 					}
-				} 
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::PITCH_COIN_S) // Pitch of Screw Thread
 				{
 					if (BOLT_Param[Cam_num].nTableType != GUIDE_METHOD::BELT_TYPE)
@@ -17820,7 +17889,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -17909,7 +17978,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -17986,7 +18055,7 @@ if (Result_Debugging)
 						{
 							erode(Out_binary,Morph_Out_binary,element_v,Point(-1,-1),Out_binary.rows/8);
 							dilate(Morph_Out_binary,Morph_Out_binary,element_v,Point(-1,-1),Out_binary.rows/8);
-						}						
+						}
 						subtract(Out_binary,Morph_Out_binary,Morph_Out_binary);
 						if (BOLT_Param[Cam_num].nNASAPasteFilterSize[s] > 0)
 						{
@@ -18011,7 +18080,7 @@ if (Result_Debugging)
 								Point4D t_Point4D;
 								dist_vec.clear();
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									mu[k] = moments( contours[k], false );
 									boundRect = boundingRect( Mat(contours[k]) );
 
@@ -18059,11 +18128,11 @@ if (Result_Debugging)
 								Mat Convex_Img = Out_binary.clone();
 								vector<vector<Point>> hull1(contours.size());
 								for(size_t k=0; k<contours.size(); k++)
-								{	
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.y > 1 && boundRect.y + boundRect.height < Morph_Out_binary.rows-1)
 									{
-										convexHull( Mat(contours[k]), hull1[k], false ); 
+										convexHull( Mat(contours[k]), hull1[k], false );
 										//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 										drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
 										if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -18080,13 +18149,13 @@ if (Result_Debugging)
 								subtract(Convex_Img,Out_binary,Convex_Img);
 								//erode(Convex_Img,Convex_Img,element,Point(-1,-1),1);
 								dilate(Convex_Img,Convex_Img,element,Point(-1,-1),1);
-								Mat stats, centroids, label;  
-								int numOfLables = connectedComponentsWithStats(Convex_Img, label,   
+								Mat stats, centroids, label;
+								int numOfLables = connectedComponentsWithStats(Convex_Img, label,
 									stats, centroids, 8,CV_32S);
 								int t_cnt = 0;int area = 0;int t_w = 0;int t_h = 0;
 								if (numOfLables > 0)
 								{
-									for (int j = 1; j < numOfLables; j++) 
+									for (int j = 1; j < numOfLables; j++)
 									{
 										area = stats.at<int>(j, CC_STAT_AREA);
 										t_w = stats.at<int>(j, CC_STAT_WIDTH);
@@ -18156,7 +18225,7 @@ if (Result_Debugging)
 						{
 							erode(Out_binary,Morph_Out_binary,element_h,Point(-1,-1),Out_binary.rows/8);
 							dilate(Morph_Out_binary,Morph_Out_binary,element_h,Point(-1,-1),Out_binary.rows/8);
-						}						
+						}
 						subtract(Out_binary,Morph_Out_binary,Morph_Out_binary);
 						if (BOLT_Param[Cam_num].nNASAPasteFilterSize[s] > 0)
 						{
@@ -18181,7 +18250,7 @@ if (Result_Debugging)
 								Point4D t_Point4D;
 								dist_vec.clear();
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									mu[k] = moments( contours[k], false );
 									boundRect = boundingRect( Mat(contours[k]) );
 
@@ -18230,11 +18299,11 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<contours.size(); k++)
-								{	
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.y > 1 && boundRect.y + boundRect.height < Morph_Out_binary.rows-1)
 									{
-										convexHull( Mat(contours[k]), hull1[k], false ); 
+										convexHull( Mat(contours[k]), hull1[k], false );
 										//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 										drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
 										if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -18251,13 +18320,13 @@ if (Result_Debugging)
 								subtract(Convex_Img,Out_binary,Convex_Img);
 								//erode(Convex_Img,Convex_Img,element,Point(-1,-1),1);
 								dilate(Convex_Img,Convex_Img,element,Point(-1,-1),1);
-								Mat stats, centroids, label;  
-								int numOfLables = connectedComponentsWithStats(Convex_Img, label,   
+								Mat stats, centroids, label;
+								int numOfLables = connectedComponentsWithStats(Convex_Img, label,
 									stats, centroids, 8,CV_32S);
 								int t_cnt = 0;int area = 0;int t_w = 0;int t_h = 0;
 								if (numOfLables > 0)
 								{
-									for (int j = 1; j < numOfLables; j++) 
+									for (int j = 1; j < numOfLables; j++)
 									{
 										area = stats.at<int>(j, CC_STAT_AREA);
 										t_w = stats.at<int>(j, CC_STAT_WIDTH);
@@ -18345,7 +18414,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -18474,7 +18543,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -18575,7 +18644,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -18675,7 +18744,7 @@ if (Result_Debugging)
 							Point4D t_Point4D;
 
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
 
@@ -18701,7 +18770,7 @@ if (Result_Debugging)
 									}
 								}
 							}
-							
+
 							vector<double> vec_angle;
 							if (Pitch_Info.size() > 0)
 							{
@@ -18769,7 +18838,7 @@ if (Result_Debugging)
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
 										&& boundRect.x > 1 && boundRect.x + boundRect.width < Out_binary.cols-2)
@@ -18874,12 +18943,12 @@ if (Result_Debugging)
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
 									{
 										//boundRect.height /= 5;
-										Mat stats, centroids, label;  
+										Mat stats, centroids, label;
 										int numOfLables = connectedComponentsWithStats(Morph_T(boundRect), label, stats, centroids, 8,CV_32S);
 										if (numOfLables > 0)
 										{
 											int t_max = 0;int t_idx = -1;
-											for (int j = 1; j < numOfLables; j++) 
+											for (int j = 1; j < numOfLables; j++)
 											{
 												int area = stats.at<int>(j, CC_STAT_AREA);
 												if (t_max <= area)
@@ -18896,7 +18965,7 @@ if (Result_Debugging)
 											t_Point4D.IDX = k;
 											T_Info.push_back(t_Point4D);
 										}
-									}	
+									}
 									else
 									{
 										Morph_T(boundRect) -= 255;
@@ -18919,12 +18988,12 @@ if (Result_Debugging)
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
 									{
 										//boundRect.height /= 5;
-										Mat stats, centroids, label;  
+										Mat stats, centroids, label;
 										int numOfLables = connectedComponentsWithStats(Morph_B(boundRect), label, stats, centroids, 8,CV_32S);
 										if (numOfLables > 0)
 										{
 											int t_max = 0;int t_idx = -1;
-											for (int j = 1; j < numOfLables; j++) 
+											for (int j = 1; j < numOfLables; j++)
 											{
 												int area = stats.at<int>(j, CC_STAT_AREA);
 												if (t_max <= area)
@@ -19043,12 +19112,12 @@ if (Result_Debugging)
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
 									{
 										//boundRect.height /= 5;
-										Mat stats, centroids, label;  
+										Mat stats, centroids, label;
 										int numOfLables = connectedComponentsWithStats(Morph_T(boundRect), label, stats, centroids, 8,CV_32S);
 										if (numOfLables > 0)
 										{
 											int t_max = 0;int t_idx = -1;
-											for (int j = 1; j < numOfLables; j++) 
+											for (int j = 1; j < numOfLables; j++)
 											{
 												int area = stats.at<int>(j, CC_STAT_AREA);
 												if (t_max <= area)
@@ -19065,7 +19134,7 @@ if (Result_Debugging)
 											t_Point4D.IDX = k;
 											T_Info.push_back(t_Point4D);
 										}
-									}	
+									}
 									else
 									{
 										Morph_T(boundRect) -= 255;
@@ -19088,12 +19157,12 @@ if (Result_Debugging)
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
 									{
 										//boundRect.height /= 5;
-										Mat stats, centroids, label;  
+										Mat stats, centroids, label;
 										int numOfLables = connectedComponentsWithStats(Morph_B(boundRect), label, stats, centroids, 8,CV_32S);
 										if (numOfLables > 0)
 										{
 											int t_max = 0;int t_idx = -1;
-											for (int j = 1; j < numOfLables; j++) 
+											for (int j = 1; j < numOfLables; j++)
 											{
 												int area = stats.at<int>(j, CC_STAT_AREA);
 												if (t_max <= area)
@@ -19222,7 +19291,7 @@ if (Result_Debugging)
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
 										&& boundRect.y > 1 && boundRect.y + boundRect.height < Out_binary.rows-2)
@@ -19252,7 +19321,7 @@ if (Result_Debugging)
 								}
 								int t_max_idx2 = -1;t_max = 0;
 								for( int k = 0; k < contours.size(); k++ )
-								{  
+								{
 									if (t_max_idx != k)
 									{
 										boundRect = boundingRect( Mat(contours[k]) );
@@ -19301,7 +19370,7 @@ if (Result_Debugging)
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
 										&& boundRect.y > 1 && boundRect.y + boundRect.height < Out_binary.rows-2)
@@ -19392,12 +19461,12 @@ if (Result_Debugging)
 									if (boundRect.x > 2 && boundRect.x + boundRect.width < BOLT_Param[Cam_num].nRect[s].width-2 && boundRect.width >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4 && boundRect.height >= 5)
 									{
 										//boundRect.height /= 5;
-										Mat stats, centroids, label;  
+										Mat stats, centroids, label;
 										int numOfLables = connectedComponentsWithStats(Morph_T(boundRect), label, stats, centroids, 8,CV_32S);
 										if (numOfLables > 0)
 										{
 											int t_max = 0;int t_idx = -1;
-											for (int j = 1; j < numOfLables; j++) 
+											for (int j = 1; j < numOfLables; j++)
 											{
 												int area = stats.at<int>(j, CC_STAT_AREA);
 												if (t_max <= area)
@@ -19414,7 +19483,7 @@ if (Result_Debugging)
 											t_Point4D.IDX = k;
 											T_Info.push_back(t_Point4D);
 										}
-									}	
+									}
 									else
 									{
 										Morph_T(boundRect) -= 255;
@@ -19437,12 +19506,12 @@ if (Result_Debugging)
 									if (boundRect.x > 2 && boundRect.x + boundRect.width < BOLT_Param[Cam_num].nRect[s].width-2 && boundRect.width >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4 && boundRect.height >= 5)
 									{
 										//boundRect.height /= 5;
-										Mat stats, centroids, label;  
+										Mat stats, centroids, label;
 										int numOfLables = connectedComponentsWithStats(Morph_B(boundRect), label, stats, centroids, 8,CV_32S);
 										if (numOfLables > 0)
 										{
 											int t_max = 0;int t_idx = -1;
-											for (int j = 1; j < numOfLables; j++) 
+											for (int j = 1; j < numOfLables; j++)
 											{
 												int area = stats.at<int>(j, CC_STAT_AREA);
 												if (t_max <= area)
@@ -19525,7 +19594,7 @@ if (Result_Debugging)
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
 										&& boundRect.x > 1 && boundRect.x + boundRect.width < Out_binary.cols-2)
@@ -19747,7 +19816,7 @@ if (Result_Debugging)
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width)
 										//&& boundRect.x > 1 && boundRect.x + boundRect.width < Out_binary.cols-2)
@@ -19930,7 +19999,7 @@ if (Result_Debugging)
 													if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 													{
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Right_point,0,CV_RGB(255,255,0),2);
-													}	
+													}
 													if (m_Text_View[Cam_num] && !ROI_Mode)
 													{
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Right_point,0,CV_RGB(255,255,0),2);
@@ -20041,7 +20110,7 @@ if (Result_Debugging)
 								{
 									if (vec_right_center.size() > 2)
 									{
-										dist_vec.push_back(abs(Right_angle));									
+										dist_vec.push_back(abs(Right_angle));
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											msg.Format(L"R:%1.3f",abs(Right_angle));
@@ -20057,7 +20126,7 @@ if (Result_Debugging)
 							}
 						}
 						else if (BOLT_Param[Cam_num].nBendingOutput[s] == 4)
-						{// 하부와 상부의 각도 계산 
+						{// 하부와 상부의 각도 계산
 							J_Delete_Boundary(Out_binary,1);
 							J_Fill_Hole(Out_binary);
 
@@ -20068,7 +20137,7 @@ if (Result_Debugging)
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width)
 									{
@@ -20169,7 +20238,7 @@ if (Result_Debugging)
 							Rect boundRect;
 							int t_max = 0; int t_max_idx = -1;
 							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-							{  
+							{
 								boundRect = boundingRect( Mat(contours[k]) );
 								if (t_max <= boundRect.height*boundRect.width
 									&& boundRect.y > 1 && boundRect.y + boundRect.height < Out_binary.rows-2)
@@ -20247,7 +20316,7 @@ if (Result_Debugging)
 						}
 					}
 
-				}	
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::BRIGHTNESS_AREA_S) // Brightness of Area
 				{
 					//J_Delete_Boundary(Out_binary,1);
@@ -20263,7 +20332,7 @@ if (Result_Debugging)
 								{
 									dist_vec.push_back((double)CP_Gray_Img.at<uchar>(i,j));
 								}
-							}	
+							}
 						}
 					}
 					else
@@ -20276,7 +20345,7 @@ if (Result_Debugging)
 								{
 									dist_vec.push_back((double)CP_Gray_Img.at<uchar>(i,j));
 								}
-							}	
+							}
 						}
 					}
 					if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -20355,11 +20424,11 @@ if (Result_Debugging)
 							if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_INV) // V1이하
 							{
 								threshold(CP_Gray_Img,Out_binary,BOLT_Param[Cam_num].nThres_V1[s],255,CV_THRESH_BINARY_INV);
-							} 
+							}
 							else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY) // V2이상
 							{
 								threshold(CP_Gray_Img,Out_binary,BOLT_Param[Cam_num].nThres_V2[s],255,CV_THRESH_BINARY);
-							} 
+							}
 							else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_BETWEEN) // V1~V2사이
 							{
 								inRange(CP_Gray_Img, Scalar(BOLT_Param[Cam_num].nThres_V1[s]),Scalar(BOLT_Param[Cam_num].nThres_V2[s]),Out_binary);
@@ -20400,7 +20469,7 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-								{	
+								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 									drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -20450,8 +20519,8 @@ if (Result_Debugging)
 								}
 							}
 						}
-						//Mat stats, centroids, label;  
-						//int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+						//Mat stats, centroids, label;
+						//int numOfLables = connectedComponentsWithStats(Out_binary, label,
 						//	stats, centroids, 8,CV_32S);
 						int t_cnt = 0;double area = 0;int t_w = 0;int t_h = 0;int t_x = 0;int t_y = 0;
 						//if (numOfLables > 0)
@@ -20459,7 +20528,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-							for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++) 
+							for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
 							{
 								//area = stats.at<int>(j, CC_STAT_AREA);
 								//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -20498,7 +20567,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20518,7 +20587,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20592,7 +20661,7 @@ if (Result_Debugging)
 												t_ED_P.x = -1;t_ED_P.y = -1;
 											}
 										}
-										
+
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
@@ -20604,7 +20673,7 @@ if (Result_Debugging)
 												for (int xx = t_x; xx < t_x + t_w; ++xx) {
 													if (tlabel[xx] == j)
 													{
-														pixel[xx][2] = 255;  
+														pixel[xx][2] = 255;
 														pixel[xx][1] = 0;
 														pixel[xx][0] = 0;
 													}
@@ -20626,7 +20695,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20714,7 +20783,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20737,7 +20806,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20769,7 +20838,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20790,7 +20859,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20826,7 +20895,7 @@ if (Result_Debugging)
 										//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 										//		if (tlabel[xx] == j)
 										//		{
-										//			pixel[xx] = 255;  
+										//			pixel[xx] = 255;
 										//		}
 										//	}
 										//}
@@ -20851,7 +20920,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -20873,7 +20942,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20919,7 +20988,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20940,7 +21009,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20971,7 +21040,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -20992,7 +21061,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx][2] = 255;  
+											//			pixel[xx][2] = 255;
 											//			pixel[xx][1] = 0;
 											//			pixel[xx][0] = 0;
 											//		}
@@ -21094,7 +21163,7 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-								{	
+								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 									drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -21151,8 +21220,8 @@ if (Result_Debugging)
 						}
 						if (BOLT_Param[Cam_num].nDirecFilterDarkThres[s] > 0)
 						{
-							//Mat stats, centroids, label;  
-							//int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+							//Mat stats, centroids, label;
+							//int numOfLables = connectedComponentsWithStats(Out_binary, label,
 							//	stats, centroids, 8,CV_32S);
 							int t_cnt = 0;double area = 0;int t_w = 0;int t_h = 0;int t_x = 0;int t_y = 0;
 							RotatedRect t_boundRect;
@@ -21160,7 +21229,7 @@ if (Result_Debugging)
 								//if (numOfLables > 0)
 							{
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++) 
+								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -21195,7 +21264,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21215,7 +21284,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21300,7 +21369,7 @@ if (Result_Debugging)
 													for (int xx = t_x; xx < t_x + t_w; ++xx) {
 														if (tlabel[xx] == j)
 														{
-															pixel[xx][2] = 255;  
+															pixel[xx][2] = 255;
 															pixel[xx][1] = 0;
 															pixel[xx][0] = 0;
 														}
@@ -21322,7 +21391,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21410,7 +21479,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21433,7 +21502,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21449,7 +21518,7 @@ if (Result_Debugging)
 											}
 											t_cnt++;
 										}
-									} 
+									}
 									else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 3)
 									{
 										if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= area)
@@ -21465,7 +21534,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21486,7 +21555,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21522,7 +21591,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx] = 255;  
+											//			pixel[xx] = 255;
 											//		}
 											//	}
 											//}
@@ -21547,7 +21616,7 @@ if (Result_Debugging)
 													//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 													//		if (tlabel[xx] == j)
 													//		{
-													//			pixel[xx][2] = 255;  
+													//			pixel[xx][2] = 255;
 													//			pixel[xx][1] = 0;
 													//			pixel[xx][0] = 0;
 													//		}
@@ -21569,7 +21638,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21615,7 +21684,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21636,7 +21705,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21667,7 +21736,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21688,7 +21757,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21762,7 +21831,7 @@ if (Result_Debugging)
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
 								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
-								{	
+								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 									drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
@@ -21819,8 +21888,8 @@ if (Result_Debugging)
 						}
 						if (BOLT_Param[Cam_num].nDirecFilterBrightThres[s] > 0)
 						{
-							//Mat stats, centroids, label;  
-							//int numOfLables = connectedComponentsWithStats(Out_binary, label,   
+							//Mat stats, centroids, label;
+							//int numOfLables = connectedComponentsWithStats(Out_binary, label,
 							//	stats, centroids, 8,CV_32S);
 
 							int t_cnt = 0;double area = 0;int t_w = 0;int t_h = 0;int t_x = 0;int t_y = 0;
@@ -21829,7 +21898,7 @@ if (Result_Debugging)
 							//if (numOfLables > 0)
 							{
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++) 
+								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -21863,7 +21932,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21884,7 +21953,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -21957,7 +22026,7 @@ if (Result_Debugging)
 													t_ED_P.x = -1;t_ED_P.y = -1;
 												}
 											}
-										
+
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy);
@@ -21969,7 +22038,7 @@ if (Result_Debugging)
 													for (int xx = t_x; xx < t_x + t_w; ++xx) {
 														if (tlabel[xx] == j)
 														{
-															pixel[xx][2] = 255;  
+															pixel[xx][2] = 255;
 															pixel[xx][1] = 0;
 															pixel[xx][0] = 0;
 														}
@@ -21991,7 +22060,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22079,7 +22148,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22102,7 +22171,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22118,7 +22187,7 @@ if (Result_Debugging)
 											}
 											t_cnt++;
 										}
-									} 
+									}
 									else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 3)
 									{
 										if (BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] <= area && BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] >= area)
@@ -22134,7 +22203,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22156,7 +22225,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22192,7 +22261,7 @@ if (Result_Debugging)
 											//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 											//		if (tlabel[xx] == j)
 											//		{
-											//			pixel[xx] = 255;  
+											//			pixel[xx] = 255;
 											//		}
 											//	}
 											//}
@@ -22217,7 +22286,7 @@ if (Result_Debugging)
 													//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 													//		if (tlabel[xx] == j)
 													//		{
-													//			pixel[xx][2] = 255;  
+													//			pixel[xx][2] = 255;
 													//			pixel[xx][1] = 0;
 													//			pixel[xx][0] = 0;
 													//		}
@@ -22240,7 +22309,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22286,7 +22355,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22308,7 +22377,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22339,7 +22408,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22361,7 +22430,7 @@ if (Result_Debugging)
 												//	for (int xx = t_x; xx < t_x + t_w; ++xx) {
 												//		if (tlabel[xx] == j)
 												//		{
-												//			pixel[xx][2] = 255;  
+												//			pixel[xx][2] = 255;
 												//			pixel[xx][1] = 0;
 												//			pixel[xx][0] = 0;
 												//		}
@@ -22417,7 +22486,7 @@ if (Result_Debugging)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-						{  
+						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value<= tt_TROI.height*tt_TROI.width)
 							{
@@ -22474,12 +22543,12 @@ if (Result_Debugging)
 						if (m_Text_View[Cam_num])
 						{
 							findContours( t_End_Nail.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
-							m_max_object_num = -1;m_max_object_value = 0;Rect tt_TROI;								
+							m_max_object_num = -1;m_max_object_value = 0;Rect tt_TROI;
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									tt_TROI = boundingRect(contours[k]);
 									if (m_max_object_value<= tt_TROI.height * tt_TROI.width)
 									{
@@ -22493,11 +22562,11 @@ if (Result_Debugging)
 							}
 						}
 
-						Mat stats, centroids, label;  
-						int numOfLables = connectedComponentsWithStats(t_End_Nail, label,   
+						Mat stats, centroids, label;
+						int numOfLables = connectedComponentsWithStats(t_End_Nail, label,
 							stats, centroids, 8,CV_32S);
 						m_max_object_value = 0;m_max_object_num = -1;
-						for (int j = 1; j < numOfLables; j++) 
+						for (int j = 1; j < numOfLables; j++)
 						{
 							int area = stats.at<int>(j, CC_STAT_AREA);
 
@@ -22555,14 +22624,14 @@ if (Result_Debugging)
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),BOLT_Param[Cam_num].nROI1[s],CV_RGB(100,0,255),1);
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),BOLT_Param[Cam_num].nROI2[s],CV_RGB(100,0,255),1);
 					}
-					if (BOLT_Param[Cam_num].nROI1[s].x >= 0 && BOLT_Param[Cam_num].nROI1[s].y >= 0 && 
+					if (BOLT_Param[Cam_num].nROI1[s].x >= 0 && BOLT_Param[Cam_num].nROI1[s].y >= 0 &&
 						BOLT_Param[Cam_num].nROI1[s].x + BOLT_Param[Cam_num].nROI1[s].width < Out_binary.cols-1 &&
 						BOLT_Param[Cam_num].nROI1[s].y + BOLT_Param[Cam_num].nROI1[s].height < Out_binary.rows-1)
 					{
 						ROI1_Img = Out_binary(BOLT_Param[Cam_num].nROI1[s]).clone();
 						ROI1_check = true;
 					}
-					if (BOLT_Param[Cam_num].nROI2[s].x >= 0 && BOLT_Param[Cam_num].nROI2[s].y >= 0 && 
+					if (BOLT_Param[Cam_num].nROI2[s].x >= 0 && BOLT_Param[Cam_num].nROI2[s].y >= 0 &&
 						BOLT_Param[Cam_num].nROI2[s].x + BOLT_Param[Cam_num].nROI2[s].width < Out_binary.cols-1 &&
 						BOLT_Param[Cam_num].nROI2[s].y + BOLT_Param[Cam_num].nROI2[s].height < Out_binary.rows-1)
 					{
@@ -22725,7 +22794,7 @@ if (Result_Debugging)
 									ROI2_Center = vec_ROI2_Point[t_ROI2_IDX];
 									v_Dist = (t_dist_max-t_dist_min)*BOLT_Param[Cam_num].nResolution[0];
 									dist_vec.push_back(v_Dist);
-								}							
+								}
 								else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::SUMOFALL) // 합계
 								{
 									t_dist = 0;t_ROI1_IDX = 0;
@@ -22920,7 +22989,7 @@ if (Result_Debugging)
 									ROI2_Center = vec_ROI2_Point[t_ROI2_IDX];
 									v_Dist = (t_dist_max-t_dist_min)*BOLT_Param[Cam_num].nResolution[1];
 									dist_vec.push_back(v_Dist);
-								}							
+								}
 								else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::SUMOFALL) // 합계
 								{
 									t_dist = 0;t_ROI1_IDX = 0;
@@ -22982,8 +23051,8 @@ if (Result_Debugging)
 						vector<vector<Point>> hull1(contours1.size());
 						//#pragma omp parallel for
 						for(int k=0; k<(int)(min((double)contours1.size(),MAX_CONTOUR)); k++)
-						{	
-							convexHull( Mat(contours1[k]), hull1[k], false ); 
+						{
+							convexHull( Mat(contours1[k]), hull1[k], false );
 							//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 							drawContours( Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
 							if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -23004,13 +23073,13 @@ if (Result_Debugging)
 						dilate(Convex_Img,Convex_Img,element,Point(-1,-1), BOLT_Param[Cam_num].nROI0_FilterSize[s]);
 					}
 
-					Mat stats, centroids, label;  
-					int numOfLables = connectedComponentsWithStats(Convex_Img, label,   
+					Mat stats, centroids, label;
+					int numOfLables = connectedComponentsWithStats(Convex_Img, label,
 						stats, centroids, 8,CV_32S);
 					int t_cnt = 0;int area = 0;int t_w = 0;int t_h = 0;
 					if (numOfLables > 0)
 					{
-						for (int j = 1; j < numOfLables; j++) 
+						for (int j = 1; j < numOfLables; j++)
 						{
 							area = stats.at<int>(j, CC_STAT_AREA);
 							t_w = stats.at<int>(j, CC_STAT_WIDTH);
@@ -23156,7 +23225,7 @@ if (Result_Debugging)
 						}
 					}
 					v_result = t_v;
-				} 
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::MAX) // 최대
 				{
 					double t_v = 0;
@@ -23183,7 +23252,7 @@ if (Result_Debugging)
 							t_v_max = t_dist_vec[i];
 						}
 					}
-					v_result = t_v_max - t_v_min;				
+					v_result = t_v_max - t_v_min;
 				}
 				else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::AVERAGE) // 평균
 				{
@@ -23192,14 +23261,14 @@ if (Result_Debugging)
 						v_result += t_dist_vec[i];
 					}
 					v_result/= (double)t_dist_vec.size();
-				}			
+				}
 				else if (BOLT_Param[Cam_num].nMethod_Cal[s] == RESULT_METHOD::SUMOFALL) // Total
 				{
 					for (int i=0;i<t_dist_vec.size();i++)
 					{
 						v_result += t_dist_vec[i];
 					}
-				}	
+				}
 			}
 
 			// Offset값 더하기
@@ -23547,7 +23616,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 			if (Result_Debugging)
 			{
 				msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Gray_Img.bmp",Cam_num);
-				imwrite(W2A(msg),CP_Gray_Img);		
+				imwrite(W2A(msg),CP_Gray_Img);
 			}
 
 			if (BOLT_Param[Cam_num].nBlurFilterCNT[s] > 0)
@@ -23780,8 +23849,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
-								rectangle(Dst_Img[Cam_num], Point(left,top), Point(left+width,top+height),  
-									CV_RGB(0,255,0),1 );  
+								rectangle(Dst_Img[Cam_num], Point(left,top), Point(left+width,top+height),
+									CV_RGB(0,255,0),1 );
 
 								int x = left+width/2; //중심좌표
 								int y = top+height/2;
@@ -24027,7 +24096,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 			{// SIDE ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::CLASS_TYPE || BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::BELT_TYPE) //유리판일때
 				{
-					if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::BELT_TYPE) 
+					if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::BELT_TYPE)
 					{
 						if (BOLT_Param[Cam_num].nThickness[0] > 0)
 						{
@@ -24043,7 +24112,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					//	dilate(Out_binary,Out_binary,element,Point(-1,-1), BOLT_Param[Cam_num].nROI0_FilterSize[0]);
 					//}
 
-					
+
 					// 사이드 상부 바닦 찾기
 					double t_Left_x = 0;double t_Left_y = 0;double t_cnt = 0;double t_angle = 0;
 					int t_Search_Range = 10;
@@ -24221,7 +24290,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 							line(Out_binary,Point(t_Left_x,t_Left_y+1),Point(t_Right_x,t_Right_y+1),CV_RGB(0,0,0),3);
 						}
 					}
-					else 
+					else
 					{
 						if (t_Left_x >= 0 && t_Left_y > 0 && t_Right_x >= 0 && t_Right_y > 0)
 						{
@@ -24232,7 +24301,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					//if (Result_Debugging) // 오링 사이드 바닦 라인 이미지
 					//{
 					//	msg.Format(L"Save\\Debugging\\Cam%d_%2d_Line_Thres_ROI_Gray_Img.bmp",Cam_num, s);
-					//	imwrite(W2A(msg),Out_binary);		
+					//	imwrite(W2A(msg),Out_binary);
 					//}
 
 
@@ -24259,7 +24328,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					vector<Rect> boundRect( BOLT_Param[Cam_num].Object_contours.size() );
 					int m_max_object_num = -1;int m_max_object_value = 0;
 					for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
-					{  
+					{
 						boundRect[k] = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 						if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
 							//&& pointPolygonTest( BOLT_Param[Cam_num].Object_contours[k], Point(boundRect[k].x+boundRect[k].width/2,boundRect[k].y+boundRect[k].height/2), false ) == 1)
@@ -24526,7 +24595,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 								vector<Rect> boundRect1( BOLT_Param[Cam_num].Object_contours.size() );
 								m_max_object_num = -1;m_max_object_value = 0;
 								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
-								{  
+								{
 									boundRect1[k] = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value <= boundRect1[k].width*boundRect1[k].height && boundRect1[k].y + boundRect1[k].height <= Out_binary.rows-1)
 										//&& pointPolygonTest( BOLT_Param[Cam_num].Object_contours[k], Point(boundRect[k].x+boundRect[k].width/2,boundRect[k].y+boundRect[k].height/2), false ) == 1)
@@ -24808,7 +24877,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					//}
 
 
-					Mat stats, centroids, label;  
+					Mat stats, centroids, label;
 					int numOfLables = connectedComponentsWithStats(t_morph, label, stats, centroids, 8,CV_32S);
 					int m_Head_Idx = -1; int m_Head_value = 0;
 					int m_Body_Idx = -1; int m_Body_value = 0;
@@ -24837,11 +24906,11 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					Point2f t_Body_Center(0,0);
 					if (m_Head_Idx > -1 && m_Body_Idx > -1)
 					{
-						t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표		
+						t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표
 						t_Head_Center.y = (float)stats.at<int>(m_Head_Idx, CC_STAT_TOP) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_HEIGHT))/2;
-						//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표		
+						//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표
 						//t_Head_Center.y = centroids.at<double>(m_Head_Idx, 1);
-						t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표		
+						t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표
 						t_Body_Center.y = centroids.at<double>(m_Body_Idx, 1);
 					}
 					else
@@ -25045,7 +25114,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						t_Right_x/=t_cnt;
 						t_Right_y/=t_cnt;
 					}
-									
+
 					if (t_Left_y  < 10 || t_Right_y < 10)
 					{
 						double t_temp = max(t_Left_y,t_Right_y);
@@ -25093,7 +25162,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						t_B_Right_x/=t_cnt;
 						t_B_Right_y/=t_cnt;
 					}
-										
+
 					if (abs(t_B_Left_y - t_B_Right_y) > 50)
 					{
 						double t_temp = min(t_B_Left_y,t_B_Right_y);
@@ -25191,13 +25260,13 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 								for (int x = 0; x < Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]).cols; ++x) {
 									if (tlabel[x] == m_Head_Idx)
 									{
-										pixel[x][2] = 0;  
+										pixel[x][2] = 0;
 										pixel[x][1] = 255;
 										pixel[x][0] = 0;
 									}
 									else if (tlabel[x] == m_Body_Idx)
 									{
-										pixel[x][2] = 0;  
+										pixel[x][2] = 0;
 										pixel[x][1] = 255;
 										pixel[x][0] = 0;
 									}
@@ -25205,11 +25274,11 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 							}
 						}
 
-						t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표		
+						t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표
 						t_Head_Center.y = (float)stats.at<int>(m_Head_Idx, CC_STAT_TOP) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_HEIGHT))/2;
-						//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표		
+						//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표
 						//t_Head_Center.y = centroids.at<double>(m_Head_Idx, 1);
-						t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표		
+						t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표
 						t_Body_Center.y = centroids.at<double>(m_Body_Idx, 1);
 
 						int top1 = stats.at<int>(m_Head_Idx, CC_STAT_TOP);
@@ -25470,7 +25539,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (Result_Debugging) // 못 사이드 임계화 Image Save
 					{
 						msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Target_Binary_Img.bmp",Cam_num);
-						imwrite(W2A(msg),Target_Thres_ROI_Gray_Img);		
+						imwrite(W2A(msg),Target_Thres_ROI_Gray_Img);
 					}
 
 					if (m_Text_View[Cam_num]) // ROI 영역 표시
@@ -25484,7 +25553,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (Result_Debugging) // 못 사이드 회전 Image Save
 					{
 						msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Rotate_Binary_Img.bmp",Cam_num);
-						imwrite(W2A(msg),Rotate_Target_Thres_ROI_Gray_Img);		
+						imwrite(W2A(msg),Rotate_Target_Thres_ROI_Gray_Img);
 					}
 
 
@@ -25509,9 +25578,9 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					m_max_object_value = 0;
 					Rect tt_rect;Rect t_Side_rect;
 					for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
-					{  
+					{
 						tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
-						if (m_max_object_value<= tt_rect.width*tt_rect.height 
+						if (m_max_object_value<= tt_rect.width*tt_rect.height
 							)//&& tt_rect.x >= 1 && tt_rect.y >= 0 && tt_rect.x + tt_rect.width < Out_binary.cols-2 && tt_rect.y + tt_rect.height < Out_binary.rows-2)
 						{
 							m_max_object_value = tt_rect.width*tt_rect.height;
@@ -25632,7 +25701,7 @@ float CImPro_Library::Cal_Angle(Mat& Out_binary, int Cam_num)
 		Rect boundRect;
 		int t_max = 0; int t_max_idx = -1;
 		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-		{  
+		{
 			boundRect = boundingRect( Mat(contours[k]) );
 			if (t_max <= boundRect.height*boundRect.width
 				&& boundRect.x > 1 && boundRect.x + boundRect.width < Out_binary.cols-2)
@@ -25694,7 +25763,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 	USES_CONVERSION;
 	int s=0;
 	CString msg;
-	
+
 	if (BOLT_Param[Cam_num].nMethod_Thres[0] == THRES_METHOD::FIRSTROI) // ROI#01 모델사용
 	{
 		if (BOLT_Param[Cam_num].nFindPostProcessing[0] == 1)
@@ -25724,7 +25793,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			//Point2f rect_points[4];
 			double t_angle=0;Rect tt_rect;
 			for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-			{  
+			{
 				//if (hierarchy[k][3] == -1)
 				{
 					minRect = minAreaRect(contours[k]);
@@ -25766,7 +25835,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 
 				//m_max_object_value = 0;m_max_object_num = -1;
 				//for( int k = 0; k < contours.size(); k++ )
-				//{  
+				//{
 				//	//if (hierarchy[k][3] == -1)
 				//	{
 				//		minRect = minAreaRect(contours[k]);
@@ -25806,14 +25875,14 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					//imwrite("01.bmp",Binary_img);
 					//imwrite("02.bmp",warp_img);
 					//imwrite("04.bmp",warp_img2);
-					
+
 					Gray_Img[Cam_num] =  warp_img2.clone();
 				}
 			}
 		}
 		else if (BOLT_Param[Cam_num].nFindPostProcessing[0] == 2)
 		{//후처리 검정색 대상물
-			Mat Binary_img;			
+			Mat Binary_img;
 			double t_th = threshold(Gray_Img[Cam_num],Binary_img,127,255,CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 			Rect t_Sub;t_Sub.x = Binary_img.cols/5;t_Sub.y = Binary_img.rows/5;t_Sub.width = 3*Binary_img.cols/5;t_Sub.height = 3*Binary_img.rows/5;
 			Scalar t_mean = mean(Gray_Img[Cam_num](t_Sub));
@@ -25837,7 +25906,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			//Point2f rect_points[4];
 			double t_angle=0;Rect tt_rect;
 			for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-			{  
+			{
 				//if (hierarchy[k][3] == -1)
 				{
 					minRect = minAreaRect(contours[k]);
@@ -25893,7 +25962,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					//imwrite("01.bmp",Binary_img);
 					//imwrite("02.bmp",warp_img);
 					//imwrite("01.bmp",warp_img2);
-					
+
 					Gray_Img[Cam_num] =  warp_img2.clone();
 				}
 			}
@@ -26253,7 +26322,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			erode(t_morph,t_morph,element_v,Point(-1,-1), 1);
 			dilate(t_morph,t_morph,element_v,Point(-1,-1), 1);
 
-			Mat stats, centroids, label;  
+			Mat stats, centroids, label;
 			int numOfLables = connectedComponentsWithStats(t_morph, label, stats, centroids, 8,CV_32S);
 			int m_Head_Idx = -1; int m_Head_value = 0;
 			int m_Body_Idx = -1; int m_Body_value = 0;
@@ -26282,11 +26351,11 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			Point2f t_Body_Center(0,0);
 			if (m_Head_Idx > -1 && m_Body_Idx > -1)
 			{
-				t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표		
+				t_Head_Center.x = (float)stats.at<int>(m_Head_Idx, CC_STAT_LEFT) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_WIDTH))/2; //중심좌표
 				t_Head_Center.y = (float)stats.at<int>(m_Head_Idx, CC_STAT_TOP) + ((float)stats.at<int>(m_Head_Idx, CC_STAT_HEIGHT))/2;
-				//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표		
+				//t_Head_Center.x = centroids.at<double>(m_Head_Idx, 0); //중심좌표
 				//t_Head_Center.y = centroids.at<double>(m_Head_Idx, 1);
-				t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표		
+				t_Body_Center.x = centroids.at<double>(m_Body_Idx, 0); //중심좌표
 				t_Body_Center.y = centroids.at<double>(m_Body_Idx, 1);
 			}
 			else
@@ -26612,7 +26681,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 
 				//if (BOLT_Param[Cam_num].nSRotationCalMethod[0] == 1)
 				//{// 상부 짧게
-				//	
+				//
 
 				//	//int t_H_Height = stats.at<int>(m_Head_Idx, CC_STAT_HEIGHT);
 				//	if (BOLT_Param[Cam_num].nSRotationTopHeight[0] < t_H_Height)
@@ -27030,7 +27099,7 @@ double CImPro_Library::round( double value, int pos )
 	temp = floor( temp + 0.5 );          // 0.5를 더한후 버림하면 반올림이 됨
 	temp *= pow( (double)10, (double)-pos );           // 다시 원래 소수점 자리수로
 	return temp;
-}  
+}
 
 void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 {
@@ -27090,7 +27159,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		if (Result_Debugging)
 		{
 			msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Gray_Img.bmp",Cam_num,s);
-			imwrite(W2A(msg),CP_Gray_Img);		
+			imwrite(W2A(msg),CP_Gray_Img);
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		// [끝] ROI 설정 및 이미지 자르기
@@ -27107,11 +27176,11 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_INV) // V1이하
 		{
 			threshold(CP_Gray_Img,Original_Threshold_Img,BOLT_Param[Cam_num].nThres_V1[s],255,CV_THRESH_BINARY_INV);
-		} 
+		}
 		else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY) // V2이상
 		{
 			threshold(CP_Gray_Img,Original_Threshold_Img,BOLT_Param[Cam_num].nThres_V2[s],255,CV_THRESH_BINARY);
-		} 
+		}
 		else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_BETWEEN) // V1~V2사이
 		{
 			inRange(CP_Gray_Img, Scalar(BOLT_Param[Cam_num].nThres_V1[s]),Scalar(BOLT_Param[Cam_num].nThres_V2[s]),Original_Threshold_Img);
@@ -27141,7 +27210,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 			if (s > 0)
 			{
 				Original_Threshold_Img = BOLT_Param[Cam_num].Thres_Obj_Img(tROI).clone();
-			} 
+			}
 			else
 			{
 				inRange(CP_Gray_Img, Scalar(BOLT_Param[Cam_num].nThres_V1[s]),Scalar(BOLT_Param[Cam_num].nThres_V2[s]),Original_Threshold_Img);
@@ -27195,7 +27264,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		double m_max = -1;
 		double m_area = 0;
 		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
-		{  
+		{
 			m_area = contourArea(contours[k],false);
 
 			if (m_area >= m_max)
@@ -27312,7 +27381,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		// 단자경 계산
 		Mat CP_Original_Threshold_Img = Original_Threshold_Img.clone();
 		vector<vector<Point>> hull(1);
-		convexHull( Mat(contours[m_max_cnt]), hull[0], false ); 
+		convexHull( Mat(contours[m_max_cnt]), hull[0], false );
 		Point2f R_Center(Out_Circle_Info[0]+m_boundRect.x - ROI_Margin,Out_Circle_Info[1]+m_boundRect.y - ROI_Margin);
 		double t_max = 0;double t_min = 9999999;
 		vector<double> out_diameter;
@@ -27369,7 +27438,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		if (contours_temp.size() > 0)
 		{
 			for(int i=0; i<contours_temp.size(); i++)
-			{	
+			{
 				if(contourArea(contours_temp[i]) > ALG_SGYM_Param.dSlitMinArea)
 				{
 					contours.push_back(contours_temp[i]);
@@ -27443,9 +27512,9 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 			minSlitRect[i].points( rect_points );
 			for( int j = 0; j < 4; j++ )
 			{
-				line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) , 
+				line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) ,
 					Point2f(rect_points[(j+1)%4].x +m_boundRect.x - ROI_Margin,rect_points[(j+1)%4].y +m_boundRect.y - ROI_Margin), CV_RGB(0,0,255), 1, 8 );
-				line( Slit_Blob_Img, Point2f(rect_points[j].x ,rect_points[j].y) , 
+				line( Slit_Blob_Img, Point2f(rect_points[j].x ,rect_points[j].y) ,
 					Point2f(rect_points[(j+1)%4].x,rect_points[(j+1)%4].y), CV_RGB(255,255,255), 0, 8 );
 			}
 		}
@@ -27456,7 +27525,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 			vec_Result_Value[SLIT_COUNT].push_back(contours.size());
 		}
 
-		///단자 찾기 
+		///단자 찾기
 		Mat Danja_Img = Mat::zeros(ROI_Original_Threshold_Img.size(), CV_8UC1);
 		subtract(ROI_Original_Threshold_Img,Out_Circle_Img,Danja_Img);
 		subtract(Danja_Img,Inner_Threshold_Img,Danja_Img);
@@ -27480,8 +27549,8 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		////{
 		////	vector<vector<Point>> hull1(contours1.size());
 		////	for(size_t k=0; k<contours1.size(); k++)
-		////	{	
-		////		convexHull( Mat(contours1[k]), hull1[k], false ); 
+		////	{
+		////		convexHull( Mat(contours1[k]), hull1[k], false );
 		////		//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
 		////		drawContours( Danja_DlDDM_Convex_Img, hull1, (int)k, CV_RGB(255,255,255), CV_FILLED, 8, vector<Vec4i>(), 0, Point() );
 		////	}
@@ -27495,7 +27564,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 
 		////	Rect m_boundRect1(m_boundRect.x - ROI_Margin,m_boundRect.y - ROI_Margin,m_boundRect.width + 2*ROI_Margin,m_boundRect.height + 2*ROI_Margin);
 		////	for(size_t k=0; k<contours1.size(); k++)
-		////	{	
+		////	{
 		////		Rect boundRect1 = boundingRect( Mat(contours1[k]) );
 		////		int t_area1 = countNonZero(Danja_DlDDM_Img(boundRect1));
 		////		if (t_area1 <= ALG_SGYM_Param.DlDDM_Size_Threshold)
@@ -27511,8 +27580,8 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		////		vector<vector<Point> >hull( contours1.size() );
 		////		int m_max_object_num = -1;int m_max_object_value = 0;
 		////		for( int k = 0; k < contours1.size(); k++ )
-		////		{  
-		////			convexHull( Mat(contours1[k]), hull[k], false ); 
+		////		{
+		////			convexHull( Mat(contours1[k]), hull[k], false );
 		////			boundRect[k] = boundingRect( Mat(contours1[k]) );
 		////			if (m_max_object_value <= boundRect[k].width && boundRect[k].width >= 50)
 		////			{
@@ -27545,7 +27614,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		}
 
 		for(int i=0; i<contours_temp.size(); i++)
-		{	
+		{
 			if(contourArea(contours_temp[i]) > ALG_SGYM_Param.dDanjaMinArea)
 			{
 				contours.push_back(contours_temp[i]);
@@ -27610,7 +27679,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 
 			for( int j = 0; j < 4; j++ )
 			{
-				line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) , 
+				line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) ,
 					Point2f(rect_points[(j+1)%4].x +m_boundRect.x - ROI_Margin,rect_points[(j+1)%4].y +m_boundRect.y - ROI_Margin),CV_RGB(0,0,255), 1, 8 );
 			}
 		}
@@ -27636,7 +27705,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 
 		if (vX.size() > 0)
 		{
-			cartToPolar(vX, vY, mag, Slitangle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.  
+			cartToPolar(vX, vY, mag, Slitangle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
 		}
 
 		for(int i=0; i<minSlitRect.size(); i++)
@@ -27670,13 +27739,13 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		//vector<double> mag;
 		vector<double> angle;
 
-		cartToPolar(vX, vY, mag, angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.  
+		cartToPolar(vX, vY, mag, angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
 
 		for(int i=0; i<minRect.size(); i++)
 		{
 			ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter = round(angle[i],1);
 
-			if((int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 90 || (int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 0 || (int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 180 
+			if((int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 90 || (int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 0 || (int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 180
 				|| (int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 270 || (int)ALG_SGYM_Param.vec_Danja_Info[i].fAngle == 360 ) continue;;
 
 			if(	((int)angle[i] >= 90 && (int)angle[i] < 180) ||
@@ -27716,7 +27785,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		for(int i=0; i<ALG_SGYM_Param.vec_Danja_Info.size(); i++)
 		{
 			///요기 Rotation 값을 확인해보자..
-			if(ALG_SGYM_Param.vec_Danja_Info[i].fHeight < ALG_SGYM_Param.dDanjaMinHeight || 
+			if(ALG_SGYM_Param.vec_Danja_Info[i].fHeight < ALG_SGYM_Param.dDanjaMinHeight ||
 				ALG_SGYM_Param.vec_Danja_Info[i].fHeight > ALG_SGYM_Param.dDanjaMaxHeight ||
 				(abs( fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter,180) - fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngle,180)) > ALG_SGYM_Param.dDanjaRotationRage &&
 				abs( fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter,180) - fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngle,180) - 180) > ALG_SGYM_Param.dDanjaRotationRage))
@@ -27729,7 +27798,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 				minRect[i].points( rect_points );
 				for( int j = 0; j < 4; j++ )
 				{
-					line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) , 
+					line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) ,
 						Point2f(rect_points[(j+1)%4].x +m_boundRect.x - ROI_Margin,rect_points[(j+1)%4].y +m_boundRect.y - ROI_Margin), CV_RGB(0,0,255), 2, 8 );
 				}
 			}
@@ -27740,12 +27809,12 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 				minRect[i].points( rect_points );
 				for( int j = 0; j < 4; j++ )
 				{
-					line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) , 
+					line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) ,
 						Point2f(rect_points[(j+1)%4].x +m_boundRect.x - ROI_Margin,rect_points[(j+1)%4].y +m_boundRect.y - ROI_Margin), CV_RGB(255,0,0), 2, 8 );
 				}
 			}
 
-			if((ALG_SGYM_Param.vec_Danja_Info[i].fHeight < ALG_SGYM_Param.dDanjaMinHeight || 
+			if((ALG_SGYM_Param.vec_Danja_Info[i].fHeight < ALG_SGYM_Param.dDanjaMinHeight ||
 				ALG_SGYM_Param.vec_Danja_Info[i].fHeight > ALG_SGYM_Param.dDanjaMaxHeight) &&
 				(abs( fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter,180) - fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngle,180)) > ALG_SGYM_Param.dDanjaRotationRage &&
 				abs( fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter,180) - fmod(ALG_SGYM_Param.vec_Danja_Info[i].fAngle,180) - 180) > ALG_SGYM_Param.dDanjaRotationRage))
@@ -27753,7 +27822,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 				minRect[i].points( rect_points );
 				for( int j = 0; j < 4; j++ )
 				{
-					line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) , 
+					line( Dst_Img[Cam_num](tROI), Point2f(rect_points[j].x +m_boundRect.x - ROI_Margin,rect_points[j].y +m_boundRect.y - ROI_Margin) ,
 						Point2f(rect_points[(j+1)%4].x +m_boundRect.x - ROI_Margin,rect_points[(j+1)%4].y +m_boundRect.y - ROI_Margin), CV_RGB(255,0,255), 2, 8 );
 				}
 			}
@@ -27788,7 +27857,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		}
 		int tt_num = min(angle.size(),Slitangle.size());
 
-		double t_dv = 999; 
+		double t_dv = 999;
 		int t_dv_idx = 0;
 		for(int i=0; i<tt_num; i++)
 		{
@@ -27798,7 +27867,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 				t_dv_idx = i;
 			}
 		}
-		double t_sv = 999; 
+		double t_sv = 999;
 		int t_sv_idx = 0;
 		for(int i=0; i<tt_num; i++)
 		{
@@ -27814,7 +27883,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		{
 			t_add_idx = 1;
 		}
-		
+
 		for(int i=0; i<tt_num; i++)
 		{
 			vec_Result_Value[DANJA_TO_SLIT_ANGLE].push_back(abs(angle[(i+t_dv_idx)%tt_num] - Slitangle[(i+t_sv_idx)%tt_num]));
@@ -27872,7 +27941,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		//요기서 부터 작업하자..
 		//Rect tt_rect(m_boundRect.x - ROI_Margin,m_boundRect.y - ROI_Margin,m_boundRect.width -2*ROI_Margin,m_boundRect.height -2*ROI_Margin);
 		Rect tt_rect(m_boundRect.x,m_boundRect.y,m_boundRect.width,m_boundRect.height);
-		if(tt_rect.x + tt_rect.width > Dst_Img[Cam_num](tROI).cols || tt_rect.x < 0 || tt_rect.y < 0 || tt_rect.y + tt_rect.height > Dst_Img[Cam_num](tROI).rows) 
+		if(tt_rect.x + tt_rect.width > Dst_Img[Cam_num](tROI).cols || tt_rect.x < 0 || tt_rect.y < 0 || tt_rect.y + tt_rect.height > Dst_Img[Cam_num](tROI).rows)
 		{
 			CString strTemp;
 			strTemp.Format(L"Contour 범위 Error!! x: %d, y : %d, width : %d, height : %d",tt_rect.x , tt_rect.y, tt_rect.width, tt_rect.height);
@@ -27903,7 +27972,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 			drawContours( Dst_Img[Cam_num](tROI)(tt_rect), contours_Slit_Defect, i, CV_RGB(255,0,0), CV_FILLED, 8, hierarchy_Slit_Defect);
 		}
 		vec_Result_Value[SLIT_DEFECT_COUNT].push_back((double)countNonZero(Slit_Defect_Img));
-		
+
 
 		//OutputDebugString("Slit 이물 검사 End");
 		//nSGYM_Measure_Count = SGYM_INSPECTION_ITEM_END;
@@ -27938,7 +28007,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 						ALG_SGYM_Param.Result_Value[i] = dMinValue;
 					}
 					break;
-				case 1://Max 
+				case 1://Max
 					{
 						double dMaxValue = -1;
 						for(int j=0; j<vec_Result_Value[i].size();j++)
@@ -27951,7 +28020,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 						ALG_SGYM_Param.Result_Value[i] = dMaxValue;
 					}
 					break;
-				case 3:// Average 
+				case 3:// Average
 					{
 						double dSumValue = 0;
 						for(int j=0; j<vec_Result_Value[i].size();j++)
@@ -27979,7 +28048,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 						ALG_SGYM_Param.Result_Value[i] = dMaxValue-dMinValue;
 					}
 					break;
-				case 4://Total 
+				case 4://Total
 					{
 						double dMaxValue = 0;
 						for(int j=0; j<vec_Result_Value[i].size();j++)
@@ -28066,7 +28135,7 @@ Rect CImPro_Library::Check_ROI(Rect O_ROI, int W, int H)
 // Implemented by CDJung
 // Last modification : 2012.10.08
 //----------------------------------------------------------------------------------------------------
-// Input :	Mat img_object : 카메라에서 grab된 잘려진 이미지 
+// Input :	Mat img_object : 카메라에서 grab된 잘려진 이미지
 //			Mat img_scene  : Template 이미지
 // outout :	Mat warp_dst   : img_object가 img_scene에 맞게 변환된 이미지
 //			Mat diff_img   : 차영상 = warp_dst - img_scene + 128(bias)
@@ -28132,7 +28201,7 @@ void CImPro_Library::AKAZE_Homography(Mat img_object, Mat img_scene, Mat warp_ds
  //       }
  //   }
 	////AfxMessageBox("2");
-	////-- Localize the object from img_object in img_scene 
+	////-- Localize the object from img_object in img_scene
 	//std::vector<Point2f> obj;
 	//std::vector<Point2f> scene;
 
@@ -28140,7 +28209,7 @@ void CImPro_Library::AKAZE_Homography(Mat img_object, Mat img_scene, Mat warp_ds
 	//{
 	//	//-- Get the keypoints from the good matches
 	//	obj.push_back( kpts1[ good_matches[i].queryIdx ].pt );
-	//	scene.push_back( kpts2[ good_matches[i].trainIdx ].pt ); 
+	//	scene.push_back( kpts2[ good_matches[i].trainIdx ].pt );
 	//}
 	////AfxMessageBox("2");
 

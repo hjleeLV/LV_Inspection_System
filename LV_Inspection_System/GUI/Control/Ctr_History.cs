@@ -16,7 +16,7 @@ namespace LV_Inspection_System.GUI.Control
             InitializeComponent();
         }
 
-        public string SW_Version = "V3.8.5 AI (2023.03.20)";
+        public string SW_Version = "V3.8.7 AI (2024.06.12)";
         protected int m_Language = -1; // 언어 선택 0: 한국어 1:영어
 
         public int m_SetLanguage
@@ -343,7 +343,7 @@ namespace LV_Inspection_System.GUI.Control
                     add(" Added option : only display NG image");
                     add(" ");
                     add("* 2018-07-20 V2.6.9");
-                    add(" Fixed bug filtering of size in Circle ROI "); 
+                    add(" Fixed bug filtering of size in Circle ROI ");
                     add(" ");
                     add("* 2018-07-13 V2.6.8");
                     add(" Fixed CLASS applying when judged by delay, remove auto saving when program exit");
@@ -358,7 +358,7 @@ namespace LV_Inspection_System.GUI.Control
                     add(" Added new function : ROI copy, paste / ROI select independently as camera / bug fixed");
                     add(" ");
                     add("* 2018-05-03 V2.6.4");
-                    add(" Added model restoring function"); 
+                    add(" Added model restoring function");
                     add(" ");
                     add("* 2018-04-27 V2.6.3");
                     add(" Fixed bug / realtime DB update");

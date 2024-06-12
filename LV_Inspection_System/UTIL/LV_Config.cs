@@ -47,6 +47,7 @@ namespace LV_Inspection_System.UTIL
         public int m_Data_Log_Date = 30;                                    // Data 저장 일수(Day)
         public int m_Log_Save_Num = 30;                                   // 검사 결과 저장 개수
         public string m_Log_Save_Folder = "";                               // 검사 결과 저장 폴더
+        public string m_Log_Save_Folder2 = "";                               // 검사 결과 저장 폴더
         public string m_Data_Save_Folder = "";                               // 검사 결과 저장 폴더
         private DataTable[] destinationTable = new DataTable[5];
 
@@ -149,6 +150,12 @@ namespace LV_Inspection_System.UTIL
         public string m_lot_str = "";
 
         public bool m_Auto_Mode = false;
+
+
+        public bool[] Image_Merge_Check = new bool[4] { false, false, false, false } ;
+        public int[] Image_Merge_Number = new int[4] { 70, 70, 70, 70 };
+        public int[] Image_Merge_Idx = new int[4] { 0, 0, 0, 0 };
+        public Bitmap[] Image_Merge_BMP = new Bitmap[4];
 
         public struct GraphData
         {
@@ -370,7 +377,7 @@ namespace LV_Inspection_System.UTIL
 
             table1.Columns.Add("OK//TOTAL");//1
             table1.Columns.Add("NG/NO/YIELD");//1
-            
+
             //table1.Columns.Add("OK", Type.GetType("System.Int32"));
             //table1.Columns.Add("NG", Type.GetType("System.Int32"));
             //table1.Columns.Add("TOTAL", Type.GetType("System.Int32"));
@@ -644,7 +651,7 @@ namespace LV_Inspection_System.UTIL
             //    column.SortMode = DataGridViewColumnSortMode.NotSortable;
             //}
             //LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.ClearSelection();
-            
+
         }
 
         void Initialize_Setting_0()
@@ -969,11 +976,11 @@ namespace LV_Inspection_System.UTIL
                 table_ROI_0_2.Rows.Add("예비변수", "0");//18
                 table_ROI_0_2.Rows.Add("예비변수", "0");//19
                 table_ROI_0_2.Rows.Add("예비변수", "0");//20
-                table_ROI_0_2.Rows.Add("예비변수", "0");//21            
+                table_ROI_0_2.Rows.Add("예비변수", "0");//21
                 table_ROI_0_2.Rows.Add("예비변수", "0");//22
                 table_ROI_0_2.Rows.Add("예비변수", "0");//23
                 table_ROI_0_2.Rows.Add("예비변수", "0");//24
-                table_ROI_0_2.Rows.Add("예비변수", "0");//25            
+                table_ROI_0_2.Rows.Add("예비변수", "0");//25
 
                 ds_DATA_0.Tables.Add(table_ROI_0_2);
             }
@@ -1398,11 +1405,11 @@ namespace LV_Inspection_System.UTIL
                 table_ROI_1_2.Rows.Add("예비변수", "0");//18
                 table_ROI_1_2.Rows.Add("예비변수", "0");//19
                 table_ROI_1_2.Rows.Add("예비변수", "0");//20
-                table_ROI_1_2.Rows.Add("예비변수", "0");//21            
+                table_ROI_1_2.Rows.Add("예비변수", "0");//21
                 table_ROI_1_2.Rows.Add("예비변수", "0");//22
                 table_ROI_1_2.Rows.Add("예비변수", "0");//23
                 table_ROI_1_2.Rows.Add("예비변수", "0");//24
-                table_ROI_1_2.Rows.Add("예비변수", "0");//25            
+                table_ROI_1_2.Rows.Add("예비변수", "0");//25
 
                 ds_DATA_1.Tables.Add(table_ROI_1_2);
             }
@@ -1824,11 +1831,11 @@ namespace LV_Inspection_System.UTIL
                 table_ROI_2_2.Rows.Add("예비변수", "0");//18
                 table_ROI_2_2.Rows.Add("예비변수", "0");//19
                 table_ROI_2_2.Rows.Add("예비변수", "0");//20
-                table_ROI_2_2.Rows.Add("예비변수", "0");//21            
+                table_ROI_2_2.Rows.Add("예비변수", "0");//21
                 table_ROI_2_2.Rows.Add("예비변수", "0");//22
                 table_ROI_2_2.Rows.Add("예비변수", "0");//23
                 table_ROI_2_2.Rows.Add("예비변수", "0");//24
-                table_ROI_2_2.Rows.Add("예비변수", "0");//25            
+                table_ROI_2_2.Rows.Add("예비변수", "0");//25
 
                 ds_DATA_2.Tables.Add(table_ROI_2_2);
             }
@@ -2248,11 +2255,11 @@ namespace LV_Inspection_System.UTIL
                 table_ROI_3_2.Rows.Add("예비변수", "0");//18
                 table_ROI_3_2.Rows.Add("예비변수", "0");//19
                 table_ROI_3_2.Rows.Add("예비변수", "0");//20
-                table_ROI_3_2.Rows.Add("예비변수", "0");//21            
+                table_ROI_3_2.Rows.Add("예비변수", "0");//21
                 table_ROI_3_2.Rows.Add("예비변수", "0");//22
                 table_ROI_3_2.Rows.Add("예비변수", "0");//23
                 table_ROI_3_2.Rows.Add("예비변수", "0");//24
-                table_ROI_3_2.Rows.Add("예비변수", "0");//25            
+                table_ROI_3_2.Rows.Add("예비변수", "0");//25
 
                 ds_DATA_3.Tables.Add(table_ROI_3_2);
             }
@@ -4432,7 +4439,7 @@ namespace LV_Inspection_System.UTIL
                                 }
                                 else
                                 {
-                                    //LVApp.Instance().m_mainform.ctr_DataGrid2.dataGridView.ClearSelection(); 
+                                    //LVApp.Instance().m_mainform.ctr_DataGrid2.dataGridView.ClearSelection();
                                     if ((int)(m_Log_Data_Cnt[Cam_num] % (double)m_Log_Save_Num) == 0)
                                     {
                                         LVApp.Instance().m_mainform.ctr_DataGrid2.dataGridView.Rows[-1 + m_Log_Save_Num].Selected = false;
@@ -4753,7 +4760,7 @@ namespace LV_Inspection_System.UTIL
                             }
 
                             break;
-                        
+
                         // 4~7까지 추가해야 함.
                     }
                 }
@@ -4959,7 +4966,7 @@ namespace LV_Inspection_System.UTIL
                     {
                         ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Data");
                         ws.Cells["A1"].LoadFromDataTable(destinationTable[0], true, TableStyles.Medium8);
-                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0"; 
+                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0";
                         var rowCnt = ws.Dimension.End.Row;
                         var colCnt = ws.Dimension.End.Column;
 
@@ -5081,7 +5088,7 @@ namespace LV_Inspection_System.UTIL
                     {
                         ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Data");
                         ws.Cells["A1"].LoadFromDataTable(destinationTable[1], true, TableStyles.Medium8);
-                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0"; 
+                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0";
                         var rowCnt = ws.Dimension.End.Row;
                         var colCnt = ws.Dimension.End.Column;
 
@@ -5203,7 +5210,7 @@ namespace LV_Inspection_System.UTIL
                     {
                         ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Data");
                         ws.Cells["A1"].LoadFromDataTable(destinationTable[2], true, TableStyles.Medium8);
-                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0"; 
+                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0";
                         var rowCnt = ws.Dimension.End.Row;
                         var colCnt = ws.Dimension.End.Column;
 
@@ -5326,7 +5333,7 @@ namespace LV_Inspection_System.UTIL
                     {
                         ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Data");
                         ws.Cells["A1"].LoadFromDataTable(destinationTable[Cam_num], true, TableStyles.Medium8);
-                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0"; 
+                        //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0";
                         var rowCnt = ws.Dimension.End.Row;
                         var colCnt = ws.Dimension.End.Column;
 
@@ -5399,7 +5406,7 @@ namespace LV_Inspection_System.UTIL
                 // 폴더가 존재하지 않으면
                 if (dir.Exists == false)
                 {
-                    // 새로 생성합니다.    
+                    // 새로 생성합니다.
                     dir.Create();
                 }
 
@@ -5457,7 +5464,7 @@ namespace LV_Inspection_System.UTIL
                 {
                     ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Data");
                     ws.Cells["A1"].LoadFromDataTable(destinationTable[Cam_num], true, TableStyles.Medium8);
-                    //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0"; 
+                    //ws.Cells["B1:C5"].Style.Numberformat.Format = "#,##0";
                     var rowCnt = ws.Dimension.End.Row;
                     var colCnt = ws.Dimension.End.Column;
 
@@ -5959,6 +5966,111 @@ namespace LV_Inspection_System.UTIL
                         }
                     }
 
+                    if (m_Log_Save_Folder2 != "")
+                    {
+                        DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder2);
+                        if (dir.Exists == false)
+                        {
+                            return;
+                        }
+                        dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
+                        // 폴더가 존재하지 않으면
+                        if (dir.Exists == false)
+                        {
+                            // 새로 생성합니다.
+                            dir.Create();
+                        }
+                        dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
+                        // 폴더가 존재하지 않으면
+                        if (dir.Exists == false)
+                        {
+                            // 새로 생성합니다.
+                            dir.Create();
+                        }
+
+                        for (int i = 0; i < m_Cam_Total_Num; i++)
+                        {
+                            int cam_num = i;
+                            if (i == 0)
+                            {
+                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam1.Camera_Name.Substring(3, 1), out cam_num))
+                                {
+                                }
+                            }
+                            else if (i == 1)
+                            {
+                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam2.Camera_Name.Substring(3, 1), out cam_num))
+                                {
+                                }
+                            }
+                            else if (i == 2)
+                            {
+                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam3.Camera_Name.Substring(3, 1), out cam_num))
+                                {
+                                }
+                            }
+                            else if (i == 3)
+                            {
+                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam4.Camera_Name.Substring(3, 1), out cam_num))
+                                {
+                                }
+                            }
+
+                            if (m_Cam_Log_Use_Check[i] || LVApp.Instance().m_Config.SSF_Image_Save)
+                            {
+                                //dir = new DirectoryInfo(m_Log_Save_Folder + "\\" + m_Model_Name);
+                                //// 폴더가 존재하지 않으면
+                                //if (dir.Exists == false)
+                                //{
+                                //    // 새로 생성합니다.
+                                //    dir.Create();
+                                //}
+                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
+                                // 폴더가 존재하지 않으면
+                                if (dir.Exists == false)
+                                {
+                                    // 새로 생성합니다.
+                                    dir.Create();
+                                }
+                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
+                                // 폴더가 존재하지 않으면
+                                if (dir.Exists == false)
+                                {
+                                    // 새로 생성합니다.
+                                    dir.Create();
+                                }
+                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
+                                // 폴더가 존재하지 않으면
+                                if (dir.Exists == false)
+                                {
+                                    // 새로 생성합니다.
+                                    dir.Create();
+                                }
+                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
+                                // 폴더가 존재하지 않으면
+                                if (dir.Exists == false)
+                                {
+                                    // 새로 생성합니다.
+                                    dir.Create();
+                                }
+                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
+                                // 폴더가 존재하지 않으면
+                                if (dir.Exists == false)
+                                {
+                                    // 새로 생성합니다.
+                                    dir.Create();
+                                }
+                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
+                                // 폴더가 존재하지 않으면
+                                if (dir.Exists == false)
+                                {
+                                    // 새로 생성합니다.
+                                    dir.Create();
+                                }
+                            }
+                        }
+                    }
+
                     if (m_Data_Save_Folder.Length > 0)
                     {
                         DirectoryInfo dir = new DirectoryInfo(m_Data_Save_Folder);
@@ -6241,6 +6353,112 @@ namespace LV_Inspection_System.UTIL
                         }
                     }
                 }
+
+                if (m_Log_Save_Folder2 != "")
+                {
+                    DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder2);
+                    if (dir.Exists == false)
+                    {
+                        return;
+                    }
+                    dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
+                    // 폴더가 존재하지 않으면
+                    if (dir.Exists == false)
+                    {
+                        // 새로 생성합니다.
+                        dir.Create();
+                    }
+                    dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
+                    // 폴더가 존재하지 않으면
+                    if (dir.Exists == false)
+                    {
+                        // 새로 생성합니다.
+                        dir.Create();
+                    }
+
+                    for (int i = 0; i < m_Cam_Total_Num; i++)
+                    {
+                        int cam_num = i;
+                        if (i == 0)
+                        {
+                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam1.Camera_Name.Substring(3, 1), out cam_num))
+                            {
+                            }
+                        }
+                        else if (i == 1)
+                        {
+                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam2.Camera_Name.Substring(3, 1), out cam_num))
+                            {
+                            }
+                        }
+                        else if (i == 2)
+                        {
+                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam3.Camera_Name.Substring(3, 1), out cam_num))
+                            {
+                            }
+                        }
+                        else if (i == 3)
+                        {
+                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam4.Camera_Name.Substring(3, 1), out cam_num))
+                            {
+                            }
+                        }
+
+                        if (m_Cam_Log_Use_Check[i] || LVApp.Instance().m_Config.SSF_Image_Save)
+                        {
+                            //dir = new DirectoryInfo(m_Log_Save_Folder + "\\" + m_Model_Name);
+                            //// 폴더가 존재하지 않으면
+                            //if (dir.Exists == false)
+                            //{
+                            //    // 새로 생성합니다.
+                            //    dir.Create();
+                            //}
+                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
+                            // 폴더가 존재하지 않으면
+                            if (dir.Exists == false)
+                            {
+                                // 새로 생성합니다.
+                                dir.Create();
+                            }
+                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
+                            // 폴더가 존재하지 않으면
+                            if (dir.Exists == false)
+                            {
+                                // 새로 생성합니다.
+                                dir.Create();
+                            }
+                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
+                            // 폴더가 존재하지 않으면
+                            if (dir.Exists == false)
+                            {
+                                // 새로 생성합니다.
+                                dir.Create();
+                            }
+                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
+                            // 폴더가 존재하지 않으면
+                            if (dir.Exists == false)
+                            {
+                                // 새로 생성합니다.
+                                dir.Create();
+                            }
+                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
+                            // 폴더가 존재하지 않으면
+                            if (dir.Exists == false)
+                            {
+                                // 새로 생성합니다.
+                                dir.Create();
+                            }
+                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
+                            // 폴더가 존재하지 않으면
+                            if (dir.Exists == false)
+                            {
+                                // 새로 생성합니다.
+                                dir.Create();
+                            }
+                        }
+                    }
+                }
+
                 if (m_Data_Save_Folder.Length > 0)
                 {
                     DirectoryInfo dir = new DirectoryInfo(m_Data_Save_Folder);
@@ -6771,7 +6989,7 @@ namespace LV_Inspection_System.UTIL
                                 {
                                     Disp_OKNG_List[Cam_num] += "No name: " + m_val.ToString() + "_OK" + "\r\n";
                                 }
-                                
+
                                 Disp_OKNG_List_CNT[Cam_num]++;
 
                                 if (LVApp.Instance().m_Config.m_SetLanguage == 0)
@@ -7643,7 +7861,7 @@ namespace LV_Inspection_System.UTIL
                             ds_DATA_0.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                             ds_DATA_0.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                             ds_DATA_0.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                            ds_DATA_0.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                            ds_DATA_0.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                             T_Cnt++;
                         }
                         currencyManager0.ResumeBinding();
@@ -7724,7 +7942,7 @@ namespace LV_Inspection_System.UTIL
                             ds_DATA_1.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                             ds_DATA_1.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                             ds_DATA_1.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                            ds_DATA_1.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                            ds_DATA_1.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                             T_Cnt++;
                         }
                         currencyManager1.ResumeBinding();
@@ -7805,7 +8023,7 @@ namespace LV_Inspection_System.UTIL
                             ds_DATA_2.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                             ds_DATA_2.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                             ds_DATA_2.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                            ds_DATA_2.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                            ds_DATA_2.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                             T_Cnt++;
                         }
                         currencyManager2.ResumeBinding();
@@ -7885,7 +8103,7 @@ namespace LV_Inspection_System.UTIL
                             ds_DATA_3.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                             ds_DATA_3.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                             ds_DATA_3.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                            ds_DATA_3.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                            ds_DATA_3.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                             T_Cnt++;
                         }
                         currencyManager3.ResumeBinding();
@@ -7919,7 +8137,7 @@ namespace LV_Inspection_System.UTIL
                     //    ds_DATA_3.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                     //    ds_DATA_3.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                     //    ds_DATA_3.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                    //    ds_DATA_3.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                    //    ds_DATA_3.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                     //    T_Cnt++;
                     //}
                     //// 5번 알고리즘 로드
@@ -7941,7 +8159,7 @@ namespace LV_Inspection_System.UTIL
                     //    ds_DATA_4.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                     //    ds_DATA_4.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                     //    ds_DATA_4.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                    //    ds_DATA_4.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                    //    ds_DATA_4.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                     //    T_Cnt++;
                     //}
                     //// 6번 알고리즘 로드
@@ -7963,7 +8181,7 @@ namespace LV_Inspection_System.UTIL
                     //    ds_DATA_5.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                     //    ds_DATA_5.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                     //    ds_DATA_5.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                    //    ds_DATA_5.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                    //    ds_DATA_5.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                     //    T_Cnt++;
                     //}
                     //// 7번 알고리즘 로드
@@ -7985,7 +8203,7 @@ namespace LV_Inspection_System.UTIL
                     //    ds_DATA_6.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                     //    ds_DATA_6.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                     //    ds_DATA_6.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                    //    ds_DATA_6.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                    //    ds_DATA_6.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                     //    T_Cnt++;
                     //}
                     //// 8번 알고리즘 로드
@@ -8007,7 +8225,7 @@ namespace LV_Inspection_System.UTIL
                     //    ds_DATA_7.Tables[1].Rows[i][4] = worksheet.Cells[i + 2 + start_num, 4].Value;// = comboCell2.Value.ToString();
                     //    ds_DATA_7.Tables[1].Rows[i][5] = worksheet.Cells[i + 2 + start_num, 5].Value;//= LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[5].Value.ToString();
                     //    ds_DATA_7.Tables[1].Rows[i][6] = worksheet.Cells[i + 2 + start_num, 6].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[6].Value.ToString();
-                    //    ds_DATA_7.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();               
+                    //    ds_DATA_7.Tables[1].Rows[i][7] = worksheet.Cells[i + 2 + start_num, 7].Value;// = LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Rows[i].Cells[7].Value.ToString();
                     //    T_Cnt++;
                     //}
 

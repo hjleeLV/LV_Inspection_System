@@ -123,6 +123,9 @@
     <Reference Include="AForge.Imaging.IPPrototyper">
       <HintPath>Dlls\AForge.Imaging.IPPrototyper.dll</HintPath>
     </Reference>
+    <Reference Include="Aspose.Imaging, Version=24.6.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Imaging.24.6.0\lib\net40\Aspose.Imaging.dll</HintPath>
+    </Reference>
     <Reference Include="AsyncClientServerLib">
       <HintPath>Dlls\AsyncClientServerLib.dll</HintPath>
     </Reference>

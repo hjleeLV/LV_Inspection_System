@@ -5,9 +5,9 @@ using System.Threading;
 
 namespace PylonC.NETSupportLibrary
 {
-    /* The ImageProvider is responsible for opening and closing a device, it takes care of the grabbing and buffer handling, 
-     it notifies the user via events about state changes, and provides access to GenICam parameter nodes of the device. 
-     The grabbing is done in an internal thread. After an image is grabbed the image ready event is fired by the grab 
+    /* The ImageProvider is responsible for opening and closing a device, it takes care of the grabbing and buffer handling,
+     it notifies the user via events about state changes, and provides access to GenICam parameter nodes of the device.
+     The grabbing is done in an internal thread. After an image is grabbed the image ready event is fired by the grab
      thread. The image can be acquired using GetCurrentImage(). After processing of the image it can be released via ReleaseImage.
      The image is then queued for the next grab.  */
     public class ImageProvider
@@ -58,6 +58,10 @@ namespace PylonC.NETSupportLibrary
 
         public bool m_Trigger_mode = false;
         public bool m_LineCam_mode = false;
+        public bool m_Chunk_mode = false;
+        public uint m_Chunk_NUM_GRABS = 100;
+        public uint m_Chunk_NUM_BUFFERS = 2;
+        Dictionary<PYLON_STREAMBUFFER_HANDLE, PylonBuffer<Byte>> buffers;
         public int m_Trigger_Delay = 0;
         /* Creates the last error text from message and detailed text. */
         private string GetLastErrorText()
@@ -252,7 +256,7 @@ namespace PylonC.NETSupportLibrary
             return null; /* No image available. */
         }
 
-        /* After the ImageReady event has been received and the image was acquired by using GetCurrentImage, 
+        /* After the ImageReady event has been received and the image was acquired by using GetCurrentImage,
         the image must be removed from the grab result queue and added to the stream grabber queue for the next grabs. */
         public bool ReleaseImage()
         {
@@ -311,8 +315,8 @@ namespace PylonC.NETSupportLibrary
                 /* Register the callback function. */
                 m_hRemovalCallback = Pylon.DeviceRegisterRemovalCallback(m_hDevice, m_callbackHandler);
 
-                /* For GigE cameras, we recommend increasing the packet size for better 
-                   performance. When the network adapter supports jumbo frames, set the packet 
+                /* For GigE cameras, we recommend increasing the packet size for better
+                   performance. When the network adapter supports jumbo frames, set the packet
                    size to a value > 1500, e.g., to 8192. In this sample, we only set the packet size
                    to 1500. */
                 /* ... Check first to see if the GigE camera packet size parameter is supported and if it is writable. */
@@ -334,6 +338,185 @@ namespace PylonC.NETSupportLibrary
                 //    /* Disable the chunk mode. */
                 //    Pylon.DeviceSetBooleanFeature(m_hDevice, "ChunkModeActive", false);
                 //}
+
+                if (m_Chunk_mode)
+                {
+                    string triggerSelectorValue = "FrameStart";
+                    bool isAvailAcquisitionStart = Pylon.DeviceFeatureIsAvailable(m_hDevice, "EnumEntry_TriggerSelector_AcquisitionStart");
+                    bool isAvailFrameStart = Pylon.DeviceFeatureIsAvailable(m_hDevice, "EnumEntry_TriggerSelector_FrameStart");
+                    bool isAvail;
+
+                    /* Check to see if the camera implements the acquisition start trigger mode only. */
+                    if (isAvailAcquisitionStart && !isAvailFrameStart)
+                    {
+                        /* Camera uses the acquisition start trigger as the only trigger mode. */
+                        Pylon.DeviceFeatureFromString(m_hDevice, "TriggerSelector", "AcquisitionStart");
+                        Pylon.DeviceFeatureFromString(m_hDevice, "TriggerMode", "On");
+                        triggerSelectorValue = "AcquisitionStart";
+                    }
+                    else
+                    {
+                        /* Camera may have the acquisition start trigger mode and the frame start trigger mode implemented.
+                        In this case, the acquisition trigger mode must be switched off. */
+                        if (isAvailAcquisitionStart)
+                        {
+                            Pylon.DeviceFeatureFromString(m_hDevice, "TriggerSelector", "AcquisitionStart");
+                            Pylon.DeviceFeatureFromString(m_hDevice, "TriggerMode", "Off");
+                        }
+
+                        /* Disable frame burst start trigger if available */
+                        isAvail = Pylon.DeviceFeatureIsAvailable(m_hDevice, "EnumEntry_TriggerSelector_FrameBurstStart");
+                        if (isAvail)
+                        {
+                            Pylon.DeviceFeatureFromString(m_hDevice, "TriggerSelector", "FrameBurstStart");
+                            Pylon.DeviceFeatureFromString(m_hDevice, "TriggerMode", "Off");
+                        }
+
+                        /* To trigger each single frame by software or external hardware trigger: Enable the frame start trigger mode. */
+                        Pylon.DeviceFeatureFromString(m_hDevice, "TriggerSelector", "FrameStart");
+                        Pylon.DeviceFeatureFromString(m_hDevice, "TriggerMode", "On");
+                    }
+
+                    Pylon.DeviceFeatureFromString(m_hDevice, "TriggerSelector", triggerSelectorValue);
+
+                    /* Enable software triggering. */
+                    /* ... Select the software trigger as the trigger source. */
+                    Pylon.DeviceFeatureFromString(m_hDevice, "TriggerSource", "Software");
+
+                    /* When using software triggering, the Continuous frame mode should be used. Once
+                       acquisition is started, the camera sends one image each time a software trigger is
+                       issued. */
+                    Pylon.DeviceFeatureFromString(m_hDevice, "AcquisitionMode", "Continuous");
+
+                    isAvail = Pylon.DeviceFeatureIsWritable(m_hDevice, "ChunkModeActive");
+
+                    if (!isAvail)
+                    {
+                        throw new Exception("The device doesn't support the chunk mode.");
+                    }
+
+                    /* Activate the chunk mode. */
+                    Pylon.DeviceSetBooleanFeature(m_hDevice, "ChunkModeActive", true);
+
+                    /* Enable some individual chunks... */
+
+                    /* ... The frame counter chunk feature. */
+                    /* Is the chunk feature available? */
+                    isAvail = Pylon.DeviceFeatureIsAvailable(m_hDevice, "EnumEntry_ChunkSelector_Framecounter");
+
+                    if (isAvail)
+                    {
+                        /* Select the frame counter chunk feature. */
+                        Pylon.DeviceFeatureFromString(m_hDevice, "ChunkSelector", "Framecounter");
+
+                        /* Can the chunk feature be activated? */
+                        isAvail = Pylon.DeviceFeatureIsWritable(m_hDevice, "ChunkEnable");
+
+                        if (isAvail)
+                        {
+                            /* Activate the chunk feature. */
+                            Pylon.DeviceSetBooleanFeature(m_hDevice, "ChunkEnable", true);
+                        }
+                    }
+                    /* ... The CRC checksum chunk feature. */
+                    /*  Note: Enabling the CRC checksum chunk feature is not a prerequisite for using
+                       chunks. Chunks can also be handled when the CRC checksum chunk feature is disabled. */
+                    isAvail = Pylon.DeviceFeatureIsAvailable(m_hDevice, "EnumEntry_ChunkSelector_PayloadCRC16");
+
+                    if (isAvail)
+                    {
+                        /* Select the CRC checksum chunk feature. */
+                        Pylon.DeviceFeatureFromString(m_hDevice, "ChunkSelector", "PayloadCRC16");
+
+                        /* Can the chunk feature be activated? */
+                        isAvail = Pylon.DeviceFeatureIsWritable(m_hDevice, "ChunkEnable");
+
+                        if (isAvail)
+                        {
+                            /* Activate the chunk feature. */
+                            Pylon.DeviceSetBooleanFeature(m_hDevice, "ChunkEnable", true);
+                        }
+                    }
+
+                    /* The data block containing the image chunk and the other chunks has a self-descriptive layout.
+                       A chunk parser is used to extract the appended chunk data from the grabbed image frame.
+                       Create a chunk parser. */
+                    PYLON_CHUNKPARSER_HANDLE hChunkParser = Pylon.DeviceCreateChunkParser(m_hDevice);
+
+                    if (!hChunkParser.IsValid)
+                    {
+                        /* The transport layer doesn't provide a chunk parser. */
+                        throw new Exception("No chunk parser available.");
+                    }
+
+
+                    /* Image grabbing is done using a stream grabber.
+                      A device may be able to provide different streams. A separate stream grabber must
+                      be used for each stream. In this sample, we create a stream grabber for the default
+                      stream, i.e., the first stream ( index == 0 ).
+                      */
+
+                    /* Get the number of streams supported by the device and the transport layer. */
+                    uint nStreams = Pylon.DeviceGetNumStreamGrabberChannels(m_hDevice);
+
+                    if (nStreams < 1)
+                    {
+                        throw new Exception("The transport layer doesn't support image streams.");
+                    }
+
+                    /* Create and open a stream grabber for the first channel. */
+                    PYLON_STREAMGRABBER_HANDLE hGrabber = Pylon.DeviceGetStreamGrabber(m_hDevice, 0);
+                    Pylon.StreamGrabberOpen(hGrabber);
+
+                    /* Get a handle for the stream grabber's wait object. The wait object
+                       allows waiting for buffers to be filled with grabbed data. */
+                    PYLON_WAITOBJECT_HANDLE hWait = Pylon.StreamGrabberGetWaitObject(hGrabber);
+
+                    /* Determine the required size of the grab buffer. Since activating chunks will increase the
+                       payload size and thus the required buffer size, do this after enabling the chunks. */
+                    uint payloadSize = checked((uint)Pylon.DeviceGetIntegerFeature(m_hDevice, "PayloadSize"));
+                    /* We must tell the stream grabber the number and size of the buffers
+                        we are using. */
+                    /* .. We will not use more than NUM_BUFFERS for grabbing. */
+                    Pylon.StreamGrabberSetMaxNumBuffer(hGrabber, m_Chunk_NUM_BUFFERS);
+
+                    /* .. We will not use buffers bigger than payloadSize bytes. */
+                    Pylon.StreamGrabberSetMaxBufferSize(hGrabber, payloadSize);
+
+                    /*  Allocate the resources required for grabbing. After this, critical parameters
+                        that impact the payload size must not be changed until FinishGrab() is called. */
+                    Pylon.StreamGrabberPrepareGrab(hGrabber);
+
+                    /* Before using the buffers for grabbing, they must be registered at
+                       the stream grabber. For each registered buffer, a buffer handle
+                       is returned. After registering, these handles are used instead of the
+                       buffer objects pointers. The buffer objects are held in a dictionary,
+                       that provides access to the buffer using a handle as key.
+                     */
+                    buffers = new Dictionary<PYLON_STREAMBUFFER_HANDLE, PylonBuffer<Byte>>();
+                    int i;
+                    for (i = 0; i < m_Chunk_NUM_BUFFERS; ++i)
+                    {
+                        PylonBuffer<Byte> buffer = new PylonBuffer<byte>(payloadSize, true);
+                        PYLON_STREAMBUFFER_HANDLE handle = Pylon.StreamGrabberRegisterBuffer(hGrabber, ref buffer);
+                        buffers.Add(handle, buffer);
+                    }
+
+                    /* Feed the buffers into the stream grabber's input queue. For each buffer, the API
+                       allows passing in an integer as additional context information. This integer
+                       will be returned unchanged when the grab is finished. In our example, we use the index of the
+                       buffer as context information. */
+                    i = 0;
+                    foreach (KeyValuePair<PYLON_STREAMBUFFER_HANDLE, PylonBuffer<Byte>> pair in buffers)
+                    {
+                        Pylon.StreamGrabberQueueBuffer(hGrabber, pair.Key, i++);
+                    }
+
+                    /* Issue an acquisition start command. Because the trigger mode is enabled, issuing the start command
+                       itself will not trigger any image acquisitions. Issuing the start command simply prepares the camera.
+                       Once the camera is prepared it will acquire one image for every trigger it receives. */
+                    Pylon.DeviceExecuteCommandFeature(m_hDevice, "AcquisitionStart");
+                }
 
                 if (!m_LineCam_mode) // Area카메라이면
                 {
@@ -464,9 +647,9 @@ namespace PylonC.NETSupportLibrary
                 }
 
 
-                /* Image grabbing is done using a stream grabber.  
-                  A device may be able to provide different streams. A separate stream grabber must 
-                  be used for each stream. In this sample, we create a stream grabber for the default 
+                /* Image grabbing is done using a stream grabber.
+                  A device may be able to provide different streams. A separate stream grabber must
+                  be used for each stream. In this sample, we create a stream grabber for the default
                   stream, i.e., the first stream ( index == 0 ).
                   */
 
@@ -538,7 +721,7 @@ namespace PylonC.NETSupportLibrary
             /* Determine the required size of the grab buffer. */
             uint payloadSize = checked((uint)Pylon.DeviceGetIntegerFeature(m_hDevice, "PayloadSize"));
 
-            /* We must tell the stream grabber the number and size of the m_buffers 
+            /* We must tell the stream grabber the number and size of the m_buffers
                 we are using. */
             /* .. We will not use more than NUM_m_buffers for grabbing. */
             Pylon.StreamGrabberSetMaxNumBuffer(m_hGrabber, m_numberOfBuffersUsed);
@@ -546,7 +729,7 @@ namespace PylonC.NETSupportLibrary
             /* .. We will not use m_buffers bigger than payloadSize bytes. */
             Pylon.StreamGrabberSetMaxBufferSize(m_hGrabber, payloadSize);
 
-            /*  Allocate the resources required for grabbing. After this, critical parameters 
+            /*  Allocate the resources required for grabbing. After this, critical parameters
                 that impact the payload size must not be changed until FinishGrab() is called. */
             Pylon.StreamGrabberPrepareGrab(m_hGrabber);
 
@@ -563,9 +746,9 @@ namespace PylonC.NETSupportLibrary
                 m_buffers.Add(handle, buffer);
             }
 
-            /* Feed the m_buffers into the stream grabber's input queue. For each buffer, the API 
+            /* Feed the m_buffers into the stream grabber's input queue. For each buffer, the API
                allows passing in an integer as additional context information. This integer
-               will be returned unchanged when the grab is finished. In our example, we use the index of the 
+               will be returned unchanged when the grab is finished. In our example, we use the index of the
                buffer as context information. */
             foreach (KeyValuePair<PYLON_STREAMBUFFER_HANDLE, PylonBuffer<Byte>> pair in m_buffers)
             {
@@ -613,12 +796,12 @@ namespace PylonC.NETSupportLibrary
                     }
 
                     PylonGrabResult_t grabResult; /* Stores the result of a grab operation. */
-                    /* Since the wait operation was successful, the result of at least one grab 
+                    /* Since the wait operation was successful, the result of at least one grab
                        operation is available. Retrieve it. */
                     if (!Pylon.StreamGrabberRetrieveResult(m_hGrabber, out grabResult))
                     {
-                        /* Oops. No grab result available? We should never have reached this point. 
-                           Since the wait operation above returned without a timeout, a grab result 
+                        /* Oops. No grab result available? We should never have reached this point.
+                           Since the wait operation above returned without a timeout, a grab result
                            should be available. */
                         throw new Exception("Failed to retrieve a grab result.");
                     }
@@ -629,7 +812,7 @@ namespace PylonC.NETSupportLibrary
                         /* Add result to the ready list. */
                         EnqueueTakenImage(grabResult);
 
-                        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image 
+                        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image
                          and ReleaseImage() to remove the image from the queue and return it to the stream grabber.*/
                         OnImageReadyEvent();
 
@@ -642,8 +825,8 @@ namespace PylonC.NETSupportLibrary
                     }
                     else if (grabResult.Status == EPylonGrabStatus.Failed)
                     {
-                        /* 
-                            Grabbing an image can fail if the used network hardware, i.e. network adapter, 
+                        /*
+                            Grabbing an image can fail if the used network hardware, i.e. network adapter,
                             switch or Ethernet cable, experiences performance problems.
                             Increase the Inter-Packet Delay to reduce the required bandwidth.
                             It is recommended to enable Jumbo Frames on the network adapter and switch.
@@ -793,12 +976,12 @@ namespace PylonC.NETSupportLibrary
             /* ... Release grabbing related resources. */
             Pylon.StreamGrabberFinishGrab(m_hGrabber);
 
-            /* After calling PylonStreamGrabberFinishGrab(), parameters that impact the payload size (e.g., 
+            /* After calling PylonStreamGrabberFinishGrab(), parameters that impact the payload size (e.g.,
             the AOI width and height parameters) are unlocked and can be modified again. */
         }
 
         /* This callback is called by the pylon layer using DeviceCallbackHandler. */
-        protected void RemovalCallbackHandler(PYLON_DEVICE_HANDLE hDevice)
+        protected void RemovalCallbackHandler(PYLON_DEVICE_HANDLE m_hDeviceice)
         {
             /* Notify that the device has been removed from the PC. */
             OnDeviceRemovedEvent();
@@ -868,7 +1051,7 @@ namespace PylonC.NETSupportLibrary
             }
         }
 
-        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image 
+        /* Notify that an image has been added to the output queue. The receiver of the event can use GetCurrentImage() to acquire and process the image
          and ReleaseImage() to remove the image from the queue and return it to the stream grabber.*/
         protected void OnImageReadyEvent()
         {

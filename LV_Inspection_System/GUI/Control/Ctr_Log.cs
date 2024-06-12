@@ -33,9 +33,12 @@ namespace LV_Inspection_System.GUI.Control
                     label4.Text = "저장할 카메라 선택";
                     label11.Text = "저장방법";
                     label1.Text = "파일포맷";
-                    label7.Text = "통합 저장 폴더";
+                    label7.Text = "로컬 통합 저장 폴더";
+                    label17.Text = "서버 이미지 저장 폴더";
                     button_Folder_setting.Text = "폴더 선택";
                     button_OPEN.Text = "폴더 열기";
+                    button_Folder_setting2.Text = "폴더 선택";
+                    button_OPEN2.Text = "폴더 열기";
                     button_DELETE.Text = "폴더 삭제";
                     groupBox2.Text = "데이터 저장관련[Data Logging]";
                     label14.Text = "시스템 로그 및 데이터 로그";
@@ -54,7 +57,7 @@ namespace LV_Inspection_System.GUI.Control
                     button_LOGSAVE.Text = "적용 및 저장";
                     label9.Text = "그래프";
                     label8.Text = "초 마다 저장";
-                    label13.Text = "서버 폴더";
+                    label13.Text = "로컬 Data 저장 폴더";
                     button_Data_Folder_setting.Text = "폴더 선택";
                 }
                 else if (value == 1 && m_Language != value)
@@ -63,9 +66,12 @@ namespace LV_Inspection_System.GUI.Control
                     label4.Text = "Select camera for save";
                     label11.Text = "Item";
                     label1.Text = "Format";
-                    label7.Text = "Log Folder";
+                    label7.Text = "Local Total Folder";
+                    label17.Text = "Server Image Folder";
                     button_Folder_setting.Text = "Select Folder";
                     button_OPEN.Text = "Folder Open";
+                    button_Folder_setting2.Text = "Select Folder";
+                    button_OPEN2.Text = "Folder Open";
                     button_DELETE.Text = "Folder Delete";
                     groupBox2.Text = "Data Logging";
                     label14.Text = "Log for System and Data";
@@ -84,7 +90,7 @@ namespace LV_Inspection_System.GUI.Control
                     button_LOGSAVE.Text = "Apply and Save";
                     label9.Text = "Graph";
                     label8.Text = "sec/update";
-                    label13.Text = "Server Folder";
+                    label13.Text = "Data Folder";
                     button_Data_Folder_setting.Text = "Select Folder";
                 }
                 else if (value == 2 && m_Language != value)
@@ -93,9 +99,12 @@ namespace LV_Inspection_System.GUI.Control
                     label4.Text = "选择要保存的摄像机";
                     label11.Text = "项目";
                     label1.Text = "格式";
-                    label7.Text = "日志文件夹";
+                    label7.Text = "本地集成存储文件夹";
+                    label17.Text = "服务器映像文件夹";
                     button_Folder_setting.Text = "选择文件夹";
                     button_OPEN.Text = "文件夹打开";
+                    button_Folder_setting2.Text = "选择文件夹";
+                    button_OPEN2.Text = "文件夹打开";
                     button_DELETE.Text = "文件夹删除";
                     groupBox2.Text = "数据日志记录";
                     label14.Text = "系统和数据的日志";
@@ -114,7 +123,7 @@ namespace LV_Inspection_System.GUI.Control
                     button_LOGSAVE.Text = "应用和保存";
                     label9.Text = "产量图";
                     label8.Text = "秒/更新";
-                    label13.Text = "服务器文件夹";
+                    label13.Text = "本地数据存储文件夹";
                     button_Data_Folder_setting.Text = "选择文件夹";
                 }
                 m_Language = value;
@@ -144,7 +153,7 @@ namespace LV_Inspection_System.GUI.Control
                         try
                         {
                             // Start a new process for explorer
-                            // in this location     
+                            // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
                             l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -167,7 +176,7 @@ namespace LV_Inspection_System.GUI.Control
                         try
                         {
                             // Start a new process for explorer
-                            // in this location     
+                            // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
                             l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -382,7 +391,7 @@ namespace LV_Inspection_System.GUI.Control
                         try
                         {
                             // Start a new process for explorer
-                            // in this location     
+                            // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
                             l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -405,7 +414,7 @@ namespace LV_Inspection_System.GUI.Control
                         try
                         {
                             // Start a new process for explorer
-                            // in this location     
+                            // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
                             l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -429,7 +438,7 @@ namespace LV_Inspection_System.GUI.Control
                     try
                     {
                         // Start a new process for explorer
-                        // in this location     
+                        // in this location
                         ProcessStartInfo l_psi = new ProcessStartInfo();
                         l_psi.FileName = "explorer";
                         l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Data_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -452,7 +461,7 @@ namespace LV_Inspection_System.GUI.Control
                         try
                         {
                             // Start a new process for explorer
-                            // in this location     
+                            // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
                             l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -475,7 +484,7 @@ namespace LV_Inspection_System.GUI.Control
                         try
                         {
                             // Start a new process for explorer
-                            // in this location     
+                            // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
                             l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
@@ -640,6 +649,16 @@ namespace LV_Inspection_System.GUI.Control
                     {
                         textBox_Folder.Text = "";
                     }
+                    if (worksheet.Cells[22, 4].Value != null)
+                    {
+                        textBox_Folder2.Text = worksheet.Cells[22, 4].Value.ToString();
+                        LVApp.Instance().m_Config.m_Log_Save_Folder2 = textBox_Folder2.Text;
+                    }
+                    else
+                    {
+                        textBox_Folder2.Text = "";
+                    }
+
                     if (worksheet.Cells[16, 3].Value != null)
                     {
                         textBox_Data_Folder.Text = worksheet.Cells[16, 3].Value.ToString();
@@ -827,7 +846,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
                     LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Global_Parameters(LVApp.Instance().m_Config.Alg_TextView, LVApp.Instance().m_Config.Alg_Debugging);
 
-                    
+
                     for (int i = 0; i < LVApp.Instance().m_Config.m_Cam_Total_Num; i++)
                     {
                         LVApp.Instance().m_Config.Initialize_Data_Log(i);
@@ -1072,8 +1091,10 @@ namespace LV_Inspection_System.GUI.Control
                     worksheet.Cells[21, 2].Value = checkBox_NG_Display.Checked == true ? "1" : "0";
                     worksheet.Cells[22, 2].Value = checkBox_NG_LOG.Checked == true ? "1" : "0";
                     worksheet.Cells[22, 3].Value = textBox_MEMORY.Text;
-                    
+
                     worksheet.Cells[20, 2].Value = textBox_GRAPH.Text;
+                    worksheet.Cells[22, 4].Value = textBox_Folder2.Text;
+
                     int.TryParse(textBox_GRAPH.Text, out LVApp.Instance().m_Config.m_Graph_Update_sec);
                     package.Save();
                 }
@@ -1239,12 +1260,81 @@ namespace LV_Inspection_System.GUI.Control
         private void checkBox_SSFSAVE_CheckedChanged(object sender, EventArgs e)
         {
             LVApp.Instance().m_Config.SSF_Image_Save = checkBox_SSFSAVE.Checked;
-            
+
         }
 
         private void checkBox_CAM0_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button_Folder_setting2_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();  //폴더 다이알로그 호출
+
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBox_Folder2.ResetText();
+
+                if (folderBrowserDialog1.SelectedPath.Length == 3)
+                {
+                    textBox_Folder2.Text = folderBrowserDialog1.SelectedPath.Substring(0,2);
+                }
+                else
+                {
+                    textBox_Folder2.Text = folderBrowserDialog1.SelectedPath;
+                }
+                LVApp.Instance().m_Config.m_Log_Save_Folder2 = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void button_OPEN2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //if (textBox_Folder2.Text.Length > 1)
+                //{
+                //    LVApp.Instance().m_Config.m_Log_Save_Folder2 = textBox_Folder2.Text;
+                //    DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder2);
+                //    // 폴더가 존재하지 않으면
+                //    if (dir.Exists == false)
+                //    {
+                //        // 새로 생성합니다.
+                //        dir.Create();
+                //    }
+                //}
+                // Check the folder exists
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 == "")
+                {
+
+                }
+                else
+                {
+                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name))
+                    {
+                        try
+                        {
+                            // Start a new process for explorer
+                            // in this location
+                            ProcessStartInfo l_psi = new ProcessStartInfo();
+                            l_psi.FileName = "explorer";
+                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name);
+                            l_psi.UseShellExecute = true;
+
+                            Process l_newProcess = new Process();
+                            l_newProcess.StartInfo = l_psi;
+                            l_newProcess.Start();
+                        }
+                        catch (Exception exception)
+                        {
+                            throw new Exception("Error in 'LaunchFolderView'.", exception);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
         }
     }
 }

@@ -253,9 +253,9 @@ namespace LV_Inspection_System.GUI.Control
                 //CurrencyManager currencyManager1 = (CurrencyManager)BindingContext[dataGridView1.DataSource];
                 //currencyManager1.SuspendBinding();
                 //dataGridView1.ClearSelection();
-                //dataGridView1.Rows[5].Selected = true; 
+                //dataGridView1.Rows[5].Selected = true;
                 //dataGridView1.Rows[0].Visible = false;
-                //currencyManager1.ResumeBinding(); 
+                //currencyManager1.ResumeBinding();
                 dataGridView1.ClearSelection();
                 dataGridView1.Rows[5].Selected = true;
                 dataGridView1.Rows[0].Height = 0;
@@ -415,7 +415,7 @@ namespace LV_Inspection_System.GUI.Control
             //CurrencyManager currencyManager1 = (CurrencyManager)BindingContext[dataGridView1.DataSource];
             //currencyManager1.SuspendBinding();
             //dataGridView1.ClearSelection();
-            //dataGridView1.Rows[5].Selected = true; 
+            //dataGridView1.Rows[5].Selected = true;
             //dataGridView1.Rows[0].Visible = false;
             //currencyManager1.ResumeBinding();
 
@@ -2403,8 +2403,8 @@ namespace LV_Inspection_System.GUI.Control
                         }
                         else
                         {
-                            LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows[i - 1][0] = 
-                            LVApp.Instance().m_Config.Cam1_rect[i].mUse = 
+                            LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows[i - 1][0] =
+                            LVApp.Instance().m_Config.Cam1_rect[i].mUse =
                             LVApp.Instance().m_Config.Cam1_rect[i].mView = false;
                         }
                     }
@@ -2807,7 +2807,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
                 }
                 else
-                { //검사중일때  
+                { //검사중일때
                     LVApp.Instance().m_Config.Set_Parameters();
                     try
                     {
@@ -3386,7 +3386,7 @@ namespace LV_Inspection_System.GUI.Control
             {
                 return;
             }
-            
+
             if (listBox1_SelectedIndex < 0)
             {
                 return;
@@ -4079,7 +4079,7 @@ namespace LV_Inspection_System.GUI.Control
                 {
                     Bitmap t_bmp = pictureBox_Image.Image.Clone() as Bitmap;
 
-                    double Img_W = (double)t_bmp.Width; 
+                    double Img_W = (double)t_bmp.Width;
                     double Img_H = (double)t_bmp.Height;
 
                     t_bmp.Dispose();
@@ -4436,7 +4436,7 @@ namespace LV_Inspection_System.GUI.Control
             {//중국어
                 str = "是否要初始化 ROI?";
             }
-             
+
             if (MessageBox.Show(str, " Initialize ROI", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 dataGridView1.Rows[1].Cells[1].Value = pictureBox_Image.Width / 2 - 200;
@@ -5224,7 +5224,7 @@ namespace LV_Inspection_System.GUI.Control
             string tstr = "";
 
             if (LVApp.Instance().m_Config.m_Camera_Position[Cam_Num] == 1)
-            { // 사이드이면 
+            { // 사이드이면
                 if (listBox1.SelectedIndex == 0)
                 {
                     //dgvCmbCell8.Items.Add("좌상 기준");
@@ -5746,7 +5746,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
 
                     if (LVApp.Instance().m_Config.m_Camera_Position[Cam_Num] == 0)
-                    { // 상부 또는 하부이면 
+                    { // 상부 또는 하부이면
                         if (listBox1.SelectedIndex == 0)
                         {
                             dgvCmbCell8.Items.Add("좌측 끝 기준");
@@ -6143,7 +6143,7 @@ namespace LV_Inspection_System.GUI.Control
                         }
                     }
                     else if (LVApp.Instance().m_Config.m_Camera_Position[Cam_Num] == 1)
-                    { // 사이드이면 
+                    { // 사이드이면
                         if (listBox1.SelectedIndex == 0)
                         {
                             //if (comboBox_TABLETYPE.SelectedIndex == 0)
@@ -6162,7 +6162,7 @@ namespace LV_Inspection_System.GUI.Control
                                 dgvCmbCell8.Items.Add("중심 기준");
                                 dgvCmbCell8.Items.Add("상부 중심 기준");
                                 dgvCmbCell8.Items.Add("상부 꼭지점 기준");
-                            
+
                                 if (!tstr.Contains("기준"))
                                 {
                                     //dataGridView1.Rows[8].Cells[1].Value = "중심 기준";
@@ -6766,14 +6766,14 @@ namespace LV_Inspection_System.GUI.Control
                             }
                         }
                         tt_idx++;
-                        dataGridView1.Rows[tt_idx].Cells[0].Value = "계산방법(0:픽셀수,1:갯수,2:장축,3:단축,4:축각도,5:각도(중심에서),6:사이각,7:픽셀수(가장자리 제외),8:픽셀수(가장자리))";
+                        dataGridView1.Rows[tt_idx].Cells[0].Value = "계산방법(0:픽셀수,1:갯수,2:장축,3:단축,4:축각도,5:각도(중심에서),6:사이각,7:픽셀수(가장자리 제외),8:픽셀수(가장자리),9:Omit)";
                         if (Convert.ToInt32(dataGridView1.Rows[tt_idx].Cells[1].Value.ToString()) <= -1)
                         {
                             dataGridView1.Rows[tt_idx].Cells[1].Value = 0;
                         }
-                        if (Convert.ToInt32(dataGridView1.Rows[tt_idx].Cells[1].Value.ToString()) > 8)
+                        if (Convert.ToInt32(dataGridView1.Rows[tt_idx].Cells[1].Value.ToString()) > 9)
                         {
-                            dataGridView1.Rows[tt_idx].Cells[1].Value = 8;
+                            dataGridView1.Rows[tt_idx].Cells[1].Value = 9;
                         }
 
                         //if (Convert.ToInt32(dataGridView1.Rows[24].Cells[1].Value.ToString()) >= 1 && Convert.ToInt32(dataGridView1.Rows[24].Cells[1].Value.ToString()) <= 6)
@@ -7428,7 +7428,7 @@ namespace LV_Inspection_System.GUI.Control
                                 }
                             }
 
-                            if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "모델 불러오기" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "Model Load" 
+                            if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "모델 불러오기" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "Model Load"
                                 || dataGridView1.Rows[i].Cells[0].Value.ToString() == "모델 학습" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "Model Train"
                                 || dataGridView1.Rows[i].Cells[0].Value.ToString() == "ROI 이미지 저장" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "ROI Image Save"
                             )
@@ -7664,7 +7664,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
 
                     if (LVApp.Instance().m_Config.m_Camera_Position[Cam_Num] == 0)
-                    { // 상부 또는 하부이면 
+                    { // 상부 또는 하부이면
                         if (listBox1.SelectedIndex == 0)
                         {
                             dgvCmbCell8.Items.Add("Left end");
@@ -8051,7 +8051,7 @@ namespace LV_Inspection_System.GUI.Control
                                 && !tstr.Contains("BLOB in circle ROI")
                                 && !tstr.Contains("Circularity(%)") && !tstr.Contains("Pitch of thread") && !tstr.Contains("Distance between two area")
                                 && !tstr.Contains("Size of thread") && !tstr.Contains("Color BLOB in circle ROI") && !tstr.Contains("Match rate(%)")
-                                && !tstr.Contains("Bevelling Measurement") && !tstr.Contains("AI Inspection") && !tstr.Contains("SSF") 
+                                && !tstr.Contains("Bevelling Measurement") && !tstr.Contains("AI Inspection") && !tstr.Contains("SSF")
                                 && !tstr.Contains("Center difference between Inner and outter circle") && tstr.Length != 0)
                             {
                                 tstr = "Hor. length";
@@ -8059,7 +8059,7 @@ namespace LV_Inspection_System.GUI.Control
                         }
                     }
                     else if (LVApp.Instance().m_Config.m_Camera_Position[Cam_Num] == 1)
-                    { // 사이드이면 
+                    { // 사이드이면
                         if (listBox1.SelectedIndex == 0)
                         {
                             dgvCmbCell8.Items.Add("Left end");
@@ -8686,14 +8686,14 @@ namespace LV_Inspection_System.GUI.Control
                             }
                         }
                         tt_idx++;
-                        dataGridView1.Rows[tt_idx].Cells[0].Value = "Output(0:Pixel,1:Count,2:Major,3:Minor,4:Axis angle,5:Angle(from center),6:Included angle,7:Pixel(except boundary),8:Pixel(boundary only))";
+                        dataGridView1.Rows[tt_idx].Cells[0].Value = "Output(0:Pixel,1:Count,2:Major,3:Minor,4:Axis angle,5:Angle(from center),6:Included angle,7:Pixel(except boundary),8:Pixel(boundary only),9:Omit)";
                         if (Convert.ToInt32(dataGridView1.Rows[tt_idx].Cells[1].Value.ToString()) <= -1)
                         {
                             dataGridView1.Rows[tt_idx].Cells[1].Value = 0;
                         }
-                        if (Convert.ToInt32(dataGridView1.Rows[tt_idx].Cells[1].Value.ToString()) > 8)
+                        if (Convert.ToInt32(dataGridView1.Rows[tt_idx].Cells[1].Value.ToString()) > 9)
                         {
-                            dataGridView1.Rows[tt_idx].Cells[1].Value = 8;
+                            dataGridView1.Rows[tt_idx].Cells[1].Value = 9;
                         }
 
                         //if (Convert.ToInt32(dataGridView1.Rows[24].Cells[1].Value.ToString()) >= 1 && Convert.ToInt32(dataGridView1.Rows[24].Cells[1].Value.ToString()) <= 6)
@@ -9369,7 +9369,7 @@ namespace LV_Inspection_System.GUI.Control
                                     dataGridView1.Rows[i].Cells[1].Style.BackColor = Color.LightPink;
                                 }
                             }
-                            
+
                             if (dataGridView1.Rows[i].Cells[0].Value.ToString() == "모델 불러오기" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "Model Load"
                              || dataGridView1.Rows[i].Cells[0].Value.ToString() == "모델 학습" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "Model Train"
                              || dataGridView1.Rows[i].Cells[0].Value.ToString() == "ROI 이미지 저장" || dataGridView1.Rows[i].Cells[0].Value.ToString() == "ROI Image Save"
@@ -9794,10 +9794,10 @@ namespace LV_Inspection_System.GUI.Control
             ////{
             ////    m_roi_click_auto_mode = checkBox_AutoInspection.Checked = true;
             ////}
-           
+
             //if (LVApp.Instance().m_Config.ROI_Cam_Num == 0)
             //{
-            //    if (//!LVApp.Instance().m_mainform.ctr_ROI1.ctr_ROI_Guide1.timer_Camera.Enabled && 
+            //    if (//!LVApp.Instance().m_mainform.ctr_ROI1.ctr_ROI_Guide1.timer_Camera.Enabled &&
             //        !LVApp.Instance().m_Config.m_Check_Inspection_Mode)
             //    {
             //        //pictureBox_Image.Refresh();
@@ -9813,7 +9813,7 @@ namespace LV_Inspection_System.GUI.Control
             //}
             //else if (LVApp.Instance().m_Config.ROI_Cam_Num == 1)
             //{
-            //    if (//!LVApp.Instance().m_mainform.ctr_ROI2.ctr_ROI_Guide1.timer_Camera.Enabled && 
+            //    if (//!LVApp.Instance().m_mainform.ctr_ROI2.ctr_ROI_Guide1.timer_Camera.Enabled &&
             //        !LVApp.Instance().m_Config.m_Check_Inspection_Mode)
             //    {
             //        //pictureBox_Image.Refresh();
@@ -9829,7 +9829,7 @@ namespace LV_Inspection_System.GUI.Control
             //}
             //else if (LVApp.Instance().m_Config.ROI_Cam_Num == 2)
             //{
-            //    if (//!LVApp.Instance().m_mainform.ctr_ROI3.ctr_ROI_Guide1.timer_Camera.Enabled && 
+            //    if (//!LVApp.Instance().m_mainform.ctr_ROI3.ctr_ROI_Guide1.timer_Camera.Enabled &&
             //        !LVApp.Instance().m_Config.m_Check_Inspection_Mode)
             //    {
             //        //pictureBox_Image.Refresh();
@@ -9845,7 +9845,7 @@ namespace LV_Inspection_System.GUI.Control
             //}
             //else if (LVApp.Instance().m_Config.ROI_Cam_Num == 3)
             //{
-            //    if (//!LVApp.Instance().m_mainform.ctr_ROI4.ctr_ROI_Guide1.timer_Camera.Enabled && 
+            //    if (//!LVApp.Instance().m_mainform.ctr_ROI4.ctr_ROI_Guide1.timer_Camera.Enabled &&
             //        !LVApp.Instance().m_Config.m_Check_Inspection_Mode)
             //    {
             //        //pictureBox_Image.Refresh();
@@ -10173,7 +10173,7 @@ namespace LV_Inspection_System.GUI.Control
                     if (t_current_row_idx >= 0)
                     {
                         str_help = dataGridView1.Rows[t_current_row_idx].Cells[t_current_col_idx].Value.ToString();
-                    }                    
+                    }
                     ContextMenu cm = new ContextMenu();
                     if (LVApp.Instance().m_Config.m_SetLanguage == 0)
                     {//한국어
@@ -10337,7 +10337,7 @@ namespace LV_Inspection_System.GUI.Control
                         }
                     }
                 }
-                else   // 파일의 존재하지 않으면    
+                else   // 파일의 존재하지 않으면
                 {
                     if (File.Exists(ModelfileName))
                     {
@@ -10450,7 +10450,7 @@ namespace LV_Inspection_System.GUI.Control
                             }
                         }
                     }
-                    else   // 파일의 존재하지 않으면    
+                    else   // 파일의 존재하지 않으면
                     {
                         if (File.Exists(ModelfileName))
                         {
@@ -10557,21 +10557,21 @@ namespace LV_Inspection_System.GUI.Control
                 // 폴더가 존재하지 않으면
                 if (dir.Exists == false)
                 {
-                    // 새로 생성합니다.    
+                    // 새로 생성합니다.
                     dir.Create();
                 }
                 dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\AI_Images\\" + LVApp.Instance().m_Config.m_Model_Name);
                 // 폴더가 존재하지 않으면
                 if (dir.Exists == false)
                 {
-                    // 새로 생성합니다.    
+                    // 새로 생성합니다.
                     dir.Create();
                 }
                 dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\AI_Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\CAM" + Cam_Num.ToString());
                 // 폴더가 존재하지 않으면
                 if (dir.Exists == false)
                 {
-                    // 새로 생성합니다.    
+                    // 새로 생성합니다.
                     dir.Create();
                 }
 

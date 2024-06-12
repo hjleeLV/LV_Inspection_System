@@ -80,6 +80,10 @@
             this.button_LOGFOLDERDELETE = new System.Windows.Forms.Button();
             this.button_LOGSAVE = new System.Windows.Forms.Button();
             this.button_LOGLOAD = new System.Windows.Forms.Button();
+            this.button_Folder_setting2 = new System.Windows.Forms.Button();
+            this.textBox_Folder2 = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.button_OPEN2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -104,12 +108,16 @@
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel2.Controls.Add(this.button_LOGSAVE);
             this.splitContainer1.Panel2.Controls.Add(this.button_LOGLOAD);
-            this.splitContainer1.Size = new System.Drawing.Size(494, 440);
+            this.splitContainer1.Size = new System.Drawing.Size(494, 541);
             this.splitContainer1.SplitterDistance = 237;
             this.splitContainer1.TabIndex = 0;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_OPEN2);
+            this.groupBox1.Controls.Add(this.button_Folder_setting2);
+            this.groupBox1.Controls.Add(this.textBox_Folder2);
+            this.groupBox1.Controls.Add(this.label17);
             this.groupBox1.Controls.Add(this.button_OPEN);
             this.groupBox1.Controls.Add(this.checkBox_AISAVE);
             this.groupBox1.Controls.Add(this.button_Folder_setting);
@@ -135,7 +143,7 @@
             this.groupBox1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox1.Location = new System.Drawing.Point(7, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(218, 368);
+            this.groupBox1.Size = new System.Drawing.Size(218, 514);
             this.groupBox1.TabIndex = 47;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "이미지 저장관련[Image Logging]";
@@ -145,9 +153,9 @@
             this.button_OPEN.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_OPEN.BackgroundImage")));
             this.button_OPEN.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_OPEN.ForeColor = System.Drawing.Color.White;
-            this.button_OPEN.Location = new System.Drawing.Point(16, 325);
+            this.button_OPEN.Location = new System.Drawing.Point(110, 298);
             this.button_OPEN.Name = "button_OPEN";
-            this.button_OPEN.Size = new System.Drawing.Size(187, 37);
+            this.button_OPEN.Size = new System.Drawing.Size(93, 37);
             this.button_OPEN.TabIndex = 37;
             this.button_OPEN.Text = "폴더 열기";
             this.button_OPEN.UseVisualStyleBackColor = true;
@@ -170,9 +178,9 @@
             this.button_Folder_setting.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_Folder_setting.BackgroundImage")));
             this.button_Folder_setting.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_Folder_setting.ForeColor = System.Drawing.Color.White;
-            this.button_Folder_setting.Location = new System.Drawing.Point(101, 263);
+            this.button_Folder_setting.Location = new System.Drawing.Point(16, 298);
             this.button_Folder_setting.Name = "button_Folder_setting";
-            this.button_Folder_setting.Size = new System.Drawing.Size(103, 24);
+            this.button_Folder_setting.Size = new System.Drawing.Size(93, 37);
             this.button_Folder_setting.TabIndex = 49;
             this.button_Folder_setting.Text = "폴더 설정";
             this.button_Folder_setting.UseVisualStyleBackColor = true;
@@ -181,7 +189,7 @@
             // textBox_Folder
             // 
             this.textBox_Folder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_Folder.Location = new System.Drawing.Point(17, 292);
+            this.textBox_Folder.Location = new System.Drawing.Point(17, 275);
             this.textBox_Folder.Name = "textBox_Folder";
             this.textBox_Folder.Size = new System.Drawing.Size(186, 20);
             this.textBox_Folder.TabIndex = 48;
@@ -190,11 +198,11 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label7.Location = new System.Drawing.Point(15, 267);
+            this.label7.Location = new System.Drawing.Point(15, 256);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(87, 15);
+            this.label7.Size = new System.Drawing.Size(115, 15);
             this.label7.TabIndex = 47;
-            this.label7.Text = "통합 저장 폴더";
+            this.label7.Text = "로컬 통합 저장 폴더";
             // 
             // label4
             // 
@@ -392,7 +400,7 @@
             this.button_DELETE.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_DELETE.BackgroundImage")));
             this.button_DELETE.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_DELETE.ForeColor = System.Drawing.Color.White;
-            this.button_DELETE.Location = new System.Drawing.Point(109, 325);
+            this.button_DELETE.Location = new System.Drawing.Point(109, 299);
             this.button_DELETE.Name = "button_DELETE";
             this.button_DELETE.Size = new System.Drawing.Size(94, 37);
             this.button_DELETE.TabIndex = 38;
@@ -723,13 +731,57 @@
             this.button_LOGLOAD.UseVisualStyleBackColor = true;
             this.button_LOGLOAD.Click += new System.EventHandler(this.button_LOGLOAD_Click);
             // 
+            // button_Folder_setting2
+            // 
+            this.button_Folder_setting2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_Folder_setting2.BackgroundImage")));
+            this.button_Folder_setting2.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_Folder_setting2.ForeColor = System.Drawing.Color.White;
+            this.button_Folder_setting2.Location = new System.Drawing.Point(16, 389);
+            this.button_Folder_setting2.Name = "button_Folder_setting2";
+            this.button_Folder_setting2.Size = new System.Drawing.Size(93, 37);
+            this.button_Folder_setting2.TabIndex = 59;
+            this.button_Folder_setting2.Text = "폴더 설정";
+            this.button_Folder_setting2.UseVisualStyleBackColor = true;
+            this.button_Folder_setting2.Click += new System.EventHandler(this.button_Folder_setting2_Click);
+            // 
+            // textBox_Folder2
+            // 
+            this.textBox_Folder2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_Folder2.Location = new System.Drawing.Point(17, 366);
+            this.textBox_Folder2.Name = "textBox_Folder2";
+            this.textBox_Folder2.Size = new System.Drawing.Size(186, 20);
+            this.textBox_Folder2.TabIndex = 58;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label17.Location = new System.Drawing.Point(15, 347);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(127, 15);
+            this.label17.TabIndex = 57;
+            this.label17.Text = "서버 이미지 저장 폴더";
+            // 
+            // button_OPEN2
+            // 
+            this.button_OPEN2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_OPEN2.BackgroundImage")));
+            this.button_OPEN2.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_OPEN2.ForeColor = System.Drawing.Color.White;
+            this.button_OPEN2.Location = new System.Drawing.Point(110, 389);
+            this.button_OPEN2.Name = "button_OPEN2";
+            this.button_OPEN2.Size = new System.Drawing.Size(93, 37);
+            this.button_OPEN2.TabIndex = 60;
+            this.button_OPEN2.Text = "폴더 열기";
+            this.button_OPEN2.UseVisualStyleBackColor = true;
+            this.button_OPEN2.Click += new System.EventHandler(this.button_OPEN2_Click);
+            // 
             // Ctr_Log
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
             this.Name = "Ctr_Log";
-            this.Size = new System.Drawing.Size(494, 440);
+            this.Size = new System.Drawing.Size(494, 541);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -795,5 +847,9 @@
         private System.Windows.Forms.TextBox textBox_Data_Folder;
         private System.Windows.Forms.Label label13;
         public System.Windows.Forms.CheckBox checkBox_AISAVE;
+        private System.Windows.Forms.Button button_OPEN2;
+        private System.Windows.Forms.Button button_Folder_setting2;
+        private System.Windows.Forms.TextBox textBox_Folder2;
+        private System.Windows.Forms.Label label17;
     }
 }

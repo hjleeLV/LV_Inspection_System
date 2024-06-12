@@ -65,6 +65,8 @@ namespace LV_Inspection_System.GUI.Control
                     toolStripButton_SAVE.ToolTipText = "저장";
                     toolStripButton_LOAD.ToolTipText = "불러오기";
                     toolStripButtonImageSave.ToolTipText = "이미지 저장";
+
+                    button_Merge_Apply.Text = "적용";
                 }
                 else if (value == 1 && m_Language != value)
                 {// 영어
@@ -97,6 +99,7 @@ namespace LV_Inspection_System.GUI.Control
                     toolStripButton_SAVE.ToolTipText = "Save";
                     toolStripButton_LOAD.ToolTipText = "Load";
                     toolStripButtonImageSave.ToolTipText = "Image save";
+                    button_Merge_Apply.Text = "Apply";
                 }
                 else if (value == 2 && m_Language != value)
                 {// 중국어
@@ -129,6 +132,7 @@ namespace LV_Inspection_System.GUI.Control
                     toolStripButton_SAVE.ToolTipText = "救";
                     toolStripButton_LOAD.ToolTipText = "负荷";
                     toolStripButtonImageSave.ToolTipText = "图像保存";
+                    button_Merge_Apply.Text = "应用";
                 }
                 m_Language = value;
             }
@@ -195,7 +199,7 @@ namespace LV_Inspection_System.GUI.Control
                 else
                 {
                     label_Grab_Num.Text = "[" + m_Grab_Num.ToString("000000000") + "]";
-                } 
+                }
                 Thread.Sleep(100);
             }
             finally
@@ -531,7 +535,7 @@ namespace LV_Inspection_System.GUI.Control
             {
                 LVApp.Instance().m_GenICam.Stop(cam_num);
                 EnableButtons(LVApp.Instance().m_GenICam.CAM[cam_num].Connection, false);
-                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled = 
+                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled =
                 GeniCam_sliderOffsetX.Enabled = GeniCam_sliderOffsetY.Enabled = true;
             }
             else
@@ -735,7 +739,7 @@ namespace LV_Inspection_System.GUI.Control
             else if (LVApp.Instance().m_Config.m_Cam_Kind[cam_num] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[cam_num] == 6)
             { // 중국 카메라
                 LVApp.Instance().m_GenICam.Close(cam_num);
-                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled = 
+                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled =
                 GeniCam_sliderOffsetX.Enabled = GeniCam_sliderOffsetY.Enabled = true;
                 //LVApp.Instance().m_GenICam.Open(cam_num);
                 if (LVApp.Instance().m_GenICam.CAM[cam_num].Connection)
@@ -840,7 +844,7 @@ namespace LV_Inspection_System.GUI.Control
                 GeniCam_sliderOffsetY.UpdateValues();
                 GeniCam_sliderExposureTime.UpdateValues();
                 GeniCam_sliderGain.UpdateValues();
-                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled = 
+                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled =
                 GeniCam_sliderOffsetX.Enabled = GeniCam_sliderOffsetY.Enabled = true;
                 EnableButtons(false, true);
             }
@@ -954,7 +958,7 @@ namespace LV_Inspection_System.GUI.Control
                 GeniCam_sliderExposureTime.UpdateValues();
                 GeniCam_sliderGain.Dev = LVApp.Instance().m_GenICam.CAM[cam_num].Dev;
                 GeniCam_sliderGain.UpdateValues();
-                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled = 
+                GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled =
                 GeniCam_sliderOffsetX.Enabled = GeniCam_sliderOffsetY.Enabled = true;
 
                 if (LVApp.Instance().m_GenICam.CAM[cam_num].Connection)
@@ -1199,6 +1203,9 @@ namespace LV_Inspection_System.GUI.Control
                     {
                         worksheet.Cells[11 + 10 * m_Cam_num, 10].Value = comboBoxPixelFormat.comboBox.SelectedIndex;
                     }
+                    worksheet.Cells[11 + 10 * m_Cam_num, 11].Value = checkBox_Merge.Checked == false ? "0" : "1";
+                    worksheet.Cells[11 + 10 * m_Cam_num, 12].Value = textBox_Merge.Text;
+
                     package.Save();
                     Add_Message(m_Camera_Name + " Setting Saved.");
                     DebugLogger.Instance().LogRecord(m_Camera_Name + " saved.");
@@ -1517,7 +1524,7 @@ namespace LV_Inspection_System.GUI.Control
                     LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Resolution(t_res[0], t_res[1], m_Cam_num);
                     //LVApp.Instance().m_mainform.m_ImProClr_Class1.Set_Resolution(t_res[0], t_res[1], m_Cam_num);
                     //LVApp.Instance().m_mainform.m_ImProClr_Class2.Set_Resolution(t_res[0], t_res[1], m_Cam_num);
-                    
+
                     if (worksheet.Cells[10 + 10 * m_Cam_num, 2].Value != null && worksheet.Cells[10 + 10 * m_Cam_num, 3].Value != null)
                     {
                         checkBox_LR.Checked = worksheet.Cells[10 + 10 * m_Cam_num, 2].Value.ToString() == "0" ? false : true;
@@ -1557,7 +1564,7 @@ namespace LV_Inspection_System.GUI.Control
                         textBox_TRIGGER_DELAY.Text = "0";
                     }
                     int.TryParse(textBox_TRIGGER_DELAY.Text, out LVApp.Instance().m_Config.Inspection_Delay[m_Cam_num]);
-                    
+
                     if (worksheet.Cells[11 + 10 * m_Cam_num, 5].Value != null)
                     {
                         comboBox_CAMKIND.SelectedIndex = Convert.ToInt32(worksheet.Cells[11 + 10 * m_Cam_num, 5].Value);
@@ -1594,6 +1601,24 @@ namespace LV_Inspection_System.GUI.Control
                             LVApp.Instance().m_mainform.ctr_Camera_Setting4.comboBox_CO_CAM.SelectedIndex = 0;
                     }
 
+                    if (worksheet.Cells[11 + 10 * m_Cam_num, 11].Value != null && worksheet.Cells[11 + 10 * m_Cam_num, 12].Value != null)
+                    {
+                        checkBox_Merge.Checked = worksheet.Cells[11 + 10 * m_Cam_num, 11].Value.ToString() == "0" ? false : true;
+                        textBox_Merge.Text = worksheet.Cells[11 + 10 * m_Cam_num, 12].Value.ToString();
+
+                        LVApp.Instance().m_Config.Image_Merge_Check[m_Cam_num] = checkBox_Merge.Checked;
+                        int _v = 0;
+                        int.TryParse(textBox_Merge.Text, out _v);
+                        if (_v > 0)
+                        {
+                            LVApp.Instance().m_Config.Image_Merge_Number[m_Cam_num] = _v;
+                        }
+                    }
+                    else
+                    {
+                        LVApp.Instance().m_Config.Image_Merge_Check[m_Cam_num] = checkBox_Merge.Checked = false;
+                        LVApp.Instance().m_Config.Image_Merge_Number[m_Cam_num] = 0; textBox_Merge.Text = "0";
+                    }
 
                     Add_Message(m_Camera_Name + " Setting Loaded");
                     DebugLogger.Instance().LogRecord(m_Camera_Name + " Setting loaded.");
@@ -1955,6 +1980,23 @@ namespace LV_Inspection_System.GUI.Control
         private void comboBox_CO_CAM_SelectedIndexChanged(object sender, EventArgs e)
         {
             button_Change_COCAM_Click(sender, e);
+        }
+
+        private void checkBox_Merge_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_Merge_Apply_Click(object sender, EventArgs e)
+        {
+            int cam_num = Convert.ToInt32(textBox_Camera_Name.Text.Substring(3, 1)) % 4;
+            LVApp.Instance().m_Config.Image_Merge_Check[cam_num] = checkBox_Merge.Checked;
+            int _v = 0;
+            int.TryParse(textBox_Merge.Text, out _v);
+            if (_v > 0)
+            {
+                LVApp.Instance().m_Config.Image_Merge_Number[cam_num] = _v;
+            }
         }
     }
 }

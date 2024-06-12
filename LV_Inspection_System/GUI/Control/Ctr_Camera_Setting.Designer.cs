@@ -84,6 +84,9 @@
             this.GeniCam_sliderHeight = new LV_Inspection_System.GUI.Control.GeniCam_SliderUserControl();
             this.GeniCam_sliderOffsetX = new LV_Inspection_System.GUI.Control.GeniCam_SliderUserControl();
             this.GeniCam_sliderOffsetY = new LV_Inspection_System.GUI.Control.GeniCam_SliderUserControl();
+            this.checkBox_Merge = new System.Windows.Forms.CheckBox();
+            this.textBox_Merge = new System.Windows.Forms.TextBox();
+            this.button_Merge_Apply = new System.Windows.Forms.Button();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -447,9 +450,9 @@
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBox1.ForeColor = System.Drawing.Color.HotPink;
-            this.richTextBox1.Location = new System.Drawing.Point(50, 632);
+            this.richTextBox1.Location = new System.Drawing.Point(50, 658);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(271, 73);
+            this.richTextBox1.Size = new System.Drawing.Size(271, 47);
             this.richTextBox1.TabIndex = 50;
             this.richTextBox1.Text = "";
             // 
@@ -515,7 +518,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label8.Location = new System.Drawing.Point(47, 601);
+            this.label8.Location = new System.Drawing.Point(47, 600);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(86, 17);
             this.label8.TabIndex = 58;
@@ -530,7 +533,7 @@
             "CAM1 or 5",
             "CAM2 or 6",
             "CAM3 or 7"});
-            this.comboBox_CO_CAM.Location = new System.Drawing.Point(157, 601);
+            this.comboBox_CO_CAM.Location = new System.Drawing.Point(157, 600);
             this.comboBox_CO_CAM.Name = "comboBox_CO_CAM";
             this.comboBox_CO_CAM.Size = new System.Drawing.Size(97, 20);
             this.comboBox_CO_CAM.TabIndex = 59;
@@ -553,7 +556,7 @@
             this.button_Change_COCAM.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_Change_COCAM.ForeColor = System.Drawing.Color.White;
             this.button_Change_COCAM.Image = global::LV_Inspection_System.Properties.Resources.Button_BG;
-            this.button_Change_COCAM.Location = new System.Drawing.Point(261, 598);
+            this.button_Change_COCAM.Location = new System.Drawing.Point(261, 596);
             this.button_Change_COCAM.Name = "button_Change_COCAM";
             this.button_Change_COCAM.Size = new System.Drawing.Size(60, 28);
             this.button_Change_COCAM.TabIndex = 60;
@@ -726,11 +729,49 @@
             this.GeniCam_sliderOffsetY.TabIndex = 27;
             this.GeniCam_sliderOffsetY.Visible = false;
             // 
+            // checkBox_Merge
+            // 
+            this.checkBox_Merge.AutoSize = true;
+            this.checkBox_Merge.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.checkBox_Merge.Location = new System.Drawing.Point(50, 630);
+            this.checkBox_Merge.Name = "checkBox_Merge";
+            this.checkBox_Merge.Size = new System.Drawing.Size(106, 19);
+            this.checkBox_Merge.TabIndex = 63;
+            this.checkBox_Merge.Text = "Image Merge";
+            this.checkBox_Merge.UseVisualStyleBackColor = true;
+            this.checkBox_Merge.CheckedChanged += new System.EventHandler(this.checkBox_Merge_CheckedChanged);
+            // 
+            // textBox_Merge
+            // 
+            this.textBox_Merge.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_Merge.Location = new System.Drawing.Point(157, 627);
+            this.textBox_Merge.Name = "textBox_Merge";
+            this.textBox_Merge.Size = new System.Drawing.Size(97, 25);
+            this.textBox_Merge.TabIndex = 64;
+            this.textBox_Merge.Text = "70";
+            this.textBox_Merge.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // button_Merge_Apply
+            // 
+            this.button_Merge_Apply.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_Merge_Apply.ForeColor = System.Drawing.Color.White;
+            this.button_Merge_Apply.Image = global::LV_Inspection_System.Properties.Resources.Button_BG;
+            this.button_Merge_Apply.Location = new System.Drawing.Point(261, 625);
+            this.button_Merge_Apply.Name = "button_Merge_Apply";
+            this.button_Merge_Apply.Size = new System.Drawing.Size(60, 28);
+            this.button_Merge_Apply.TabIndex = 65;
+            this.button_Merge_Apply.Text = "적용";
+            this.button_Merge_Apply.UseVisualStyleBackColor = true;
+            this.button_Merge_Apply.Click += new System.EventHandler(this.button_Merge_Apply_Click);
+            // 
             // Ctr_Camera_Setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.button_Merge_Apply);
+            this.Controls.Add(this.textBox_Merge);
+            this.Controls.Add(this.checkBox_Merge);
             this.Controls.Add(this.comboBoxPixelFormat);
             this.Controls.Add(this.button_Change_COCAM);
             this.Controls.Add(this.comboBox_CO_CAM);
@@ -844,6 +885,8 @@
         public GeniCam_SliderUserControl GeniCam_sliderOffsetX;
         public GeniCam_SliderUserControl GeniCam_sliderHeight;
         public GeniCam_SliderUserControl GeniCam_sliderWidth;
-
+        private System.Windows.Forms.CheckBox checkBox_Merge;
+        private System.Windows.Forms.TextBox textBox_Merge;
+        private System.Windows.Forms.Button button_Merge_Apply;
     }
 }
