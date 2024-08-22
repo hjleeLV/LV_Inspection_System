@@ -322,6 +322,7 @@ namespace LV_Inspection_System.UTIL
                                     //CAM0_Trigger_Completed(this, CAM0_Trigger_Event);
                                     //t_CNT[0]++;
                                     //LVApp.Instance().m_mainform.add_Log("CAM0 DI " + t_CNT[0].ToString());
+                                    DebugLogger.Instance().LogRecord("CAM0 DIO IN");    // LHJ - 240804 디버깅용
                                 }
                             }
                             if (CAM_Di_Port[1] == port)
@@ -335,6 +336,7 @@ namespace LV_Inspection_System.UTIL
                                     //CAM1_Trigger_Completed(this, CAM1_Trigger_Event);
                                     //t_CNT[1]++;
                                     //LVApp.Instance().m_mainform.add_Log("CAM1 DI " + t_CNT[1].ToString());
+                                    DebugLogger.Instance().LogRecord("CAM1 DIO IN");    // LHJ - 240804 디버깅용
                                 }
                             }
                             if (CAM_Di_Port[2] == port)
@@ -348,6 +350,7 @@ namespace LV_Inspection_System.UTIL
                                     //CAM2_Trigger_Completed(this, CAM2_Trigger_Event);
                                     //t_CNT[2]++;
                                     //LVApp.Instance().m_mainform.add_Log("CAM2 DI " + t_CNT[2].ToString());
+                                    DebugLogger.Instance().LogRecord("CAM2 DIO IN");    // LHJ - 240804 디버깅용
                                 }
                             }
                             if (CAM_Di_Port[3] == port)
@@ -361,6 +364,7 @@ namespace LV_Inspection_System.UTIL
                                     //CAM3_Trigger_Completed(this, CAM3_Trigger_Event);
                                     //t_CNT[3]++;
                                     //LVApp.Instance().m_mainform.add_Log("CAM3 DI");
+                                    DebugLogger.Instance().LogRecord("CAM3 DIO IN");    // LHJ - 240804 디버깅용
                                 }
                             }
                             if (port == 0)

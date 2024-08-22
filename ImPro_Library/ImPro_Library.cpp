@@ -458,7 +458,7 @@ void CImPro_Library::J_Fitting_Ellipse(Mat &Binary,double* Circle_Info)
 	if (contours.size() > 0)
 	{
 		vector<Rect> boundRect( contours.size() );
-		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+		for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 		{
 			boundRect[k] = boundingRect( Mat(contours[k]) );
 			if (m_max_object_value<= boundRect[k].width*boundRect[k].height)
@@ -563,7 +563,7 @@ int CImPro_Library::J_Delete_Small_Binary(Mat &Binary, int m_small)
 	if (contours.size() > 0)
 	{
 		//#pragma omp parallel for
-		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+		for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 		{
 			t_Binary = Mat::zeros(Binary.size(), CV_8UC1);
 			drawContours( t_Binary, contours, k, color, CV_FILLED, 8, hierarchy );
@@ -1457,7 +1457,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 		{
 			if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num != s && s > 0)
 			{
-				if (BOLT_Param[Cam_num].nSSFOutput[s] == 2 && ((BOLT_Param[Cam_num].nCamPosition == 0 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB) || (BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::SSF_S)))
+				if (BOLT_Param[Cam_num].nSSFOutput[s] == 6 && ((BOLT_Param[Cam_num].nCamPosition == 0 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB) || (BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::SSF_S)))	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2 -> == 6
 				{
 				}
 				else
@@ -2350,7 +2350,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++)
+								for (int i = 0; i < (int)(min((double)contours.size(), MAX_CONTOUR)); i++)
 								{
 									Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
 									drawContours( Temp_Out_binary, contours, i, Scalar(255,255,255), CV_FILLED, 8);
@@ -2625,7 +2625,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								}
 							} // end : if (contours.size() > 0)
 
-							//	for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++)
+							//	for (int i = 0; i < (int)(min((double)contours.size(), MAX_CONTOUR)); i++)
 							//	{
 
 							//		//if contour[i] is not a hole
@@ -3238,7 +3238,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								vector<Rect> boundRect( contours.size() );
 								int m_max_object_num = -1;int m_max_object_value = 0;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect[k] = boundingRect( Mat(contours[k]) );
 									if (m_max_object_value <= boundRect[k].width*boundRect[k].height)//
@@ -3551,7 +3551,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
 										vector<Rect> boundRect1( contours.size() );
 										m_max_object_num = -1;m_max_object_value = 0;
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											boundRect1[k] = boundingRect( Mat(contours[k]) );
 											if (m_max_object_value <= boundRect1[k].width*boundRect1[k].height
@@ -4570,7 +4570,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								m_max_object_num = -1;int m_2nd_max_object_num = -1;
 								m_max_object_value = 0;
 								Rect tt_rect;Rect t_Side_rect;Rect t_Head_rect;
-								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(), MAX_CONTOUR)); k++ )
 								{
 									tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value<= tt_rect.width*tt_rect.height )
@@ -4581,7 +4581,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									}
 								}
 								m_max_object_value = 0;
-								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(), MAX_CONTOUR)); k++ )
 								{
 									tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value<= tt_rect.width*tt_rect.height && m_max_object_num != k)
@@ -4970,7 +4970,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								m_max_object_num = -1;
 								m_max_object_value = 0;
 								Rect tt_rect;Rect t_Side_rect;
-								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(), MAX_CONTOUR)); k++ )
 								{
 									tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value<= tt_rect.width*tt_rect.height
@@ -5151,7 +5151,7 @@ if (Result_Debugging)
 				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB) // SSF
 				{
-					if (BOLT_Param[Cam_num].nSSFOutput[s] == 6)
+					if (BOLT_Param[Cam_num].nSSFOutput[s] == 10)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 6 -> == 10
 					{
 						dist_vec.push_back(BOLT_Param[Cam_num].nSSFResult[BOLT_Param[Cam_num].nSSFAIClass[s]]);
 					}
@@ -5295,7 +5295,7 @@ if (Result_Debugging)
 						// Lifting 복원 끝
 
 						// Omit 예외 처리
-						if (BOLT_Param[Cam_num].nSSFOutput[s] != 2)
+						if (BOLT_Param[Cam_num].nSSFOutput[s] != 6)		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 						{
 							//imwrite("00.bmp", BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]));
 							//imwrite("01.bmp", Out_binary);
@@ -5320,7 +5320,10 @@ if (Result_Debugging)
 						vector<vector<Point> > SSF_contours;
 						vector<Vec4i> SSF_hierarchy;
 
-						int BLOB_Max_CNT = 30000;
+						// 240711 - LHJ 30000개 제한이었던 것을 MAX_CONTOUR에 종속되도록 변경
+						//int BLOB_Max_CNT = 30000;
+						int BLOB_Max_CNT = MAX_CONTOUR * 3;
+
 						BOLT_Param[Cam_num].vecSSF_BLOB.clear();
 						//BOLT_Param[Cam_num].vecSSF_BLOB.assign(BLOB_Max_CNT, t_BLOB);
 						findContours(Out_binary.clone(), SSF_contours, SSF_hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
@@ -5381,6 +5384,8 @@ if (Result_Debugging)
 								+ (rect_points[1].y - rect_points[2].y) * (rect_points[1].y - rect_points[2].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
 							BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length = max(t_length_0to1, t_length_1to2);
 							BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length = min(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size = BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length;
 						}
 						// Feature 계산 끝
@@ -5420,7 +5425,7 @@ if (Result_Debugging)
 						{ // 불량 검출 수
 							dist_vec.push_back(t_Count);
 						}
-						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
+						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2에서 == 6으로 변경
 						{ // 예외 처리용
 							dist_vec.push_back(0);
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -5435,14 +5440,14 @@ if (Result_Debugging)
 							bool t_SSF_NonOmit_check = false;
 							for (int ss = 1; ss < 41; ss++)
 							{
-								if (BOLT_Param[Cam_num].nSSFOutput[ss] == 2 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_TB)
+								if (BOLT_Param[Cam_num].nSSFOutput[ss] == 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_TB)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2-> == 6
 								{
 									t_SSF_Omit_Exist_check = true;
 								}
 
 								if (ss == s - 1 && t_SSF_Omit_Exist_check)
 								{// 그전까지 Omit은 초기화 함.
-									if (BOLT_Param[Cam_num].nSSFOutput[s - 1] != 2 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_TB)
+									if (BOLT_Param[Cam_num].nSSFOutput[s - 1] != 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_TB)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 									{
 										BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
 										//AfxMessageBox(L"Omit Initialized");
@@ -5468,7 +5473,7 @@ if (Result_Debugging)
 								//imwrite("00_0.bmp", BOLT_Param[Cam_num].nSSFOmitImage);
 							}
 						}
-						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3 || BOLT_Param[Cam_num].nSSFOutput[s] == 4 || BOLT_Param[Cam_num].nSSFOutput[s] == 5)
+						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 7 || BOLT_Param[Cam_num].nSSFOutput[s] == 8 || BOLT_Param[Cam_num].nSSFOutput[s] == 9)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3, == 4, == 5 -> 7, 8, 9 로 변경
 						{ // AI 검사
 							cv::Scalar t_Scalar_rand[1000];
 							for (int j = 0; j < 1000; j++)
@@ -5568,14 +5573,14 @@ if (Result_Debugging)
 								BOLT_Param[Cam_num].nSSFResult[j] = (double)t_Class_CNT[j];
 							}
 
-							if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
+							if (BOLT_Param[Cam_num].nSSFOutput[s] == 7)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3 -> 7
 							{
 								if (BOLT_Param[Cam_num].nSSFAIClass[s] >= 0 && BOLT_Param[Cam_num].nSSFAIClass[s] < 41)
 								{
 									dist_vec.push_back((double)t_Class_CNT[BOLT_Param[Cam_num].nSSFAIClass[s]]);
 								}
 							}
-							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
+							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 8)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 4 -> 8
 							{
 								double total_cnt = 0;
 								for (int j = 0; j < 41; j++)
@@ -5596,7 +5601,7 @@ if (Result_Debugging)
 							}
 						}
 
-						if (BOLT_Param[Cam_num].nSSFOutput[s] < 3)
+						if (BOLT_Param[Cam_num].nSSFOutput[s] < 7)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: < 3 -> < 7로 변경
 						{
 							// 여기에 그림 그리고, 저장하고 불량 정보 보낼것
 							if (BOLT_Param[Cam_num].vecSSF_BLOB.size() > 0)
@@ -5607,10 +5612,39 @@ if (Result_Debugging)
 									{ // 불량 크기
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
 									}
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - Start
+									// 2: Size_LV, 3: Long, 4: Short, 5: Area
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+										msg.Format(L"S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+									}
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+										msg.Format(L"Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+									}
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+										msg.Format(L"Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+									}
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 5)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+										msg.Format(L"Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+									}
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - End
 									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
 									{ // Dark 불량
-										if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 2)
+										if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
 											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
@@ -5619,19 +5653,31 @@ if (Result_Debugging)
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
 											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											/*msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);*/
 										}
 									}
 									else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
 									{ // Bright 불량
-										if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 2)
+										if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
 											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
@@ -5640,13 +5686,19 @@ if (Result_Debugging)
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
 											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
 											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 								}
@@ -5659,11 +5711,11 @@ if (Result_Debugging)
 							{
 								for (int j = BOLT_Param[Cam_num].vecSSF_BLOB.size() - 1; j >= 0; j--)
 								{
-									if (BOLT_Param[Cam_num].nSSFOutput[s] == 3 && BOLT_Param[Cam_num].vecSSF_BLOB[j].Class != BOLT_Param[Cam_num].nSSFAIClass[s])
+									if (BOLT_Param[Cam_num].nSSFOutput[s] == 7 && BOLT_Param[Cam_num].vecSSF_BLOB[j].Class != BOLT_Param[Cam_num].nSSFAIClass[s])	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3 -> 7
 									{
 										continue;
 									}
-									if (BOLT_Param[Cam_num].nSSFOutput[s] == 4 && BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == BOLT_Param[Cam_num].nSSFAIClass[s])
+									if (BOLT_Param[Cam_num].nSSFOutput[s] == 8 && BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == BOLT_Param[Cam_num].nSSFAIClass[s])	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 4 -> 8
 									{
 										continue;
 									}
@@ -5863,7 +5915,7 @@ if (Result_Debugging)
 							Rect tt_rect;
 							int t_left = 999999;
 							int t_right = 0;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
@@ -6392,7 +6444,7 @@ if (Result_Debugging)
 							Rect tt_rect;
 							int t_top = 0;
 							int t_bottom = 999999;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
@@ -6611,7 +6663,7 @@ if (Result_Debugging)
 							Rect tt_rect;
 							int t_top = 0;
 							int t_bottom = 999999;int t_top_blo_ind = -1;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
@@ -7120,7 +7172,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									//if (hierarchy[k][3] == -1)
 									{
@@ -7207,7 +7259,7 @@ if (Result_Debugging)
 									if (contours.size() > 0)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
-										for (int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+										for (int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 										{
 											minRect = minAreaRect(contours[k]);
 											t_max_temp =  sqrt(((minRect.center.x - (double)t_max_dist_point.x)*(minRect.center.x - (double)t_max_dist_point.x) + (minRect.center.y - (double)t_max_dist_point.y)*(minRect.center.y - (double)t_max_dist_point.y)));
@@ -7318,7 +7370,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									tt_rect = boundingRect( Mat(contours[k]) );
 									minRect = minAreaRect(contours[k]);
@@ -7394,7 +7446,7 @@ if (Result_Debugging)
 									if (contours.size() > 0)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
-										for (int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+										for (int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 										{
 											minRect = minAreaRect(contours[k]);
 											t_max_temp =  sqrt(((minRect.center.x - (double)t_max_dist_point.x)*(minRect.center.x - (double)t_max_dist_point.x) + (minRect.center.y - (double)t_max_dist_point.y)*(minRect.center.y - (double)t_max_dist_point.y)));
@@ -7618,7 +7670,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								minRect = minAreaRect(contours[k]);
@@ -7704,7 +7756,7 @@ if (Result_Debugging)
 					//	findContours( Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
 					//	if (contours.size() > 0)
 					//	{
-					//		for(int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+					//		for(int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 					//		{
 					//			//if (hierarchy[k][3] == -1)
 					//			{
@@ -7749,7 +7801,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++)
+							for (int i = 0; i < (int)(min((double)contours.size(), MAX_CONTOUR)); i++)
 							{
 								Rect t_rect = boundingRect(contours[i]);
 								if (t_rect.width * t_rect.height >= m_max_object_value)
@@ -7919,7 +7971,7 @@ if (Result_Debugging)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							Circle circlef,circleIni;
-							for(int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+							for(int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 							{
 								//if (hierarchy[k][3] == -1)
 								{
@@ -8114,7 +8166,7 @@ if (Result_Debugging)
 							vector<Moments> mu(contours.size());
 							Rect boundRect;
 							int m_max_object_num = -1;int m_max_object_value = 0;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect(contours[k]);
@@ -8479,7 +8531,7 @@ if (Result_Debugging)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							//#pragma omp parallel for
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,100,255), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,100,255),8);
@@ -8625,7 +8677,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 								}
@@ -8651,7 +8703,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 								}
@@ -8741,7 +8793,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 								}
@@ -8767,7 +8819,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 								}
@@ -8790,7 +8842,7 @@ if (Result_Debugging)
 					if (contours.size() > 0)
 					{
 						Rect boundRect;
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							boundRect = boundingRect(contours[k]);
 							if (m_max_object_value <= boundRect.width*boundRect.height)
@@ -9964,7 +10016,7 @@ if (Result_Debugging)
 
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
-								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+								for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -10280,7 +10332,7 @@ if (Result_Debugging)
 								}
 								continue;
 							}
-							for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
+							for (int j = 0; j < (int)(min((double)contours.size(), MAX_CONTOUR)); j++)
 							{
 								//area = stats.at<int>(j, CC_STAT_AREA);
 								//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -11456,7 +11508,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
-								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+								for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -11569,7 +11621,7 @@ if (Result_Debugging)
 									//#pragma omp parallel for
 									if (contours.size() > 0)
 									{
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 											//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -11584,7 +11636,7 @@ if (Result_Debugging)
 							//if (numOfLables > 0)
 							//{
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
+								for (int j = 0; j < (int)(min((double)contours.size(), MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -12225,7 +12277,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
-								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+								for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -12340,7 +12392,7 @@ if (Result_Debugging)
 									//#pragma omp parallel for
 									if (contours.size() > 0)
 									{
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 											//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -12356,7 +12408,7 @@ if (Result_Debugging)
 							/*if (numOfLables > 0)
 							{*/
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
+								for (int j = 0; j < (int)(min((double)contours.size(), MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -13024,7 +13076,7 @@ if (Result_Debugging)
 								if (contours.size() > 0)
 								{
 									//std::sort(contours.begin(), contours.end(), compareContourAreas);
-									for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+									for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 									{
 										drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,200,0), 1, 8, hierarchy);
 										//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,200,0),8);
@@ -13038,7 +13090,7 @@ if (Result_Debugging)
 								if (contours.size() > 0)
 								{
 									//std::sort(contours.begin(), contours.end(), compareContourAreas);
-									for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+									for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 									{
 										drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,200,0), 1, 8, hierarchy);
 										//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,200,0),8);
@@ -13133,7 +13185,7 @@ if (Result_Debugging)
 									if (contours.size() > 0)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,200,255), 1, 8, hierarchy);
 											//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,200,255),8);
@@ -13147,7 +13199,7 @@ if (Result_Debugging)
 									if (contours.size() > 0)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,200,255), 1, 8, hierarchy);
 											//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,200,255),8);
@@ -13240,7 +13292,7 @@ if (Result_Debugging)
 									if (contours.size() > 0)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,200,255), 1, 8, hierarchy);
 											//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,200,255),8);
@@ -13256,7 +13308,7 @@ if (Result_Debugging)
 									{
 										//std::sort(contours.begin(), contours.end(), compareContourAreas);
 
-										for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+										for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 										{
 											drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,200,255), 1, 8, hierarchy);
 											//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,200,255),8);
@@ -13311,7 +13363,7 @@ if (Result_Debugging)
 
 							vector<Rect> boundRect( contours.size() );
 							int m_max_object_num = -1;int m_max_object_value = 0;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								boundRect[k] = boundingRect( Mat(contours[k]) );
 								if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
@@ -13326,7 +13378,7 @@ if (Result_Debugging)
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
 								//#pragma omp parallel for
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 0, 1, hierarchy);
 								}
@@ -13454,7 +13506,7 @@ if (Result_Debugging)
 
 							vector<vector<Point>> hull1(contours.size());
 							//#pragma omp parallel for
-							for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+							for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 							{
 								convexHull( Mat(contours[k]), hull1[k], false );
 								//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -13510,7 +13562,7 @@ if (Result_Debugging)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 
-						for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++) // iterate through each contour.
+						for (int i = 0; i < (int)(min((double)contours.size(), MAX_CONTOUR)); i++) // iterate through each contour.
 						{
 							double fArea = (int)(contourArea(contours[i]) + 0.5);//t_Circle_Blob_Info.Pixels.size();
 								if (fArea <= 2.0 || BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s] > fArea || BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s] < fArea)
@@ -13529,21 +13581,23 @@ if (Result_Debugging)
 
 					bool t_SSF_Omit_Exist_check = false;
 					bool t_SSF_NonOmit_check = false;
-					for (int ss = 1; ss < 41; ss++)
+					if (s - 1 > 0)
 					{
-						if (BOLT_Param[Cam_num].nCircleOutputMethod[ss] == 9)
+						for (int ss = 0; ss < s - 1; ss++)
 						{
-							t_SSF_Omit_Exist_check = true;
-						}
-
-						if (ss == s - 1 && t_SSF_Omit_Exist_check)
-						{// 그전까지 Omit은 초기화 함.
-							if (BOLT_Param[Cam_num].nCircleOutputMethod[s - 1] == 9 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::CIRCLE_BLOB_SIZE_TB)
+							if (BOLT_Param[Cam_num].nCircleOutputMethod[ss] == 9)
 							{
-								BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
-								//AfxMessageBox(L"Omit Initialized");
+								t_SSF_Omit_Exist_check = true;
 							}
-							break;
+						}
+					}
+
+					if (t_SSF_Omit_Exist_check)
+					{// 그전까지 Omit은 초기화 함.
+						if (BOLT_Param[Cam_num].nCircleOutputMethod[s] == 9)
+						{
+							BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
+							//AfxMessageBox(L"Omit Initialized");
 						}
 					}
 
@@ -13584,7 +13638,7 @@ if (Result_Debugging)
 						vector<double> vX;
 						vector<double> vY;
 
-						for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++) // iterate through each contour.
+						for (int i = 0; i < (int)(min((double)contours.size(), MAX_CONTOUR)); i++) // iterate through each contour.
 						{
 							//if (t_cnt > 255)
 							//{
@@ -13702,6 +13756,11 @@ if (Result_Debugging)
 						}
 						vector<double> Circle_Blob_mag;
 						vector<double> Circle_Blob_angle;
+
+						if (vX.size() == 0)
+						{
+							continue;
+						}
 
 						cartToPolar(vX, vY, Circle_Blob_mag, Circle_Blob_angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
 						for(int i=0; i<vX.size(); i++)
@@ -14195,7 +14254,7 @@ if (Result_Debugging)
 
 							vector<Rect> boundRect( contours.size() );
 							int m_max_object_num = -1;int m_max_object_value = 0;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								boundRect[k] = boundingRect( Mat(contours[k]) );
 								if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
@@ -14211,7 +14270,7 @@ if (Result_Debugging)
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
 							//#pragma omp parallel for
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -14297,7 +14356,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -14319,7 +14378,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -14330,7 +14389,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,100,0), 3, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -14511,7 +14570,7 @@ if (Result_Debugging)
 						vector<RotatedRect> boundRect( contours.size() );
 						double V_R = 0;float R_diameter = 0;
 						int m_max_object_num = -1;double m_max_object_value = 0;
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							if (hierarchy[k][3] == -1)
 							{
@@ -14639,7 +14698,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -14728,7 +14787,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -15277,7 +15336,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 							dist_vec.clear();
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -15357,7 +15416,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 							dist_vec.clear();
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -15432,7 +15491,7 @@ if (Result_Debugging)
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							vector<Rect> boundRect( contours.size() );
 							int m_max_object_num = -1;int m_max_object_value = 0;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								boundRect[k] = boundingRect( Mat(contours[k]) );
 								if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
@@ -15448,7 +15507,7 @@ if (Result_Debugging)
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
 							//#pragma omp parallel for
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 0, 1, hierarchy);
 							}
@@ -15588,7 +15647,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,50,0), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,50,0),8);
@@ -15602,7 +15661,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,50,0), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,50,0),8);
@@ -15638,7 +15697,7 @@ if (Result_Debugging)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
 						vector<vector<Point>> hull1(contours1.size());
-						for(size_t k=0; k<(int)(min((double)contours1.size(),MAX_CONTOUR)); k++)
+						for(size_t k=0; k<(int)(min((double)contours1.size(), MAX_CONTOUR)); k++)
 						{
 							convexHull( Mat(contours1[k]), hull1[k], false );
 							//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -15646,7 +15705,7 @@ if (Result_Debugging)
 							if (m_Text_View[Cam_num] && !ROI_Mode)
 							{
 								//#pragma omp parallel for
-								for( int k = 0; k < (int)(min((double)contours1.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours1.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours1, k, CV_RGB(255,200,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours1[k], CV_RGB(255,50,0),8);
@@ -15655,7 +15714,7 @@ if (Result_Debugging)
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
 								//#pragma omp parallel for
-								for( int k = 0; k < (int)(min((double)contours1.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours1.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours1, k, CV_RGB(255,200,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours1[k], CV_RGB(255,50,0),8);
@@ -15737,7 +15796,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,200,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,0,0),8);
@@ -15751,7 +15810,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,200,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,0,0),8);
@@ -15783,7 +15842,7 @@ if (Result_Debugging)
 					if (contours.size() > 0)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							tt_rect = boundingRect( Mat(contours[k]) );
 							minRect = minAreaRect(contours[k]);
@@ -15925,7 +15984,7 @@ if (Result_Debugging)
 						//if (contours.size() > 0)
 						//{
 						//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						//	for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						//	for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						//	{
 						//		tt_rect = boundingRect( Mat(contours[k]) );
 						//		minRect = minAreaRect(contours[k]);
@@ -15955,7 +16014,7 @@ if (Result_Debugging)
 							//if (contours.size() > 0)
 							//{
 							//	//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							//	for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							//	for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							//	{
 							//		tt_rect = boundingRect( Mat(contours[k]) );
 							//		minRect = minAreaRect(contours[k]);
@@ -16218,7 +16277,7 @@ if (Result_Debugging)
 					// Lifting 복원 끝
 
 					// Omit 예외 처리
-					if (BOLT_Param[Cam_num].nSSFOutput[s] != 2)
+					if (BOLT_Param[Cam_num].nSSFOutput[s] != 6)		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 					{
 						//imwrite("00.bmp", BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]));
 						//imwrite("01.bmp", Out_binary);
@@ -16304,6 +16363,8 @@ if (Result_Debugging)
 							+ (rect_points[1].y - rect_points[2].y) * (rect_points[1].y - rect_points[2].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
 						BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length = max(t_length_0to1, t_length_1to2);
 						BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length = min(t_length_0to1, t_length_1to2);
+						BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+						BOLT_Param[Cam_num].vecSSF_BLOB[j].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 						BOLT_Param[Cam_num].vecSSF_BLOB[j].Size = BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length;
 					}
 					// Feature 계산 끝
@@ -16343,7 +16404,7 @@ if (Result_Debugging)
 					{ // 불량 검출 수
 						dist_vec.push_back(t_Count);
 					}
-					else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
+					else if (BOLT_Param[Cam_num].nSSFOutput[s] == 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2에서 == 6으로 변경
 					{ // 예외 처리용
 						dist_vec.push_back(0);
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -16358,14 +16419,14 @@ if (Result_Debugging)
 						bool t_SSF_NonOmit_check = false;
 						for (int ss = 1; ss < 41; ss++)
 						{
-							if (BOLT_Param[Cam_num].nSSFOutput[ss] == 2 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_S::SSF_S)
+							if (BOLT_Param[Cam_num].nSSFOutput[ss] == 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_S::SSF_S)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2-> == 6
 							{
 								t_SSF_Omit_Exist_check = true;
 							}
 
 							if (ss == s - 1 && t_SSF_Omit_Exist_check)
 							{// 그전까지 Omit은 초기화 함.
-								if (BOLT_Param[Cam_num].nSSFOutput[s - 1] != 2 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_S::SSF_S)
+								if (BOLT_Param[Cam_num].nSSFOutput[s - 1] != 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_S::SSF_S)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 								{
 									BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
 									//AfxMessageBox(L"Omit Initialized");
@@ -16402,10 +16463,39 @@ if (Result_Debugging)
 							{ // 불량 크기
 								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
 							}
+							// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - Start
+							// 2: Size_LV, 3: Long, 4: Short, 5: Area
+							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
+							{
+								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+								msg.Format(L"S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+							}
+							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
+							{
+								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+								msg.Format(L"Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+							}
+							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
+							{
+								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+								msg.Format(L"Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+							}
+							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 5)
+							{
+								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+								msg.Format(L"Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+							}
+							// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - End
 							if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
 							{ // Dark 불량
-								if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 2)
+								if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 								{
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+									{
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									}
+
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
 									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
@@ -16414,19 +16504,31 @@ if (Result_Debugging)
 								}
 								if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 								{
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+									{
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									}
+
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
 									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 									msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
 									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+									//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 								}
 							}
 							else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
 							{ // Bright 불량
-								if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 2)
+								if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 6)		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 								{
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+									{
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									}
+
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
 									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
@@ -16435,13 +16537,19 @@ if (Result_Debugging)
 								}
 								if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 								{
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+									{
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									}
+
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
 									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
 									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 									msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
 									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+									//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 								}
 							}
 						}
@@ -16626,7 +16734,7 @@ if (Result_Debugging)
 							Rect tt_rect;
 							int t_left = 999999;
 							int t_right = 0;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
@@ -17158,7 +17266,7 @@ if (Result_Debugging)
 							Rect tt_rect;
 							int t_top = 0;
 							int t_bottom = 999999;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
@@ -17377,7 +17485,7 @@ if (Result_Debugging)
 							Rect tt_rect;
 							int t_top = 0;
 							int t_bottom = 999999;int t_bottom_blo_ind = -1;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_rect = boundingRect( Mat(contours[k]) );
 								//if (tt_rect.y > 0 && tt_rect.y + tt_rect.height < Out_binary.rows-1)
@@ -17720,7 +17828,7 @@ if (Result_Debugging)
 					if (contours.size() > 0)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value<= tt_TROI.height*tt_TROI.width)
@@ -17742,7 +17850,7 @@ if (Result_Debugging)
 					if (contours.size() > 0)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value<= tt_TROI.height*tt_TROI.width)
@@ -17780,7 +17888,7 @@ if (Result_Debugging)
 						Rect tt_ROI1;
 						if (contours.size() > 0)
 						{
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								tt_TROI = boundingRect(contours[k]);
 								if (m_max_object_value<= tt_TROI.height * tt_TROI.width)
@@ -17794,7 +17902,7 @@ if (Result_Debugging)
 						//msg.Format(L"%d,%d,%d,%d",tt_ROI0.x,tt_ROI0.y,tt_ROI0.width,tt_ROI0.height);
 						//AfxMessageBox(msg);
 
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value2<= tt_TROI.height * tt_TROI.width && k != m_max_object_num)
@@ -17888,7 +17996,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -17977,7 +18085,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -18079,7 +18187,7 @@ if (Result_Debugging)
 								vector<Point4D> Pitch_Info;
 								Point4D t_Point4D;
 								dist_vec.clear();
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									mu[k] = moments( contours[k], false );
 									boundRect = boundingRect( Mat(contours[k]) );
@@ -18187,7 +18295,7 @@ if (Result_Debugging)
 										if (contours.size() > 0)
 										{
 											//std::sort(contours.begin(), contours.end(), compareContourAreas);
-											for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+											for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 												//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -18201,7 +18309,7 @@ if (Result_Debugging)
 										if (contours.size() > 0)
 										{
 											//std::sort(contours.begin(), contours.end(), compareContourAreas);
-											for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+											for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 												//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -18249,7 +18357,7 @@ if (Result_Debugging)
 								vector<Point4D> Pitch_Info;
 								Point4D t_Point4D;
 								dist_vec.clear();
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									mu[k] = moments( contours[k], false );
 									boundRect = boundingRect( Mat(contours[k]) );
@@ -18358,7 +18466,7 @@ if (Result_Debugging)
 										if (contours.size() > 0)
 										{
 											//std::sort(contours.begin(), contours.end(), compareContourAreas);
-											for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+											for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 												//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -18372,7 +18480,7 @@ if (Result_Debugging)
 										if (contours.size() > 0)
 										{
 											//std::sort(contours.begin(), contours.end(), compareContourAreas);
-											for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+											for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 											{
 												drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 												//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -18413,7 +18521,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -18542,7 +18650,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -18643,7 +18751,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -18743,7 +18851,7 @@ if (Result_Debugging)
 							vector<Point4D> Pitch_Info;
 							Point4D t_Point4D;
 
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								mu[k] = moments( contours[k], false );
 								boundRect = boundingRect( Mat(contours[k]) );
@@ -18837,7 +18945,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
@@ -18937,7 +19045,7 @@ if (Result_Debugging)
 							else
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
@@ -18982,7 +19090,7 @@ if (Result_Debugging)
 							else
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
@@ -19106,7 +19214,7 @@ if (Result_Debugging)
 							else
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
@@ -19151,7 +19259,7 @@ if (Result_Debugging)
 							else
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.y > 2 && boundRect.y + boundRect.height < BOLT_Param[Cam_num].nRect[s].height-2 && boundRect.width >= 5 && boundRect.height >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4)
@@ -19244,7 +19352,7 @@ if (Result_Debugging)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;double t_v = 0;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									//t_v = (contourArea(contours[k]) + 0.5);
@@ -19290,7 +19398,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
@@ -19369,7 +19477,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
@@ -19455,7 +19563,7 @@ if (Result_Debugging)
 							else
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.x > 2 && boundRect.x + boundRect.width < BOLT_Param[Cam_num].nRect[s].width-2 && boundRect.width >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4 && boundRect.height >= 5)
@@ -19500,7 +19608,7 @@ if (Result_Debugging)
 							else
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (boundRect.x > 2 && boundRect.x + boundRect.width < BOLT_Param[Cam_num].nRect[s].width-2 && boundRect.width >= BOLT_Param[Cam_num].nAngleHeightFilterSize[s]/4 && boundRect.height >= 5)
@@ -19593,7 +19701,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width
@@ -19815,7 +19923,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width)
@@ -20136,7 +20244,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								Rect boundRect;
 								int t_max = 0; int t_max_idx = -1;
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect = boundingRect( Mat(contours[k]) );
 									if (t_max <= boundRect.height*boundRect.width)
@@ -20237,7 +20345,7 @@ if (Result_Debugging)
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
 							Rect boundRect;
 							int t_max = 0; int t_max_idx = -1;
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								boundRect = boundingRect( Mat(contours[k]) );
 								if (t_max <= boundRect.height*boundRect.width
@@ -20363,7 +20471,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							//std::sort(contours.begin(), contours.end(), compareContourAreas);
-							for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+							for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 							{
 								drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,100,255), 1, 8, hierarchy);
 								//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,100,255),8);
@@ -20468,7 +20576,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
-								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+								for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -20512,7 +20620,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -20528,7 +20636,7 @@ if (Result_Debugging)
 						if (contours.size() > 0)
 						{
 							Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-							for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
+							for (int j = 0; j < (int)(min((double)contours.size(), MAX_CONTOUR)); j++)
 							{
 								//area = stats.at<int>(j, CC_STAT_AREA);
 								//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -21162,7 +21270,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
-								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+								for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -21211,7 +21319,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -21229,7 +21337,7 @@ if (Result_Debugging)
 								//if (numOfLables > 0)
 							{
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
+								for (int j = 0; j < (int)(min((double)contours.size(), MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -21830,7 +21938,7 @@ if (Result_Debugging)
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
 								vector<vector<Point>> hull1(contours.size());
 								//#pragma omp parallel for
-								for(int k=0; k<(int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+								for(int k=0; k<(int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 								{
 									convexHull( Mat(contours[k]), hull1[k], false );
 									//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -21879,7 +21987,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(0,255,0),8);
@@ -21898,7 +22006,7 @@ if (Result_Debugging)
 							//if (numOfLables > 0)
 							{
 								Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-								for (int j = 0; j < (int)(min((double)contours.size(),MAX_CONTOUR)); j++)
+								for (int j = 0; j < (int)(min((double)contours.size(), MAX_CONTOUR)); j++)
 								{
 									//area = stats.at<int>(j, CC_STAT_AREA);
 									//t_x = stats.at<int>(j, CC_STAT_LEFT);
@@ -22485,7 +22593,7 @@ if (Result_Debugging)
 					if (contours.size() > 0)
 					{
 						//std::sort(contours.begin(), contours.end(), compareContourAreas);
-						for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+						for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 						{
 							tt_TROI = boundingRect(contours[k]);
 							if (m_max_object_value<= tt_TROI.height*tt_TROI.width)
@@ -22547,7 +22655,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									tt_TROI = boundingRect(contours[k]);
 									if (m_max_object_value<= tt_TROI.height * tt_TROI.width)
@@ -23050,7 +23158,7 @@ if (Result_Debugging)
 						//std::sort(contours1.begin(), contours1.end(), compareContourAreas);
 						vector<vector<Point>> hull1(contours1.size());
 						//#pragma omp parallel for
-						for(int k=0; k<(int)(min((double)contours1.size(),MAX_CONTOUR)); k++)
+						for(int k=0; k<(int)(min((double)contours1.size(), MAX_CONTOUR)); k++)
 						{
 							convexHull( Mat(contours1[k]), hull1[k], false );
 							//drawContours( Danja_DlDDM_Convex_Img, hull1, k, Scalar(255,255,255),CV_FILLED, 8, hierarchy1);
@@ -23139,7 +23247,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,0,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,0,0),8);
@@ -23153,7 +23261,7 @@ if (Result_Debugging)
 							if (contours.size() > 0)
 							{
 								//std::sort(contours.begin(), contours.end(), compareContourAreas);
-								for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 								{
 									drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255,0,0), 1, 8, hierarchy);
 									//fillPoly(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours[k], CV_RGB(255,0,0),8);
@@ -23834,7 +23942,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					//std::sort(contours.begin(), contours.end(), compareContourAreas);
 
 					Mat Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
-					for (int i = 0; i < (int)(min((double)contours.size(),MAX_CONTOUR)); i++)
+					for (int i = 0; i < (int)(min((double)contours.size(), MAX_CONTOUR)); i++)
 					{
 						Temp_Out_binary = Mat::zeros(Out_binary.size(), CV_8UC1);
 						drawContours( Temp_Out_binary, contours, i, Scalar(255,255,255), CV_FILLED, 8);
@@ -24327,7 +24435,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					//std::sort(BOLT_Param[Cam_num].Object_contours.begin(), BOLT_Param[Cam_num].Object_contours.end(), compareContourAreas);
 					vector<Rect> boundRect( BOLT_Param[Cam_num].Object_contours.size() );
 					int m_max_object_num = -1;int m_max_object_value = 0;
-					for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
+					for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(), MAX_CONTOUR)); k++ )
 					{
 						boundRect[k] = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 						if (m_max_object_value <= boundRect[k].width*boundRect[k].height)
@@ -24594,7 +24702,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 								//std::sort(BOLT_Param[Cam_num].Object_contours.begin(), BOLT_Param[Cam_num].Object_contours.end(), compareContourAreas);
 								vector<Rect> boundRect1( BOLT_Param[Cam_num].Object_contours.size() );
 								m_max_object_num = -1;m_max_object_value = 0;
-								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
+								for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(), MAX_CONTOUR)); k++ )
 								{
 									boundRect1[k] = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 									if (m_max_object_value <= boundRect1[k].width*boundRect1[k].height && boundRect1[k].y + boundRect1[k].height <= Out_binary.rows-1)
@@ -25577,7 +25685,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					m_max_object_num = -1;
 					m_max_object_value = 0;
 					Rect tt_rect;Rect t_Side_rect;
-					for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(),MAX_CONTOUR)); k++ )
+					for( int k = 0; k < (int)(min((double)BOLT_Param[Cam_num].Object_contours.size(), MAX_CONTOUR)); k++ )
 					{
 						tt_rect = boundingRect( Mat(BOLT_Param[Cam_num].Object_contours[k]) );
 						if (m_max_object_value<= tt_rect.width*tt_rect.height
@@ -25700,7 +25808,7 @@ float CImPro_Library::Cal_Angle(Mat& Out_binary, int Cam_num)
 	{
 		Rect boundRect;
 		int t_max = 0; int t_max_idx = -1;
-		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+		for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 		{
 			boundRect = boundingRect( Mat(contours[k]) );
 			if (t_max <= boundRect.height*boundRect.width
@@ -25792,7 +25900,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			RotatedRect minRect;
 			//Point2f rect_points[4];
 			double t_angle=0;Rect tt_rect;
-			for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+			for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 			{
 				//if (hierarchy[k][3] == -1)
 				{
@@ -25905,7 +26013,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			RotatedRect minRect;
 			//Point2f rect_points[4];
 			double t_angle=0;Rect tt_rect;
-			for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+			for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 			{
 				//if (hierarchy[k][3] == -1)
 				{
@@ -26747,7 +26855,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 		if (contours.size() > 0)
 		{
 			//std::sort(contours.begin(), contours.end(), compareContourAreas);
-			for (int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++)
+			for (int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++)
 			{
 				//boundRect = boundingRect(Mat(contours[k]));
 				double t_area = contourArea(contours[k], false);
@@ -27263,7 +27371,7 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		int m_max_cnt = -1;
 		double m_max = -1;
 		double m_area = 0;
-		for( int k = 0; k < (int)(min((double)contours.size(),MAX_CONTOUR)); k++ )
+		for( int k = 0; k < (int)(min((double)contours.size(), MAX_CONTOUR)); k++ )
 		{
 			m_area = contourArea(contours[k],false);
 
@@ -27738,8 +27846,12 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		mag.clear();
 		//vector<double> mag;
 		vector<double> angle;
-
-		cartToPolar(vX, vY, mag, angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
+		// 240712 - LHJ - vX, vY(?) 크기가 0이면 cartToPolar(..)에서 에러남
+		// (minRect Size와 관련) vX 크기가 0이면 cartToPolar(..)을 거치지 않아도 됨
+		if (vX.size() > 0)
+		{
+			cartToPolar(vX, vY, mag, angle, true); // mag에는 vector의 크기, angle에는 0~360도의 값이 들어감.
+		}
 
 		for(int i=0; i<minRect.size(); i++)
 		{

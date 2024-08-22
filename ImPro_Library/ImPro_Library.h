@@ -174,6 +174,8 @@ struct BLOB_Features {
 	float Major_Length;						// 장축 길이(mm)
 	float Minor_Length;						// 단축 길이(mm)
 	float Size;								// 장축x단축(mm2)
+	float Size_LV;							// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: (장축 + 단축) / 2 (mm)
+	int Area;								// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: 불량의 픽셀 개수 (Pixel)
 	int Class;								// AI Class
 	float Confidence;						// AI Confidence
 	CString AI_Result;						// AI Result
@@ -186,6 +188,8 @@ struct BLOB_Features {
 		Major_Length = 0.0f;
 		Minor_Length = 0.0f;
 		Size = 0.0f;
+		Size_LV = 0.0f;
+		Area = 0;
 		Class = -1;
 		Confidence = 0.0f;
 		AI_Result = L"";

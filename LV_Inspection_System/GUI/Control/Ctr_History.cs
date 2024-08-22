@@ -16,7 +16,7 @@ namespace LV_Inspection_System.GUI.Control
             InitializeComponent();
         }
 
-        public string SW_Version = "V3.8.7 AI (2024.06.12)";
+        public string SW_Version = "V3.8.8 AI (2024.07.09)";
         protected int m_Language = -1; // 언어 선택 0: 한국어 1:영어
 
         public int m_SetLanguage

@@ -281,6 +281,7 @@ namespace LV_Inspection_System.GUI.Control
 
             //LVApp.Instance().m_Config.Cam0_Seq = 0;
             int cam_num = Convert.ToInt32(textBox_Camera_Name.Text.Substring(3, 1)) % 4;
+            LVApp.Instance().m_Config.Image_Merge_Idx[cam_num] = 0;
             if (LVApp.Instance().m_Config.m_Cam_Kind[cam_num] == 4)
             {
                 Stopwatch Cam_SW = new Stopwatch(); Cam_SW.Start();
@@ -389,6 +390,7 @@ namespace LV_Inspection_System.GUI.Control
         public void toolStripButtonContinuousShot_Click(object sender, EventArgs e)
         {
             int cam_num = Convert.ToInt32(textBox_Camera_Name.Text.Substring(3, 1)) % 4;
+            LVApp.Instance().m_Config.Image_Merge_Idx[cam_num] = 0;
             if (LVApp.Instance().m_Config.m_Cam_Kind[cam_num] == 4)
             {
                 ////return;
@@ -580,8 +582,15 @@ namespace LV_Inspection_System.GUI.Control
             //LVApp.Instance().m_mainform.Button_Enable_Control(true);
         }
 
+        public bool t_Trigger = false;
+        public bool Check_Trigger()
+        {
+            return t_Trigger;
+        }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
+            t_Trigger = checkBox1.Checked;
             if (m_Camera_Name.Substring(3, 1) == "0" || m_Camera_Name.Substring(3, 1) == "4")
             {
                 if (LVApp.Instance().m_Config.m_Cam_Kind[0] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[0] == 6)
@@ -960,6 +969,10 @@ namespace LV_Inspection_System.GUI.Control
                 GeniCam_sliderGain.UpdateValues();
                 GeniCam_sliderWidth.Enabled = GeniCam_sliderHeight.Enabled =
                 GeniCam_sliderOffsetX.Enabled = GeniCam_sliderOffsetY.Enabled = true;
+
+                #region LHJ - 240806 - 임시
+                //GeniCam_sliderOffsetY.Cam_Num = cam_num;
+                #endregion
 
                 if (LVApp.Instance().m_GenICam.CAM[cam_num].Connection)
                 {
@@ -1400,16 +1413,19 @@ namespace LV_Inspection_System.GUI.Control
                     else if (LVApp.Instance().m_Config.m_Cam_Kind[m_Cam_num] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[m_Cam_num] == 6)
                     { //중국 카메라
                         int t_v = 0;
-                        if (GeniCam_sliderOffsetX.slider.Enabled)
-                        {
-                            GeniCam_sliderOffsetX.slider.Value = 0;
-                            GeniCam_sliderOffsetX.slider_Scroll(sender, e);
-                        }
-                        if (GeniCam_sliderOffsetY.slider.Enabled)
-                        {
-                            GeniCam_sliderOffsetY.slider.Value = 0;
-                            GeniCam_sliderOffsetY.slider_Scroll(sender, e);
-                        }
+                        #region LHJ - 240805 - 잘못된 위치에 있다고 생각되는 코드 주석처리(아래로 이동)
+                        //if (GeniCam_sliderOffsetX.slider.Enabled)
+                        //{
+                        //    GeniCam_sliderOffsetX.slider.Value = 0;
+                        //    GeniCam_sliderOffsetX.slider_Scroll(sender, e);
+                        //}
+                        //if (GeniCam_sliderOffsetY.slider.Enabled)
+                        //{
+                        //    GeniCam_sliderOffsetY.slider.Value = 0;
+                        //    GeniCam_sliderOffsetY.slider_Scroll(sender, e);
+                        //}
+                        #endregion
+
                         if (GeniCam_sliderGain.slider.Enabled)
                         {
                             GeniCam_sliderGain.labelCurrentValue.Text = worksheet.Cells[3 + 10 * m_Cam_num, 2].Value.ToString();
@@ -1470,6 +1486,23 @@ namespace LV_Inspection_System.GUI.Control
                             GeniCam_sliderHeight.slider_Scroll(sender, e);
                         }
 
+                        #region LHJ - 240806 - 이 위치가 맞다고 판단 됨(위쪽 참고)
+                        // 아래 절차로 진행되어야 한다고 판단 중
+                        // 1. Width, Height 업데이트
+                        // 2. Offset을 0으로 한번 초기화 함 - 이때 Offset Min-Max 값이 업데이트 되는 것으로 판단 됨
+                        // 3. 설정하고자 하는(파일에 저장되어 있는) Offset 값으로 변경
+                        if (GeniCam_sliderOffsetX.slider.Enabled)
+                        {
+                            GeniCam_sliderOffsetX.slider.Value = 0;
+                            GeniCam_sliderOffsetX.slider_Scroll(sender, e);
+                        }
+                        if (GeniCam_sliderOffsetY.slider.Enabled)
+                        {
+                            GeniCam_sliderOffsetY.slider.Value = 0;
+                            GeniCam_sliderOffsetY.slider_Scroll(sender, e);
+                        }
+                        #endregion
+
                         if (GeniCam_sliderOffsetX.slider.Enabled)
                         {
                             GeniCam_sliderOffsetX.labelCurrentValue.Text = worksheet.Cells[7 + 10 * m_Cam_num, 2].Value.ToString();
@@ -1488,6 +1521,7 @@ namespace LV_Inspection_System.GUI.Control
                         if (GeniCam_sliderOffsetY.slider.Enabled)
                         {
                             GeniCam_sliderOffsetY.labelCurrentValue.Text = worksheet.Cells[8 + 10 * m_Cam_num, 2].Value.ToString();
+
                             int.TryParse(GeniCam_sliderOffsetY.labelCurrentValue.Text, out t_v);
                             if (t_v < GeniCam_sliderOffsetY.slider.Minimum)
                             {

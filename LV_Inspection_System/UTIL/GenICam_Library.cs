@@ -502,7 +502,10 @@ namespace LV_Inspection_System.UTIL
 
                 using (IBooleanParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.AcquisitionFrameRateEnable])
                 {
-                    p.SetValue(false);
+                    // 240604 - LHJ 임시 - Line1Trigger 활용 시, FrameRate를최대값으로 사용하도록된 부분을 해제하고 설정 된 값으로 사용하도록 변경
+                    // 이유: 영상 누적 시, 설정된 프레임대로 영상을 획득하도록 하기 위함
+                    //p.SetValue(false);
+                    p.SetValue(true);
                 }
             }
             else
@@ -515,10 +518,11 @@ namespace LV_Inspection_System.UTIL
                 {
                     p.SetValue(true);
                 }
-                using (IFloatParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.AcquisitionFrameRate])
-                {
-                    p.SetValue(5.0);
-                }
+                //using (IFloatParameter p = CAM[Cam_Num].Dev.ParameterCollection[ParametrizeNameSet.AcquisitionFrameRate])
+                //{
+                //    // 240604 - LHJ 임시 Continuous 그랩에도 FrameRate 설정 값을 기본 설정 값에서 변경하지 않도록 주석 처리
+                //    //p.SetValue(5.0);
+                //}
             }
             CAM[Cam_Num].Dev.StreamGrabber.Start();
 

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Python.Runtime;
 
 namespace LV_Inspection_System
 {
@@ -15,16 +16,16 @@ namespace LV_Inspection_System
         public DebugLogger()
         {
             m_loggertype = eLoggerType.eDebugLogger;
-
-            DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\Logs");
+            DateTime CurTime = DateTime.Now;
+            DirectoryInfo dir = new DirectoryInfo($"{LVApp.Instance().excute_path}\\Logs\\{CurTime:yyyy}\\{CurTime:yyyy-MM}");
             // 폴더가 존재하지 않으면
             if (dir.Exists == false)
             {
                 // 새로 생성합니다.
                 dir.Create();
             }
-            SetLogFile(LVApp.Instance().excute_path + "\\Logs\\" + CreateTimeStampFileName(""));
             Log_file_Name = CreateTimeStampFileName("");
+            SetLogFile($"{LVApp.Instance().excute_path}\\Logs\\{CurTime:yyyy}\\{CurTime:yyyy-MM}\\{Log_file_Name}");
         }
 
         //public List<string> GetLog()
@@ -66,7 +67,7 @@ namespace LV_Inspection_System
                 if (Log_file_Name != CreateTimeStampFileName(""))
                 {
                     Log_file_Name = CreateTimeStampFileName("");
-                    SetLogFile(LVApp.Instance().excute_path + "\\Logs\\" + Log_file_Name);
+                    SetLogFile($"{LVApp.Instance().excute_path}\\Logs\\{CurTime:yyyy}\\{CurTime:yyyy-MM}\\{Log_file_Name}");
                 }
 
                 MsgOut = CurTime.ToString("HH:mm:ss.fff") + "> " + OutStr;

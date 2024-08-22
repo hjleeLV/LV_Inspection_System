@@ -259,10 +259,12 @@ namespace LV_Inspection_System.GUI.Control
                 dataGridView1.ClearSelection();
                 dataGridView1.Rows[5].Selected = true;
                 dataGridView1.Rows[0].Height = 0;
-                dataGridView1.Rows[1].Visible = false;
-                dataGridView1.Rows[2].Visible = false;
-                dataGridView1.Rows[3].Visible = false;
-                dataGridView1.Rows[4].Visible = false;
+
+                // ROI X, Y, W, H 뷰 컨트롤 
+                dataGridView1.Rows[1].Visible = true;
+                dataGridView1.Rows[2].Visible = true;
+                dataGridView1.Rows[3].Visible = true;
+                dataGridView1.Rows[4].Visible = true;
 
                 for (int i = 12; i < dataGridView1.RowCount; i++)
                 {
@@ -422,10 +424,12 @@ namespace LV_Inspection_System.GUI.Control
             dataGridView1.ClearSelection();
             dataGridView1.Rows[5].Selected = true;
             dataGridView1.Rows[0].Height = 0;
-            dataGridView1.Rows[1].Visible = false;
-            dataGridView1.Rows[2].Visible = false;
-            dataGridView1.Rows[3].Visible = false;
-            dataGridView1.Rows[4].Visible = false;
+
+            // ROI X, Y, W, H 뷰 컨트롤 
+            dataGridView1.Rows[1].Visible = true;
+            dataGridView1.Rows[2].Visible = true;
+            dataGridView1.Rows[3].Visible = true;
+            dataGridView1.Rows[4].Visible = true;
 
             dataGridView1.Rows[10].Visible = false;
             dataGridView1.Rows[11].Visible = false;
@@ -7263,17 +7267,17 @@ namespace LV_Inspection_System.GUI.Control
                             dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
                         }
                         t_Start_Idx++;//24
-                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Output(0:Count,1:Size,2:Omit,3:AI(지정 번호),4:AI(지정 번호 외),5:AI(모두),6:AI 결과 가져오기";
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Output(0:Count,1:Size,2:Size_LV,3:Long,4:Short,5:Area,6:Omit,7:AI(지정 번호),8:AI(지정 번호 외),9:AI(모두),10:AI 결과 가져오기";   // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: 2~5까지 추가하고 기존 항목을 뒤로 미룸
                         if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
                         {
                             dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
                         }
-                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 6)
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 10)   // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: > 6 -> >10
                         {
-                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 6;
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 10;    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: = 6 -> = 10
                         }
                         t_Start_Idx++;//25
-                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx-1].Cells[1].Value.ToString()) >= 3 && Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) <= 6)
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx-1].Cells[1].Value.ToString()) >= 7 && Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) <= 10)    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: >= 3 <=6 -> >=7 <=10
                         {
                             dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "AI 클래스 번호";
                             if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
@@ -9183,17 +9187,17 @@ namespace LV_Inspection_System.GUI.Control
                             dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
                         }
                         t_Start_Idx++;//24
-                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Output(0:Count,1:Size,2:Omit,3:AI(Designation class),4:AI(Other than the designated class),5:AI(All),6:AI from result";
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Output(0:Count,1:Size,2:Size_LV,3:Long,4:Short,5:Area,6:Omit,7:AI(Designation class),8:AI(Other than the designated class),9:AI(All),10:AI from result";  // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: 2~5까지 추가하고 기존 항목을 뒤로 미룸
                         if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
                         {
                             dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
                         }
-                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 6)
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 10)    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: > 6 -> > 10
                         {
-                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 6;
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 10;     // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: = 6 -> = 10
                         }
                         t_Start_Idx++;//25
-                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) >= 3 && Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) <= 6)
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) >= 7 && Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) <= 10)    // // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: >= 3 <=6 -> >=7 <=10
                         {
                             dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "AI Class Number";
                             if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)

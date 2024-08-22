@@ -17,6 +17,11 @@ using AForge.Imaging.Filters;
 //using AForge.Imaging.IPPrototyper;
 using AForge.Imaging.Formats;
 using System.Collections;
+using PylonC.NETSupportLibrary;
+using OfficeOpenXml;
+using LV_Inspection_System.UTIL;
+using OpenCvSharp;
+using System.Threading.Tasks;
 
 namespace LV_Inspection_System.GUI
 {
@@ -959,6 +964,7 @@ namespace LV_Inspection_System.GUI
                             m_Threads_Check[i] = true;
                             threads[i].IsBackground = true;
                             threads[i].Start();
+
                             add_Log("CAM" + i.ToString() + " Inspection Thread Restart");
                             if (Capture_framebuffer[i].Count > 0)
                             {
@@ -1002,7 +1008,7 @@ namespace LV_Inspection_System.GUI
                             {
                                 add_Log("Not enough space to save!");
                             }
-                            else if(LVApp.Instance().m_Config.m_SetLanguage == 2)
+                            else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
                             {
                                 add_Log("图片存储空间不足!");
                             }
@@ -1261,7 +1267,6 @@ namespace LV_Inspection_System.GUI
                                         ctr_PLC1.send_Idx[0].Add((uint)ctr_Camera_Setting1.Grab_Num);
                                     }
                                 }
-
                                 Bitmap t_Image = null;
                                 if (ctr_ROI1.pictureBox_Image.Image.PixelFormat == PixelFormat.Format32bppRgb
                                     || ctr_ROI1.pictureBox_Image.Image.PixelFormat == PixelFormat.Format32bppPArgb)
@@ -1374,7 +1379,7 @@ namespace LV_Inspection_System.GUI
                     }
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode && Simulation_mode)
                     {
-                        Thread.Sleep(1000/3);
+                        Thread.Sleep(1000 / 3);
                     }
                     else
                     {
@@ -1789,6 +1794,27 @@ namespace LV_Inspection_System.GUI
                             return;
                         }
 
+                        #region LHJ - 240804 - 디버깅용
+                        // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                        // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                        // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                        System.DateTime dateTime = DateTime.Now;
+
+                        DirectoryInfo lastImagePath = new DirectoryInfo($"{LVApp.Instance().excute_path}\\Logs\\{LVApp.Instance().m_Config.m_Model_Name}\\{dateTime:yyyy}\\{dateTime:yyyy-MM}\\{dateTime:yyyy-MM-dd}\\{dateTime:yyyy-MM-dd-HH-mm-ss-ff}");
+                        if (!lastImagePath.Exists)
+                        {
+                            lastImagePath.Create();
+                        }
+
+                        for (int i = 0; i < LV_Config._lastImageCount; ++i)
+                        {
+                            LVApp.Instance().m_Config._lastImage_Cam0[i]?.Save($"{lastImagePath}\\Cam0_{i}.bmp");
+                            LVApp.Instance().m_Config._lastImage_Cam1[i]?.Save($"{lastImagePath}\\Cam1_{i}.bmp");
+                            LVApp.Instance().m_Config._lastImage_Cam2[i]?.Save($"{lastImagePath}\\Cam2_{i}.bmp");
+                            LVApp.Instance().m_Config._lastImage_Cam3[i]?.Save($"{lastImagePath}\\Cam3_{i}.bmp");
+                        }
+                        #endregion
+
                         m_Monitoringthread_Check = false;
                         Thread.Sleep(500);
                         if (Monitoringthread.IsAlive)
@@ -2160,7 +2186,7 @@ namespace LV_Inspection_System.GUI
             else
             {
                 button_Main_View.Visible = true;
-                label_Title.Text = ctr_Model1.textBox_Title.Text  = String.Empty;
+                label_Title.Text = ctr_Model1.textBox_Title.Text = String.Empty;
             }
             DebugLogger.Instance().LogRecord("GUI Initialized.");
         }
@@ -2546,7 +2572,7 @@ namespace LV_Inspection_System.GUI
                 {
                     richTextBox_LOG.Invoke((MethodInvoker)delegate
                     {
-                        if (richTextBox_LOG.Lines.Length > 30)
+                        if (richTextBox_LOG.Lines.Length > 50)
                         {
                             int totalCharacters = richTextBox_LOG.Text.Trim().Length;
                             int totalLines = richTextBox_LOG.Lines.Length;
@@ -2568,7 +2594,7 @@ namespace LV_Inspection_System.GUI
                 }
                 else
                 {
-                    if (richTextBox_LOG.Lines.Length > 30)
+                    if (richTextBox_LOG.Lines.Length > 50)
                     {
                         int totalCharacters = richTextBox_LOG.Text.Trim().Length;
                         int totalLines = richTextBox_LOG.Lines.Length;
@@ -2940,6 +2966,7 @@ namespace LV_Inspection_System.GUI
             return bmpDest;
         }
 
+
         private bool KernellDllCopyBitmap(Bitmap bmpSrc, Bitmap bmpDest, bool CopyPalette = false)
         {
             bool copyOk = false;
@@ -3164,7 +3191,10 @@ namespace LV_Inspection_System.GUI
             }
         }
 
-
+        private Stopwatch[] Interval_SW = new Stopwatch[4];
+        private readonly int[] _interval = { 200, 200, 200, 200 };
+        private bool[] _is_NewFrame = { false, false, false, false };
+        private int[] _mergeImageCount = { 0, 0, 0, 0 };
         public void ctrCam1_GrabComplete(object sender, EventArgs e)
         {
             try
@@ -3173,8 +3203,20 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting1.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(4);
 
-                //DebugLogger.Instance().LogRecord("AREA CAM0 Grab: " + ctr_Camera_Setting1.Grab_Num.ToString());
-
+                #region LHJ - 240806 - 이미지 프레임 Merge 기능이 추가되면서, 아래 로그가 너무 많이 발생 함
+                // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
+                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                {
+                    DebugLogger.Instance().LogRecord($"AREA CAM0 Grab: {ctr_Camera_Setting1.Grab_Num}");
+                }
+                else
+                {
+                    if (Interval_SW[Cam_Num] == null)
+                    {
+                        Interval_SW[Cam_Num] = new Stopwatch();
+                    }
+                }
+                #endregion
                 if (m_Job_Mode0 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
                 {
                     //GC.Collect();
@@ -3197,46 +3239,64 @@ namespace LV_Inspection_System.GUI
                                 }
                                 else
                                 {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
                                     return;
                                 }
                             }
-
-                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
-                            {
-                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
-                            }
-
                             if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                             {
                                 if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
                                 {
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
                                     return;
                                 }
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                }
-                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
 
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
                                 {
-                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
+                                    // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
+                                    _is_NewFrame[Cam_Num] = true;
+                                    ++_mergeImageCount[Cam_Num];
+                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+
+                                    if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
+                                    {
+                                        // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
+                                    }
                                 }
-                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
+                                else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] >= 0 && LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    Capture_framebuffer[Cam_Num].Add(NewImg);
+                                    ++LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num];
+                                }
+
                                 if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                                 {
                                     LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
 
-                                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                                    {
-                                        Capture_framebuffer[Cam_Num].Clear();
-                                    }
-                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
-                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
                                 }
                                 else
                                 {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
                                     return;
                                 }
                             }
@@ -3246,10 +3306,17 @@ namespace LV_Inspection_System.GUI
                                 {
                                     Capture_framebuffer[Cam_Num].Clear();
                                 }
-                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
                                 Capture_framebuffer[Cam_Num].Add(NewImg);
+
+                                #region LHJ - 240804 - 디버깅용
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam0[((uint)ctr_Camera_Setting1.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                                #endregion
                             }
                         }
+
                         //{
                         //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam1.m_bitmap.Clone());
                         //}
@@ -3320,7 +3387,25 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
-                    DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
+                    #region LHJ - 240806 - 이미지 Merge 기능을 사용할 때는 Cam Miss 로그를 남기지 않고, Merge 후 Cam Miss 개수를 남길 수 있도록 준비
+                    // 사유 : Image Merge 기능은 고속획득 기반으로 + 이미지 누락을 감안하고 동작
+                    // 기존 코드 - Start
+                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
+                    // 기존 코드 - End
+
+                    // 신규 코드 - Start
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                    {
+                        // LHJ - 240808 Interval 위주로 제품을 구분
+                        Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                    }
+                    else
+                    {
+                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} Miss!");
+                    }
+                    // 신규 코드 - End
+                    #endregion
+
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         return;
@@ -3390,12 +3475,947 @@ namespace LV_Inspection_System.GUI
                 }
                 //GC.Collect();
             }
-            catch
+            catch (Exception ex)
             {
                 ctrCam1.t_check_grab = false;
+                DebugLogger.Instance().LogRecord($"Cam0 GrabComplete Error: {ex.StackTrace}");
             }
         }
 
+        public void ctrCam2_GrabComplete(object sender, EventArgs e)
+        {
+            try
+            {
+                int Cam_Num = 1;
+                ctr_Camera_Setting2.Grab_Num++;
+                LVApp.Instance().t_Util.CalculateFrameRate(5);
+
+                #region LHJ - 240806 - 이미지 프레임 Merge 기능이 추가되면서, 아래 로그가 너무 많이 발생 함
+                // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
+                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                {
+                    DebugLogger.Instance().LogRecord($"AREA CAM1 Grab: {ctr_Camera_Setting2.Grab_Num}");
+                }
+                else
+                {
+                    if (Interval_SW[Cam_Num] == null)
+                    {
+                        Interval_SW[Cam_Num] = new Stopwatch();
+                    }
+                }
+                #endregion
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam2.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
+                if (m_Job_Mode1 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
+                {
+                    //GC.Collect();
+                    if (ctrCam2.m_bitmap != null)
+                    {
+                        //Capture_Count[Cam_Num]++;
+                        //if (Capture_Count[Cam_Num] >= 1)
+                        //{
+                        //    Capture_Count[Cam_Num] = 0;
+                        //}
+                        //else
+                        //{
+                        //}
+                        //Run_SW[Cam_Num].Reset();
+                        //Run_SW[Cam_Num].Start();
+                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam2.m_bitmap.Clone());
+                        //lock (Capture_framebuffer[Cam_Num])
+                        Bitmap NewImg = null;
+                        //lock (ctrCam2.m_bitmap)
+                        {
+                            ctrCam2.t_check_grab = true;
+                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam2.m_bitmap.Clone() as Bitmap;
+                            ctrCam2.t_check_grab = false;
+                            if (NewImg == null)
+                            {
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                {
+                                    // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
+                                    _is_NewFrame[Cam_Num] = true;
+                                    ++_mergeImageCount[Cam_Num];
+                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+
+                                    if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
+                                    {
+                                        // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
+                                    }
+                                }
+                                else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] >= 0 && LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    Capture_framebuffer[Cam_Num].Add(NewImg);
+                                    ++LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num];
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                }
+                                else
+                                {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+
+                                #region LHJ - 240804 - 디버깅용
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam1[((uint)ctr_Camera_Setting2.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                                #endregion
+                            }
+                        }
+
+                        //{
+                        //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam2.m_bitmap.Clone());
+                        //}
+                        //Capture_Image1[Capture_Count[Cam_Num]] = (Bitmap)ctrCam2.m_bitmap.Clone();
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
+                        {
+                            ctrCam1.m_bitmap = NewImg;
+                            //ctrCam1.m_bitmap = (Bitmap)ctrCam2.m_bitmap.Clone();
+                            ctrCam1_GrabComplete(sender, e);
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] != 3 && !ctr_Camera_Setting3.Force_USE.Checked)
+                        {
+                            ctrCam3.m_bitmap = NewImg;
+                            //ctrCam3.m_bitmap = (Bitmap)ctrCam2.m_bitmap.Clone();
+                            ctrCam3_GrabComplete(sender, e);
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] != 3 && !ctr_Camera_Setting4.Force_USE.Checked)
+                        {
+                            ctrCam4.m_bitmap = NewImg;
+                            //ctrCam4.m_bitmap = (Bitmap)ctrCam2.m_bitmap.Clone();
+                            ctrCam4_GrabComplete(sender, e);
+                        }
+                        m_Job_Mode1 = 1;
+
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
+                        {
+                            //Capture_Count[0]++;
+                            //if (Capture_Count[0] >= 3)
+                            //{
+                            //    Capture_Count[0] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode0 = 1;
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] == 3 && !ctr_Camera_Setting3.Force_USE.Checked)
+                        {
+                            //Capture_Count[2]++;
+                            //if (Capture_Count[2] >= 3)
+                            //{
+                            //    Capture_Count[2] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode2 = 1;
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] == 3 && !ctr_Camera_Setting4.Force_USE.Checked)
+                        {
+                            //Capture_Count[3]++;
+                            //if (Capture_Count[3] >= 3)
+                            //{
+                            //    Capture_Count[3] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode3 = 1;
+                        }
+                    }
+                    else
+                    {
+                        Add_PLC_Tx_Message(Cam_Num, 10);
+                        add_Log("CAM1 Grab Error!");
+                    }
+                }
+                else
+                {
+
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    #region LHJ - 240806 - 이미지 Merge 기능을 사용할 때는 Cam Miss 로그를 남기지 않고, Merge 후 Cam Miss 개수를 남길 수 있도록 준비
+                    // 사유 : Image Merge 기능은 고속획득 기반으로 + 이미지 누락을 감안하고 동작
+                    // 기존 코드 - Start
+                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
+                    // 기존 코드 - End
+
+                    // 신규 코드 - Start
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                    {
+                        // LHJ - 240808 Interval 위주로 제품을 구분
+                        Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                    }
+                    else
+                    {
+                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} Miss!");
+                    }
+                    // 신규 코드 - End
+                    #endregion
+
+                    if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+                    {
+                        return;
+                    }
+                    LVApp.Instance().t_Util.Delay(ctr_PLC1.m_DELAYCAMMISS);
+                    Add_PLC_Tx_Message(Cam_Num, -10);
+
+                    LVApp.Instance().m_Config.m_OK_NG_Cnt[Cam_Num, 1]++;
+                    //Thread.Sleep(ctr_PLC1.m_DELAYCAMMISS);
+                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                    {
+                        Capture_framebuffer[Cam_Num].Clear();
+                    }
+                    m_Job_Mode1 = 0;
+
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num]++;
+                        for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows.Count; i++)
+                        {
+                            if (LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows[i][2].ToString() == "" || LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows[i][0].ToString().Contains("alse"))
+                            {
+                                continue;
+                            }
+
+                            for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
+                            {
+                                if (j == 0)
+                                {
+                                    LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = (LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] + 1).ToString("000000000");
+                                }
+
+                                if (LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns[j].ToString().Contains(LVApp.Instance().m_Config.ds_DATA_1.Tables[Cam_Num].Rows[i][2].ToString()))
+                                {
+                                    if (LVApp.Instance().m_Config.ds_DATA_1.Tables[1].Rows[i][3] != null)
+                                    {
+                                        LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = "";
+                                    }
+                                }
+                            }
+                        }
+                        LVApp.Instance().m_Config.t_str_log1 = new string[LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count + 1];
+                        LVApp.Instance().m_Config.t_str_log1[0] = LVApp.Instance().m_Config.m_lot_str; //LVApp.Instance().m_Config.t_str_log_Total[0] = LVApp.Instance().m_Config.m_lot_str;
+                        int t_t_idx = 0;
+                        for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
+                        {
+                            LVApp.Instance().m_Config.t_str_log1[j + 1] = LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j].ToString();
+
+                            if (j == 1)
+                            {
+                                if (!LVApp.Instance().m_Config.t_str_log1[j + 1].Contains("OK"))
+                                {
+                                    LVApp.Instance().m_Config.t_Result_log_Total[Cam_Num] = false;
+                                }
+                            }
+                            else if (j > 1)
+                            {
+                                LVApp.Instance().m_Config.t_str_log_Total[LVApp.Instance().m_Config.t_int_log_Total[Cam_Num] + t_t_idx] = LVApp.Instance().m_Config.t_str_log1[j + 1];
+                                t_t_idx++;
+                            }
+                        }
+                        LVApp.Instance().m_Config.t_bool_log_Total[Cam_Num] = false;
+                        LVApp.Instance().m_Config.LogThreadProc1();
+                        //lock (LVApp.Instance().m_Config.CSVLog[4])
+                        //{
+                        //    LVApp.Instance().m_Config.LogThreadProc_Total();
+                        //}
+                    }
+
+                }
+                //GC.Collect();
+            }
+            catch (Exception ex)
+            {
+                ctrCam2.t_check_grab = false;
+                DebugLogger.Instance().LogRecord($"Cam1 GrabComplete Error: {ex.StackTrace}");
+            }
+        }
+
+        public void ctrCam3_GrabComplete(object sender, EventArgs e)
+        {
+            try
+            {
+                int Cam_Num = 2;
+                ctr_Camera_Setting3.Grab_Num++;
+                LVApp.Instance().t_Util.CalculateFrameRate(6);
+
+                #region LHJ - 240806 - 이미지 프레임 Merge 기능이 추가되면서, 아래 로그가 너무 많이 발생 함
+                // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
+                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                {
+                    DebugLogger.Instance().LogRecord($"AREA CAM2 Grab: {ctr_Camera_Setting3.Grab_Num}");
+                }
+                else
+                {
+                    if (Interval_SW[Cam_Num] == null)
+                    {
+                        Interval_SW[Cam_Num] = new Stopwatch();
+                    }
+                }
+                #endregion
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam3.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
+                if (m_Job_Mode2 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
+                {
+                    //GC.Collect();
+                    //m_Job_Mode2 = 2;
+                    if (ctrCam3.m_bitmap != null)
+                    {
+                        //Capture_Count[Cam_Num]++;
+                        //if (Capture_Count[Cam_Num] >= 3)
+                        //{
+                        //    Capture_Count[Cam_Num] = 0;
+                        //}
+                        //else
+                        //{
+                        //}
+                        //Run_SW[Cam_Num].Reset();
+                        //Run_SW[Cam_Num].Start();
+                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam3.m_bitmap.Clone());
+                        //lock (Capture_framebuffer[Cam_Num])
+                        //{
+                        Bitmap NewImg = null;
+                        //lock (ctrCam3.m_bitmap)
+                        {
+                            ctrCam3.t_check_grab = true;
+                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam3.m_bitmap.Clone() as Bitmap;
+                            ctrCam3.t_check_grab = false;
+                            if (NewImg == null)
+                            {
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                {
+                                    // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
+                                    _is_NewFrame[Cam_Num] = true;
+                                    ++_mergeImageCount[Cam_Num];
+                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+
+                                    if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
+                                    {
+                                        // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
+                                    }
+                                }
+                                else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] >= 0 && LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    Capture_framebuffer[Cam_Num].Add(NewImg);
+                                    ++LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num];
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                }
+                                else
+                                {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+
+                                #region LHJ - 240804 - 디버깅용
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam2[((uint)ctr_Camera_Setting3.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                                #endregion
+                            }
+                        }
+
+                        //{
+                        //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam3.m_bitmap.Clone());
+                        //}
+                        //Capture_Image2[Capture_Count[Cam_Num]] = (Bitmap)ctrCam3.m_bitmap.Clone();
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
+                        {
+                            ctrCam1.m_bitmap = NewImg;
+                            //ctrCam1.m_bitmap = (Bitmap)ctrCam3.m_bitmap.Clone();
+                            ctrCam1_GrabComplete(sender, e);
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] != 3 && !ctr_Camera_Setting2.Force_USE.Checked)
+                        {
+                            ctrCam2.m_bitmap = NewImg;
+                            //ctrCam2.m_bitmap = (Bitmap)ctrCam3.m_bitmap.Clone();
+                            ctrCam2_GrabComplete(sender, e);
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] != 3 && !ctr_Camera_Setting4.Force_USE.Checked)
+                        {
+                            ctrCam4.m_bitmap = NewImg;
+                            //ctrCam4.m_bitmap = (Bitmap)ctrCam3.m_bitmap.Clone();
+                            ctrCam4_GrabComplete(sender, e);
+                        }
+                        m_Job_Mode2 = 1;
+
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
+                        {
+                            //Capture_Count[0]++;
+                            //if (Capture_Count[0] >= 3)
+                            //{
+                            //    Capture_Count[0] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode0 = 1;
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] == 3 && !ctr_Camera_Setting2.Force_USE.Checked)
+                        {
+                            //Capture_Count[1]++;
+                            //if (Capture_Count[1] >= 3)
+                            //{
+                            //    Capture_Count[1] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode1 = 1;
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] == 3 && !ctr_Camera_Setting4.Force_USE.Checked)
+                        {
+                            //Capture_Count[3]++;
+                            //if (Capture_Count[3] >= 3)
+                            //{
+                            //    Capture_Count[3] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode3 = 1;
+                        }
+                    }
+                    else
+                    {
+                        Add_PLC_Tx_Message(Cam_Num, 10);
+                        add_Log("CAM2 Grab Error!");
+                    }
+                }
+                else
+                {
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    #region LHJ - 240806 - 이미지 Merge 기능을 사용할 때는 Cam Miss 로그를 남기지 않고, Merge 후 Cam Miss 개수를 남길 수 있도록 준비
+                    // 사유 : Image Merge 기능은 고속획득 기반으로 + 이미지 누락을 감안하고 동작
+                    // 기존 코드 - Start
+                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
+                    // 기존 코드 - End
+
+                    // 신규 코드 - Start
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                    {
+                        // LHJ - 240808 Interval 위주로 제품을 구분
+                        Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                    }
+                    else
+                    {
+                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} Miss!");
+                    }
+                    // 신규 코드 - End
+                    #endregion
+
+                    if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+                    {
+                        return;
+                    }
+
+                    LVApp.Instance().t_Util.Delay(ctr_PLC1.m_DELAYCAMMISS);
+                    Add_PLC_Tx_Message(Cam_Num, -10);
+
+                    LVApp.Instance().m_Config.m_OK_NG_Cnt[Cam_Num, 1]++;
+                    //Thread.Sleep(ctr_PLC1.m_DELAYCAMMISS);
+                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                    {
+                        Capture_framebuffer[Cam_Num].Clear();
+                    }
+                    m_Job_Mode2 = 0;
+
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num]++;
+                        for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_2.Tables[0].Rows.Count; i++)
+                        {
+                            if (LVApp.Instance().m_Config.ds_DATA_2.Tables[0].Rows[i][2].ToString() == "" || LVApp.Instance().m_Config.ds_DATA_2.Tables[0].Rows[i][0].ToString().Contains("alse"))
+                            {
+                                continue;
+                            }
+
+                            for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
+                            {
+                                if (j == 0)
+                                {
+                                    LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = (LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] + 1).ToString("000000000");
+                                }
+
+                                if (LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns[j].ToString().Contains(LVApp.Instance().m_Config.ds_DATA_2.Tables[Cam_Num].Rows[i][2].ToString()))
+                                {
+                                    if (LVApp.Instance().m_Config.ds_DATA_2.Tables[1].Rows[i][3] != null)
+                                    {
+                                        LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = "";
+                                    }
+                                }
+                            }
+                        }
+                        LVApp.Instance().m_Config.t_str_log2 = new string[LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count + 1];
+                        LVApp.Instance().m_Config.t_str_log2[0] = LVApp.Instance().m_Config.m_lot_str; //LVApp.Instance().m_Config.t_str_log_Total[0] = LVApp.Instance().m_Config.m_lot_str;
+                        int t_t_idx = 0;
+                        for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
+                        {
+                            LVApp.Instance().m_Config.t_str_log2[j + 1] = LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j].ToString();
+
+                            if (j == 1)
+                            {
+                                if (!LVApp.Instance().m_Config.t_str_log2[j + 1].Contains("OK"))
+                                {
+                                    LVApp.Instance().m_Config.t_Result_log_Total[Cam_Num] = false;
+                                }
+                            }
+                            else if (j > 1)
+                            {
+                                LVApp.Instance().m_Config.t_str_log_Total[LVApp.Instance().m_Config.t_int_log_Total[Cam_Num] + t_t_idx] = LVApp.Instance().m_Config.t_str_log2[j + 1];
+                                t_t_idx++;
+                            }
+                        }
+                        LVApp.Instance().m_Config.t_bool_log_Total[Cam_Num] = false;
+                        LVApp.Instance().m_Config.LogThreadProc2();
+                        //lock (LVApp.Instance().m_Config.CSVLog[4])
+                        //{
+                        //    LVApp.Instance().m_Config.LogThreadProc_Total();
+                        //}
+
+                    }
+                }
+
+                //GC.Collect();
+            }
+            catch (Exception ex)
+            {
+                ctrCam3.t_check_grab = false;
+                DebugLogger.Instance().LogRecord($"Cam2 GrabComplete Error: {ex.StackTrace}");
+            }
+        }
+
+        public void ctrCam4_GrabComplete(object sender, EventArgs e)
+        {
+            try
+            {
+                int Cam_Num = 3;
+                ctr_Camera_Setting4.Grab_Num++;
+                LVApp.Instance().t_Util.CalculateFrameRate(7);
+
+                #region LHJ - 240806 - 이미지 프레임 Merge 기능이 추가되면서, 아래 로그가 너무 많이 발생 함
+                // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
+                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                {
+                    DebugLogger.Instance().LogRecord($"AREA CAM1 Grab: {ctr_Camera_Setting2.Grab_Num}");
+                }
+                else
+                {
+                    if (Interval_SW[Cam_Num] == null)
+                    {
+                        Interval_SW[Cam_Num] = new Stopwatch();
+                    }
+                }
+                #endregion
+
+                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
+                //{
+                //    Bitmap img = (Bitmap)ctrCam4.m_bitmap.Clone();
+                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
+                //}
+
+                if (m_Job_Mode3 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
+                {
+                    //GC.Collect();
+                    //m_Job_Mode2 = 2;
+                    if (ctrCam4.m_bitmap != null)
+                    {
+                        //Capture_Count[Cam_Num]++;
+                        //if (Capture_Count[Cam_Num] >= 3)
+                        //{
+                        //    Capture_Count[Cam_Num] = 0;
+                        //}
+                        //else
+                        //{
+                        //}
+                        //Run_SW[Cam_Num].Reset();
+                        //Run_SW[Cam_Num].Start();
+                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam4.m_bitmap.Clone());
+                        //lock (Capture_framebuffer[Cam_Num])
+
+                        Bitmap NewImg = null;
+                        //lock (ctrCam4.m_bitmap)
+                        {
+                            ctrCam4.t_check_grab = true;
+                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
+                            NewImg = ctrCam4.m_bitmap.Clone() as Bitmap;
+                            ctrCam4.t_check_grab = false;
+                            if (NewImg == null)
+                            {
+                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                                {
+                                    Add_PLC_Tx_Message(Cam_Num, 10);
+                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
+                                    return;
+                                }
+                                else
+                                {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                            {
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
+                                {
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                {
+                                    // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
+                                    _is_NewFrame[Cam_Num] = true;
+                                    ++_mergeImageCount[Cam_Num];
+                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+
+                                    if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
+                                    {
+                                        // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
+                                    }
+                                }
+                                else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] >= 0 && LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    Capture_framebuffer[Cam_Num].Add(NewImg);
+                                    ++LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num];
+                                }
+
+                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                                {
+                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
+
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                }
+                                else
+                                {
+                                    // LHJ - 240808 Interval 위주로 제품을 구분
+                                    Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (Capture_framebuffer[Cam_Num].Count > 0)
+                                {
+                                    Capture_framebuffer[Cam_Num].Clear();
+                                }
+                                Capture_framebuffer[Cam_Num].Add(NewImg);
+
+                                #region LHJ - 240804 - 디버깅용
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam3[((uint)ctr_Camera_Setting4.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                                #endregion
+                            }
+                        }
+                        //{
+                        //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam4.m_bitmap.Clone());
+                        //}
+                        //Capture_Image3[Capture_Count[Cam_Num]] = (Bitmap)ctrCam4.m_bitmap.Clone();
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
+                        {
+                            ctrCam1.m_bitmap = NewImg;
+                            //ctrCam1.m_bitmap = (Bitmap)ctrCam4.m_bitmap.Clone();
+                            ctrCam1_GrabComplete(sender, e);
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] != 3 && !ctr_Camera_Setting2.Force_USE.Checked)
+                        {
+                            ctrCam2.m_bitmap = NewImg;
+                            //ctrCam2.m_bitmap = (Bitmap)ctrCam4.m_bitmap.Clone();
+                            ctrCam2_GrabComplete(sender, e);
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] != 3 && !ctr_Camera_Setting3.Force_USE.Checked)
+                        {
+                            ctrCam3.m_bitmap = NewImg;
+                            //ctrCam3.m_bitmap = (Bitmap)ctrCam4.m_bitmap.Clone();
+                            ctrCam3_GrabComplete(sender, e);
+                        }
+                        m_Job_Mode3 = 1;
+
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
+                        {
+                            //Capture_Count[0]++;
+                            //if (Capture_Count[0] >= 3)
+                            //{
+                            //    Capture_Count[0] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode0 = 1;
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] == 3 && !ctr_Camera_Setting2.Force_USE.Checked)
+                        {
+                            //Capture_Count[1]++;
+                            //if (Capture_Count[1] >= 3)
+                            //{
+                            //    Capture_Count[1] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode1 = 1;
+                        }
+                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] == 3 && !ctr_Camera_Setting3.Force_USE.Checked)
+                        {
+                            //Capture_Count[2]++;
+                            //if (Capture_Count[2] >= 3)
+                            //{
+                            //    Capture_Count[2] = 0;
+                            //}
+                            //else
+                            //{
+                            //}
+                            m_Probe_Job_Mode2 = 1;
+                        }
+                    }
+                    else
+                    {
+                        Add_PLC_Tx_Message(Cam_Num, 10);
+                        add_Log("CAM3 Grab Error!");
+                    }
+                }
+                else
+                {
+                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
+                    #region LHJ - 240806 - 이미지 Merge 기능을 사용하지 않을 때만 Cam Miss 체크를 함
+                    // 사유 : Image Merge 기능은 고속획득 기반으로 + 이미지 누락을 감안하고 동작
+                    // 기존 코드 - Start
+                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
+                    // 기존 코드 - End
+
+                    // 신규 코드 - Start
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                    {
+                        // LHJ - 240808 Interval 위주로 제품을 구분
+                        Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
+                    }
+                    else
+                    {
+                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} MIss!");
+                    }
+
+                    // 신규 코드 - End
+                    #endregion
+
+                    if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+                    {
+                        return;
+                    }
+
+                    LVApp.Instance().t_Util.Delay(ctr_PLC1.m_DELAYCAMMISS);
+                    Add_PLC_Tx_Message(Cam_Num, -10);
+                    LVApp.Instance().m_Config.m_OK_NG_Cnt[Cam_Num, 1]++;
+                    if (Capture_framebuffer[Cam_Num].Count > 0)
+                    {
+                        Capture_framebuffer[Cam_Num].Clear();
+                    }
+                    m_Job_Mode3 = 0;
+
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num]++;
+                        for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_3.Tables[0].Rows.Count; i++)
+                        {
+                            if (LVApp.Instance().m_Config.ds_DATA_3.Tables[0].Rows[i][2].ToString() == "" || LVApp.Instance().m_Config.ds_DATA_3.Tables[0].Rows[i][0].ToString().Contains("alse"))
+                            {
+                                continue;
+                            }
+
+                            for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
+                            {
+                                if (j == 0)
+                                {
+                                    LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = (LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] + 1).ToString("000000000");
+                                }
+
+                                if (LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns[j].ToString().Contains(LVApp.Instance().m_Config.ds_DATA_3.Tables[Cam_Num].Rows[i][2].ToString()))
+                                {
+                                    if (LVApp.Instance().m_Config.ds_DATA_3.Tables[1].Rows[i][3] != null)
+                                    {
+                                        LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = "";
+                                    }
+                                }
+                            }
+                        }
+                        LVApp.Instance().m_Config.t_str_log3 = new string[LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count + 1];
+                        LVApp.Instance().m_Config.t_str_log3[0] = LVApp.Instance().m_Config.m_lot_str; //LVApp.Instance().m_Config.t_str_log_Total[0] = LVApp.Instance().m_Config.m_lot_str;
+                        int t_t_idx = 0;
+                        for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
+                        {
+                            LVApp.Instance().m_Config.t_str_log3[j + 1] = LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j].ToString();
+
+                            if (j == 1)
+                            {
+                                if (!LVApp.Instance().m_Config.t_str_log3[j + 1].Contains("OK"))
+                                {
+                                    LVApp.Instance().m_Config.t_Result_log_Total[Cam_Num] = false;
+                                }
+                            }
+                            else if (j > 1)
+                            {
+                                LVApp.Instance().m_Config.t_str_log_Total[LVApp.Instance().m_Config.t_int_log_Total[Cam_Num] + t_t_idx] = LVApp.Instance().m_Config.t_str_log3[j + 1];
+                                t_t_idx++;
+                            }
+                        }
+                        LVApp.Instance().m_Config.t_bool_log_Total[Cam_Num] = false;
+                        //lock (LVApp.Instance().m_Config.CSVLog[4])
+                        //{
+                        //    LVApp.Instance().m_Config.LogThreadProc_Total();
+                        //}
+                    }
+                }
+
+                //GC.Collect();
+            }
+            catch (Exception ex)
+            {
+                ctrCam4.t_check_grab = false;
+                DebugLogger.Instance().LogRecord($"Cam3 GrabComplete Error: {ex.StackTrace}");
+            }
+        }
 
         public void MILCam1_GrabComplete(object sender, EventArgs e)
         {
@@ -3439,6 +4459,13 @@ namespace LV_Inspection_System.GUI
                             }
                             Capture_framebuffer[Cam_Num].Add(NewImg);
                         }
+
+                        #region LHJ - 240804 - 디버깅용
+                        // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                        // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                        // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                        LVApp.Instance().m_Config._lastImage_Cam0[((uint)ctr_Camera_Setting1.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                        #endregion
 
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] != 3 && !ctr_Camera_Setting2.Force_USE.Checked)
                         {
@@ -3594,6 +4621,13 @@ namespace LV_Inspection_System.GUI
                             Capture_framebuffer[Cam_Num].Add(NewImg);
                         }
 
+                        #region LHJ - 240804 - 디버깅용
+                        // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                        // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                        // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                        LVApp.Instance().m_Config._lastImage_Cam1[((uint)ctr_Camera_Setting2.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                        #endregion
+
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
                         {
                             LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex] = NewImg;
@@ -3747,6 +4781,13 @@ namespace LV_Inspection_System.GUI
                             }
                             Capture_framebuffer[Cam_Num].Add(NewImg);
                         }
+
+                        #region LHJ - 240804 - 디버깅용
+                        // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                        // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                        // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                        LVApp.Instance().m_Config._lastImage_Cam2[((uint)ctr_Camera_Setting3.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                        #endregion
 
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
                         {
@@ -3902,6 +4943,13 @@ namespace LV_Inspection_System.GUI
                             Capture_framebuffer[Cam_Num].Add(NewImg);
                         }
 
+                        #region LHJ - 240804 - 디버깅용
+                        // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                        // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                        // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                        LVApp.Instance().m_Config._lastImage_Cam3[((uint)ctr_Camera_Setting4.Grab_Num) % LV_Config._lastImageCount] = NewImg.Clone() as Bitmap;
+                        #endregion
+
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
                         {
                             LVApp.Instance().m_MIL.CAM0_MilGrabBMPList[LVApp.Instance().m_MIL.CAM0_MilGrabBufferIndex] = NewImg;
@@ -4010,773 +5058,6 @@ namespace LV_Inspection_System.GUI
             catch
             {
                 //ctrCam2.t_check_grab = false;
-            }
-        }
-
-        public void ctrCam2_GrabComplete(object sender, EventArgs e)
-        {
-            try
-            {
-                int Cam_Num = 1;
-                ctr_Camera_Setting2.Grab_Num++;
-                LVApp.Instance().t_Util.CalculateFrameRate(5);
-
-                DebugLogger.Instance().LogRecord("AREA CAM1 Grab: " + ctr_Camera_Setting2.Grab_Num.ToString());
-
-                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
-                //{
-                //    Bitmap img = (Bitmap)ctrCam2.m_bitmap.Clone();
-                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
-                //}
-
-                if (m_Job_Mode1 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
-                {
-                    //GC.Collect();
-                    if (ctrCam2.m_bitmap != null)
-                    {
-                        //Capture_Count[Cam_Num]++;
-                        //if (Capture_Count[Cam_Num] >= 1)
-                        //{
-                        //    Capture_Count[Cam_Num] = 0;
-                        //}
-                        //else
-                        //{
-                        //}
-                        //Run_SW[Cam_Num].Reset();
-                        //Run_SW[Cam_Num].Start();
-                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam2.m_bitmap.Clone());
-                        //lock (Capture_framebuffer[Cam_Num])
-                        Bitmap NewImg = null;
-                        //lock (ctrCam2.m_bitmap)
-                        {
-                            ctrCam2.t_check_grab = true;
-                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = ctrCam2.m_bitmap.Clone() as Bitmap;
-                            ctrCam2.t_check_grab = false;
-                            if (NewImg == null)
-                            {
-                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
-                                {
-                                    Add_PLC_Tx_Message(Cam_Num, 10);
-                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                    return;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
-                            {
-                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
-                            }
-                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
-                            {
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
-                                {
-                                    return;
-                                }
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                }
-                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
-
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
-                                {
-                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
-                                }
-                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
-
-                                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                                    {
-                                        Capture_framebuffer[Cam_Num].Clear();
-                                    }
-                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
-                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (Capture_framebuffer[Cam_Num].Count > 0)
-                                {
-                                    Capture_framebuffer[Cam_Num].Clear();
-                                }
-                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                Capture_framebuffer[Cam_Num].Add(NewImg);
-                            }
-                        }
-
-                        //{
-                        //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam2.m_bitmap.Clone());
-                        //}
-                        //Capture_Image1[Capture_Count[Cam_Num]] = (Bitmap)ctrCam2.m_bitmap.Clone();
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
-                        {
-                            ctrCam1.m_bitmap = NewImg;
-                            //ctrCam1.m_bitmap = (Bitmap)ctrCam2.m_bitmap.Clone();
-                            ctrCam1_GrabComplete(sender, e);
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] != 3 && !ctr_Camera_Setting3.Force_USE.Checked)
-                        {
-                            ctrCam3.m_bitmap = NewImg;
-                            //ctrCam3.m_bitmap = (Bitmap)ctrCam2.m_bitmap.Clone();
-                            ctrCam3_GrabComplete(sender, e);
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] != 3 && !ctr_Camera_Setting4.Force_USE.Checked)
-                        {
-                            ctrCam4.m_bitmap = NewImg;
-                            //ctrCam4.m_bitmap = (Bitmap)ctrCam2.m_bitmap.Clone();
-                            ctrCam4_GrabComplete(sender, e);
-                        }
-                        m_Job_Mode1 = 1;
-
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
-                        {
-                            //Capture_Count[0]++;
-                            //if (Capture_Count[0] >= 3)
-                            //{
-                            //    Capture_Count[0] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode0 = 1;
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] == 3 && !ctr_Camera_Setting3.Force_USE.Checked)
-                        {
-                            //Capture_Count[2]++;
-                            //if (Capture_Count[2] >= 3)
-                            //{
-                            //    Capture_Count[2] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode2 = 1;
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] == 3 && !ctr_Camera_Setting4.Force_USE.Checked)
-                        {
-                            //Capture_Count[3]++;
-                            //if (Capture_Count[3] >= 3)
-                            //{
-                            //    Capture_Count[3] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode3 = 1;
-                        }
-                    }
-                    else
-                    {
-                        Add_PLC_Tx_Message(Cam_Num, 10);
-                        add_Log("CAM1 Grab Error!");
-                    }
-                }
-                else
-                {
-                    DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
-                    if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
-                    {
-                        return;
-                    }
-                    LVApp.Instance().t_Util.Delay(ctr_PLC1.m_DELAYCAMMISS);
-                    Add_PLC_Tx_Message(Cam_Num, -10);
-
-                    LVApp.Instance().m_Config.m_OK_NG_Cnt[Cam_Num, 1]++;
-                    //Thread.Sleep(ctr_PLC1.m_DELAYCAMMISS);
-                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                    {
-                        Capture_framebuffer[Cam_Num].Clear();
-                    }
-                    m_Job_Mode1 = 0;
-
-                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
-                    {
-                        LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num]++;
-                        for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows.Count; i++)
-                        {
-                            if (LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows[i][2].ToString() == "" || LVApp.Instance().m_Config.ds_DATA_1.Tables[0].Rows[i][0].ToString().Contains("alse"))
-                            {
-                                continue;
-                            }
-
-                            for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
-                            {
-                                if (j == 0)
-                                {
-                                    LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = (LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] + 1).ToString("000000000");
-                                }
-
-                                if (LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns[j].ToString().Contains(LVApp.Instance().m_Config.ds_DATA_1.Tables[Cam_Num].Rows[i][2].ToString()))
-                                {
-                                    if (LVApp.Instance().m_Config.ds_DATA_1.Tables[1].Rows[i][3] != null)
-                                    {
-                                        LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = "";
-                                    }
-                                }
-                            }
-                        }
-                        LVApp.Instance().m_Config.t_str_log1 = new string[LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count + 1];
-                        LVApp.Instance().m_Config.t_str_log1[0] = LVApp.Instance().m_Config.m_lot_str; //LVApp.Instance().m_Config.t_str_log_Total[0] = LVApp.Instance().m_Config.m_lot_str;
-                        int t_t_idx = 0;
-                        for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
-                        {
-                            LVApp.Instance().m_Config.t_str_log1[j + 1] = LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j].ToString();
-
-                            if (j == 1)
-                            {
-                                if (!LVApp.Instance().m_Config.t_str_log1[j + 1].Contains("OK"))
-                                {
-                                    LVApp.Instance().m_Config.t_Result_log_Total[Cam_Num] = false;
-                                }
-                            }
-                            else if (j > 1)
-                            {
-                                LVApp.Instance().m_Config.t_str_log_Total[LVApp.Instance().m_Config.t_int_log_Total[Cam_Num] + t_t_idx] = LVApp.Instance().m_Config.t_str_log1[j + 1];
-                                t_t_idx++;
-                            }
-                        }
-                        LVApp.Instance().m_Config.t_bool_log_Total[Cam_Num] = false;
-                        LVApp.Instance().m_Config.LogThreadProc1();
-                        //lock (LVApp.Instance().m_Config.CSVLog[4])
-                        //{
-                        //    LVApp.Instance().m_Config.LogThreadProc_Total();
-                        //}
-                    }
-
-                }
-                //GC.Collect();
-            }
-            catch
-            {
-                ctrCam2.t_check_grab = false;
-            }
-        }
-
-        public void ctrCam3_GrabComplete(object sender, EventArgs e)
-        {
-            try
-            {
-                int Cam_Num = 2;
-                ctr_Camera_Setting3.Grab_Num++;
-                LVApp.Instance().t_Util.CalculateFrameRate(6);
-
-                DebugLogger.Instance().LogRecord("AREA CAM2 Grab: " + ctr_Camera_Setting3.Grab_Num.ToString());
-
-                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
-                //{
-                //    Bitmap img = (Bitmap)ctrCam3.m_bitmap.Clone();
-                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
-                //}
-
-                if (m_Job_Mode2 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
-                {
-                    //GC.Collect();
-                    //m_Job_Mode2 = 2;
-                    if (ctrCam3.m_bitmap != null)
-                    {
-                        //Capture_Count[Cam_Num]++;
-                        //if (Capture_Count[Cam_Num] >= 3)
-                        //{
-                        //    Capture_Count[Cam_Num] = 0;
-                        //}
-                        //else
-                        //{
-                        //}
-                        //Run_SW[Cam_Num].Reset();
-                        //Run_SW[Cam_Num].Start();
-                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam3.m_bitmap.Clone());
-                        //lock (Capture_framebuffer[Cam_Num])
-                        //{
-                        Bitmap NewImg = null;
-                        //lock (ctrCam3.m_bitmap)
-                        {
-                            ctrCam3.t_check_grab = true;
-                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = ctrCam3.m_bitmap.Clone() as Bitmap;
-                            ctrCam3.t_check_grab = false;
-                            if (NewImg == null)
-                            {
-                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
-                                {
-                                    Add_PLC_Tx_Message(Cam_Num, 10);
-                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                    return;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
-                            {
-                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
-                            }
-                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
-                            {
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
-                                {
-                                    return;
-                                }
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                }
-                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
-
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
-                                {
-                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
-                                }
-                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
-
-                                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                                    {
-                                        Capture_framebuffer[Cam_Num].Clear();
-                                    }
-                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
-                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (Capture_framebuffer[Cam_Num].Count > 0)
-                                {
-                                    Capture_framebuffer[Cam_Num].Clear();
-                                }
-                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                Capture_framebuffer[Cam_Num].Add(NewImg);
-                            }
-                        }
-                        //Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam3.m_bitmap.Clone());
-                        //}
-                        //Capture_Image2[Capture_Count[Cam_Num]] = (Bitmap)ctrCam3.m_bitmap.Clone();
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
-                        {
-                            ctrCam1.m_bitmap = NewImg;
-                            //ctrCam1.m_bitmap = (Bitmap)ctrCam3.m_bitmap.Clone();
-                            ctrCam1_GrabComplete(sender, e);
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] != 3 && !ctr_Camera_Setting2.Force_USE.Checked)
-                        {
-                            ctrCam2.m_bitmap = NewImg;
-                            //ctrCam2.m_bitmap = (Bitmap)ctrCam3.m_bitmap.Clone();
-                            ctrCam2_GrabComplete(sender, e);
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] != 3 && !ctr_Camera_Setting4.Force_USE.Checked)
-                        {
-                            ctrCam4.m_bitmap = NewImg;
-                            //ctrCam4.m_bitmap = (Bitmap)ctrCam3.m_bitmap.Clone();
-                            ctrCam4_GrabComplete(sender, e);
-                        }
-                        m_Job_Mode2 = 1;
-
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
-                        {
-                            //Capture_Count[0]++;
-                            //if (Capture_Count[0] >= 3)
-                            //{
-                            //    Capture_Count[0] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode0 = 1;
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] == 3 && !ctr_Camera_Setting2.Force_USE.Checked)
-                        {
-                            //Capture_Count[1]++;
-                            //if (Capture_Count[1] >= 3)
-                            //{
-                            //    Capture_Count[1] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode1 = 1;
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[3] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[3] == 3 && !ctr_Camera_Setting4.Force_USE.Checked)
-                        {
-                            //Capture_Count[3]++;
-                            //if (Capture_Count[3] >= 3)
-                            //{
-                            //    Capture_Count[3] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode3 = 1;
-                        }
-                    }
-                    else
-                    {
-                        Add_PLC_Tx_Message(Cam_Num, 10);
-                        add_Log("CAM2 Grab Error!");
-                    }
-                }
-                else
-                {
-                    DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
-
-                    if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
-                    {
-                        return;
-                    }
-
-                    LVApp.Instance().t_Util.Delay(ctr_PLC1.m_DELAYCAMMISS);
-                    Add_PLC_Tx_Message(Cam_Num, -10);
-
-                    LVApp.Instance().m_Config.m_OK_NG_Cnt[Cam_Num, 1]++;
-                    //Thread.Sleep(ctr_PLC1.m_DELAYCAMMISS);
-                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                    {
-                        Capture_framebuffer[Cam_Num].Clear();
-                    }
-                    m_Job_Mode2 = 0;
-
-                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
-                    {
-                        LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num]++;
-                        for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_2.Tables[0].Rows.Count; i++)
-                        {
-                            if (LVApp.Instance().m_Config.ds_DATA_2.Tables[0].Rows[i][2].ToString() == "" || LVApp.Instance().m_Config.ds_DATA_2.Tables[0].Rows[i][0].ToString().Contains("alse"))
-                            {
-                                continue;
-                            }
-
-                            for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
-                            {
-                                if (j == 0)
-                                {
-                                    LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = (LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] + 1).ToString("000000000");
-                                }
-
-                                if (LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns[j].ToString().Contains(LVApp.Instance().m_Config.ds_DATA_2.Tables[Cam_Num].Rows[i][2].ToString()))
-                                {
-                                    if (LVApp.Instance().m_Config.ds_DATA_2.Tables[1].Rows[i][3] != null)
-                                    {
-                                        LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = "";
-                                    }
-                                }
-                            }
-                        }
-                        LVApp.Instance().m_Config.t_str_log2 = new string[LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count + 1];
-                        LVApp.Instance().m_Config.t_str_log2[0] = LVApp.Instance().m_Config.m_lot_str; //LVApp.Instance().m_Config.t_str_log_Total[0] = LVApp.Instance().m_Config.m_lot_str;
-                        int t_t_idx = 0;
-                        for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
-                        {
-                            LVApp.Instance().m_Config.t_str_log2[j + 1] = LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j].ToString();
-
-                            if (j == 1)
-                            {
-                                if (!LVApp.Instance().m_Config.t_str_log2[j + 1].Contains("OK"))
-                                {
-                                    LVApp.Instance().m_Config.t_Result_log_Total[Cam_Num] = false;
-                                }
-                            }
-                            else if (j > 1)
-                            {
-                                LVApp.Instance().m_Config.t_str_log_Total[LVApp.Instance().m_Config.t_int_log_Total[Cam_Num] + t_t_idx] = LVApp.Instance().m_Config.t_str_log2[j + 1];
-                                t_t_idx++;
-                            }
-                        }
-                        LVApp.Instance().m_Config.t_bool_log_Total[Cam_Num] = false;
-                        LVApp.Instance().m_Config.LogThreadProc2();
-                        //lock (LVApp.Instance().m_Config.CSVLog[4])
-                        //{
-                        //    LVApp.Instance().m_Config.LogThreadProc_Total();
-                        //}
-
-                    }
-                }
-
-                //GC.Collect();
-            }
-            catch
-            {
-                ctrCam3.t_check_grab = false;
-            }
-        }
-
-
-        //private int Cam3_Missed = 0;
-        public void ctrCam4_GrabComplete(object sender, EventArgs e)
-        {
-            try
-            {
-                int Cam_Num = 3;
-                ctr_Camera_Setting4.Grab_Num++;
-                LVApp.Instance().t_Util.CalculateFrameRate(7);
-
-                DebugLogger.Instance().LogRecord("AREA CAM3 Grab: " + ctr_Camera_Setting4.Grab_Num.ToString());
-
-                //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
-                //{
-                //    Bitmap img = (Bitmap)ctrCam4.m_bitmap.Clone();
-                //    LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, img, 0);
-                //}
-
-                if (m_Job_Mode3 == 0)// && !LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num])
-                {
-                    //GC.Collect();
-                    //m_Job_Mode2 = 2;
-                    if (ctrCam4.m_bitmap != null)
-                    {
-                        //Capture_Count[Cam_Num]++;
-                        //if (Capture_Count[Cam_Num] >= 3)
-                        //{
-                        //    Capture_Count[Cam_Num] = 0;
-                        //}
-                        //else
-                        //{
-                        //}
-                        //Run_SW[Cam_Num].Reset();
-                        //Run_SW[Cam_Num].Start();
-                        //Capture_framebuffer[Cam_Num].Enqueue((Bitmap)ctrCam4.m_bitmap.Clone());
-                        //lock (Capture_framebuffer[Cam_Num])
-
-                        Bitmap NewImg = null;
-                        //lock (ctrCam4.m_bitmap)
-                        {
-                            ctrCam4.t_check_grab = true;
-                            //NewImg = GetCopyOf(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            //NewImg = GetCopyOf1(ctrCam2.m_bitmap);//.Clone() as Bitmap;
-                            NewImg = ctrCam4.m_bitmap.Clone() as Bitmap;
-                            ctrCam4.t_check_grab = false;
-                            if (NewImg == null)
-                            {
-                                if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
-                                {
-                                    Add_PLC_Tx_Message(Cam_Num, 10);
-                                    add_Log("CAM" + Cam_Num.ToString() + " Grab Error!");
-                                    return;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                            if (LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num] <= 0)
-                            {
-                                LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num] = false;
-                            }
-                            if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
-                            {
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
-                                {
-                                    return;
-                                }
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(NewImg.Width, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                }
-                                Rectangle bounds = new Rectangle(0, NewImg.Height * LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num], NewImg.Width, NewImg.Height);
-
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
-                                {
-                                    g.DrawImage(NewImg, bounds, 0, 0, NewImg.Width, NewImg.Height, GraphicsUnit.Pixel);
-                                }
-                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]++;
-                                if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                                {
-                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = -1;
-
-                                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                                    {
-                                        Capture_framebuffer[Cam_Num].Clear();
-                                    }
-                                    //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                    Capture_framebuffer[Cam_Num].Add(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap);
-                                    NewImg = LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone() as Bitmap;
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (Capture_framebuffer[Cam_Num].Count > 0)
-                                {
-                                    Capture_framebuffer[Cam_Num].Clear();
-                                }
-                                //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Grab Completed.");
-                                Capture_framebuffer[Cam_Num].Add(NewImg);
-                            }
-                        }
-
-                        //{
-                        //    Capture_framebuffer[Cam_Num].Add((Bitmap)ctrCam4.m_bitmap.Clone());
-                        //}
-                        //Capture_Image3[Capture_Count[Cam_Num]] = (Bitmap)ctrCam4.m_bitmap.Clone();
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] != 3 && !ctr_Camera_Setting1.Force_USE.Checked)
-                        {
-                            ctrCam1.m_bitmap = NewImg;
-                            //ctrCam1.m_bitmap = (Bitmap)ctrCam4.m_bitmap.Clone();
-                            ctrCam1_GrabComplete(sender, e);
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] != 3 && !ctr_Camera_Setting2.Force_USE.Checked)
-                        {
-                            ctrCam2.m_bitmap = NewImg;
-                            //ctrCam2.m_bitmap = (Bitmap)ctrCam4.m_bitmap.Clone();
-                            ctrCam2_GrabComplete(sender, e);
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] != 3 && !ctr_Camera_Setting3.Force_USE.Checked)
-                        {
-                            ctrCam3.m_bitmap = NewImg;
-                            //ctrCam3.m_bitmap = (Bitmap)ctrCam4.m_bitmap.Clone();
-                            ctrCam3_GrabComplete(sender, e);
-                        }
-                        m_Job_Mode3 = 1;
-
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
-                        {
-                            //Capture_Count[0]++;
-                            //if (Capture_Count[0] >= 3)
-                            //{
-                            //    Capture_Count[0] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode0 = 1;
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] == 3 && !ctr_Camera_Setting2.Force_USE.Checked)
-                        {
-                            //Capture_Count[1]++;
-                            //if (Capture_Count[1] >= 3)
-                            //{
-                            //    Capture_Count[1] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode1 = 1;
-                        }
-                        if (LVApp.Instance().m_Config.m_Interlock_Cam[2] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[2] == 3 && !ctr_Camera_Setting3.Force_USE.Checked)
-                        {
-                            //Capture_Count[2]++;
-                            //if (Capture_Count[2] >= 3)
-                            //{
-                            //    Capture_Count[2] = 0;
-                            //}
-                            //else
-                            //{
-                            //}
-                            m_Probe_Job_Mode2 = 1;
-                        }
-                    }
-                    else
-                    {
-                        Add_PLC_Tx_Message(Cam_Num, 10);
-                        add_Log("CAM3 Grab Error!");
-                    }
-                }
-                else
-                {
-                    DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
-                    //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
-
-                    if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
-                    {
-                        return;
-                    }
-
-                    LVApp.Instance().t_Util.Delay(ctr_PLC1.m_DELAYCAMMISS);
-                    Add_PLC_Tx_Message(Cam_Num, -10);
-                    LVApp.Instance().m_Config.m_OK_NG_Cnt[Cam_Num, 1]++;
-                    if (Capture_framebuffer[Cam_Num].Count > 0)
-                    {
-                        Capture_framebuffer[Cam_Num].Clear();
-                    }
-                    m_Job_Mode3 = 0;
-
-                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
-                    {
-                        LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num]++;
-                        for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_3.Tables[0].Rows.Count; i++)
-                        {
-                            if (LVApp.Instance().m_Config.ds_DATA_3.Tables[0].Rows[i][2].ToString() == "" || LVApp.Instance().m_Config.ds_DATA_3.Tables[0].Rows[i][0].ToString().Contains("alse"))
-                            {
-                                continue;
-                            }
-
-                            for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
-                            {
-                                if (j == 0)
-                                {
-                                    LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = (LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] + 1).ToString("000000000");
-                                }
-
-                                if (LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns[j].ToString().Contains(LVApp.Instance().m_Config.ds_DATA_3.Tables[Cam_Num].Rows[i][2].ToString()))
-                                {
-                                    if (LVApp.Instance().m_Config.ds_DATA_3.Tables[1].Rows[i][3] != null)
-                                    {
-                                        LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j] = "";
-                                    }
-                                }
-                            }
-                        }
-
-
-                        LVApp.Instance().m_Config.t_str_log3 = new string[LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count + 1];
-                        LVApp.Instance().m_Config.t_str_log3[0] = LVApp.Instance().m_Config.m_lot_str; //LVApp.Instance().m_Config.t_str_log_Total[0] = LVApp.Instance().m_Config.m_lot_str;
-                        int t_t_idx = 0;
-                        for (int j = 0; j < LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Columns.Count; j++)
-                        {
-                            LVApp.Instance().m_Config.t_str_log3[j + 1] = LVApp.Instance().m_Config.ds_LOG.Tables[Cam_Num].Rows[(int)(LVApp.Instance().m_Config.m_Log_Data_Cnt[Cam_Num] % (double)LVApp.Instance().m_Config.m_Log_Save_Num)][j].ToString();
-
-                            if (j == 1)
-                            {
-                                if (!LVApp.Instance().m_Config.t_str_log3[j + 1].Contains("OK"))
-                                {
-                                    LVApp.Instance().m_Config.t_Result_log_Total[Cam_Num] = false;
-                                }
-                            }
-                            else if (j > 1)
-                            {
-                                LVApp.Instance().m_Config.t_str_log_Total[LVApp.Instance().m_Config.t_int_log_Total[Cam_Num] + t_t_idx] = LVApp.Instance().m_Config.t_str_log3[j + 1];
-                                t_t_idx++;
-                            }
-                        }
-                        LVApp.Instance().m_Config.t_bool_log_Total[Cam_Num] = false;
-                        //lock (LVApp.Instance().m_Config.CSVLog[4])
-                        //{
-                        //    LVApp.Instance().m_Config.LogThreadProc_Total();
-                        //}
-
-                    }
-
-
-                }
-
-                //GC.Collect();
-            }
-            catch
-            {
-                ctrCam4.t_check_grab = false;
             }
         }
 
@@ -5449,6 +5730,21 @@ namespace LV_Inspection_System.GUI
 
                 //ctr_PLC1.PLC_Thread_Start();
 
+                #region 240814 - LHJ - 로그에 사용하는 영상 그랩 횟수 초기화
+                ctr_Camera_Setting1.Grab_Num = 0D;
+                ctr_Camera_Setting2.Grab_Num = 0D;
+                ctr_Camera_Setting3.Grab_Num = 0D;
+                ctr_Camera_Setting4.Grab_Num = 0D;
+
+                for (int Cam_Num = 0; Cam_Num < 4; ++Cam_Num)
+                {
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
+                    {
+                        _mergeImageCount[Cam_Num] = 0;
+                    }
+                }
+                #endregion
+
                 this.Refresh();
 
                 Monitoringthread = new Thread(Monitoringthread_Proc);
@@ -5471,6 +5767,26 @@ namespace LV_Inspection_System.GUI
 
         public void button_INSPECTION_Click(object sender, EventArgs e)
         {
+            //if (!Camera_Connectio_check_flag)
+            //{
+            //    if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+            //    {
+            //        add_Log("카메라 연결을 점검하세요!");
+            //        MessageBox.Show("카메라 연결을 점검하세요!");
+            //    }
+            //    else if (LVApp.Instance().m_Config.m_SetLanguage == 1)
+            //    {
+            //        add_Log("Check Camera connection!");
+            //        MessageBox.Show("Check Camera connection!");
+            //    }
+            //    else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
+            //    {//중국어
+            //        add_Log("检查摄像机连接!");
+            //        MessageBox.Show("检查摄像机连接!");
+            //    }
+            //    return;
+            //}
+
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 0] += 100;
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 1] += 30;
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[1, 0] += 20;
@@ -6881,6 +7197,7 @@ namespace LV_Inspection_System.GUI
 
         public void Inspection_Thread_Start()
         {
+            DebugLogger.Instance().LogRecord("Inspection Thread Start");
             if (m_Threads_Check[0])
             {
                 return;
@@ -6942,6 +7259,11 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[0].Start();
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[0])
+                    {
+                        DebugLogger.Instance().LogRecord("Try 0");
+                        //ImageMergeThread[0].Start();
+                    }
                 }
             }
             if (!ctr_Camera_Setting2.Force_USE.Checked)
@@ -6954,6 +7276,11 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[1].Start();
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[1])
+                    {
+                        DebugLogger.Instance().LogRecord("Try 1");
+                        //ImageMergeThread[1].Start();
+                    }
                 }
             }
             if (!ctr_Camera_Setting3.Force_USE.Checked)
@@ -6966,6 +7293,11 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[2].Start();
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[2])
+                    {
+                        DebugLogger.Instance().LogRecord("Try 2");
+                        //ImageMergeThread[2].Start();
+                    }
                 }
             }
             if (!ctr_Camera_Setting4.Force_USE.Checked)
@@ -6973,17 +7305,23 @@ namespace LV_Inspection_System.GUI
                 //Viewthreads[3].Start();
                 if (LVApp.Instance().m_Config.m_Cam_Kind[3] == 3)
                 {
+                    DebugLogger.Instance().LogRecord("Try 3");
                     Probe_threads[3].Start();
                 }
                 else
                 {
                     threads[3].Start();
+                    if (LVApp.Instance().m_Config.Image_Merge_Check[3])
+                    {
+                        //ImageMergeThread[3].Start();
+                    }
                 }
             }
         }
 
         public void Inspection_Thread_Stop()
         {
+            DebugLogger.Instance().LogRecord("Inspection Thread Stop");
             try
             {
                 for (int i = 0; i < 4; i++)
@@ -7029,6 +7367,8 @@ namespace LV_Inspection_System.GUI
             }
         }
 
+        private int[] _mergeProcessCount = { 0, 0, 0, 0 };
+
         /// <summary>
         /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// </summary>
@@ -7046,24 +7386,87 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode0 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
-                        DebugLogger.Instance().LogRecord("CAM0 PROC Start");
-
-                        LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
-                        //if (t_onecycle_check)
-                        //{
-                        //    m_Job_Mode0 = 0;
-                        //    t_onecycle_check = false;
-                        //    continue;
-                        //}
-                        //t_onecycle_check = true;
-                        Run_SW[Cam_Num].Reset();
-                        Run_SW[Cam_Num].Start();
-
                         Bitmap Capture_frame = null;
-                        //lock (Capture_framebuffer[Cam_Num])
+                        //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
+                        if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].Clear();
+                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+
+                            if (_is_NewFrame[Cam_Num])
+                            {
+                                _is_NewFrame[Cam_Num] = false;
+                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                if (_mergeProcessCount[Cam_Num] != 0)
+                                {
+                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                    _mergeProcessCount[Cam_Num] = 0;
+                                }
+                            }
+                            else if (_mergeProcessCount[Cam_Num] == 0)
+                            {
+                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                return;
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                }
+                                ++_mergeProcessCount[Cam_Num];
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                                LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                                Run_SW[Cam_Num].Reset();
+                                Run_SW[Cam_Num].Start();
+
+                                Capture_framebuffer[Cam_Num].Clear();
+                                _mergeProcessCount[Cam_Num] = 0;
+
+                                Capture_frame = Grayscale.CommonAlgorithms.BT709.Apply((Bitmap)LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone());
+
+                                #region LHJ - 240804 - 디버깅용, 240806(Merge 여부에 따라 Count 를 다르게 계산)
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam0[_mergeImageCount[Cam_Num] % LV_Config._lastImageCount] = (Bitmap)Capture_frame.Clone();
+                                #endregion
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                            LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                            //if (t_onecycle_check)
+                            //{
+                            //    m_Job_Mode0 = 0;
+                            //    t_onecycle_check = false;
+                            //    continue;
+                            //}
+                            //t_onecycle_check = true;
+                            Run_SW[Cam_Num].Reset();
+                            Run_SW[Cam_Num].Start();
+
+                            //lock (Capture_framebuffer[Cam_Num])
+                            {
+                                Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                                Capture_framebuffer[Cam_Num].Clear();
+                            }
                         }
 
                         if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
@@ -7199,7 +7602,6 @@ namespace LV_Inspection_System.GUI
                             ctr_Manual1.Run_Inspection(Cam_Num, ref Capture_frame);
 
                             LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
-
                             //int Judge = 40;
                             int Judge = LVApp.Instance().m_Config.Judge_DataSet(Cam_Num);
                             // Judge :10, 20, 30:NG, 40:OK. -1: NOOBJ
@@ -7356,8 +7758,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode0 = 0;
-                        DebugLogger.Instance().LogRecord("CAM0 PROC End");
-
+                        DebugLogger.Instance().LogRecord($"CAM0 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -7598,23 +7999,87 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode1 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
-                        DebugLogger.Instance().LogRecord("CAM1 PROC Start");
-                        LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
-                        //if (t_onecycle_check)
-                        //{
-                        //    m_Job_Mode1 = 0;
-                        //    t_onecycle_check = false;
-                        //    continue;
-                        //}
-                        //t_onecycle_check = true;
-                        Run_SW[Cam_Num].Reset();
-                        Run_SW[Cam_Num].Start();
-
                         Bitmap Capture_frame = null;
-                        //lock (Capture_framebuffer[Cam_Num])
+                        //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
+                        if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].Clear();
+                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+
+                            if (_is_NewFrame[Cam_Num])
+                            {
+                                _is_NewFrame[Cam_Num] = false;
+                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                if (_mergeProcessCount[Cam_Num] != 0)
+                                {
+                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                    _mergeProcessCount[Cam_Num] = 0;
+                                }
+                            }
+                            else if (_mergeProcessCount[Cam_Num] == 0)
+                            {
+                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                return;
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                }
+                                ++_mergeProcessCount[Cam_Num];
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                                LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                                Run_SW[Cam_Num].Reset();
+                                Run_SW[Cam_Num].Start();
+
+                                Capture_framebuffer[Cam_Num].Clear();
+                                _mergeProcessCount[Cam_Num] = 0;
+
+                                Capture_frame = Grayscale.CommonAlgorithms.BT709.Apply((Bitmap)LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone());
+
+                                #region LHJ - 240804 - 디버깅용, 240806(Merge 여부에 따라 Count 를 다르게 계산)
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam1[_mergeImageCount[Cam_Num] % LV_Config._lastImageCount] = (Bitmap)Capture_frame.Clone();
+                                #endregion
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                            LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                            //if (t_onecycle_check)
+                            //{
+                            //    m_Job_Mode0 = 0;
+                            //    t_onecycle_check = false;
+                            //    continue;
+                            //}
+                            //t_onecycle_check = true;
+                            Run_SW[Cam_Num].Reset();
+                            Run_SW[Cam_Num].Start();
+
+                            //lock (Capture_framebuffer[Cam_Num])
+                            {
+                                Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                                Capture_framebuffer[Cam_Num].Clear();
+                            }
                         }
 
                         if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
@@ -7901,7 +8366,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode1 = 0;
-                        DebugLogger.Instance().LogRecord("CAM1 PROC End");
+                        DebugLogger.Instance().LogRecord($"CAM1 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -8152,24 +8617,87 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode2 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
-                        DebugLogger.Instance().LogRecord("CAM2 PROC Start");
-
-                        LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
-                        //if (t_onecycle_check)
-                        //{
-                        //    m_Job_Mode2 = 0;
-                        //    t_onecycle_check = false;
-                        //    continue;
-                        //}
-                        //t_onecycle_check = true;
-                        Run_SW[Cam_Num].Reset();
-                        Run_SW[Cam_Num].Start();
-
                         Bitmap Capture_frame = null;
-                        //lock (Capture_framebuffer[Cam_Num])
+                        //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
+                        if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].Clear();
+                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+
+                            if (_is_NewFrame[Cam_Num])
+                            {
+                                _is_NewFrame[Cam_Num] = false;
+                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                if (_mergeProcessCount[Cam_Num] != 0)
+                                {
+                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                    _mergeProcessCount[Cam_Num] = 0;
+                                }
+                            }
+                            else if (_mergeProcessCount[Cam_Num] == 0)
+                            {
+                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                return;
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                }
+                                ++_mergeProcessCount[Cam_Num];
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                                LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                                Run_SW[Cam_Num].Reset();
+                                Run_SW[Cam_Num].Start();
+
+                                Capture_framebuffer[Cam_Num].Clear();
+                                _mergeProcessCount[Cam_Num] = 0;
+
+                                Capture_frame = Grayscale.CommonAlgorithms.BT709.Apply((Bitmap)LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone());
+
+                                #region LHJ - 240804 - 디버깅용, 240806(Merge 여부에 따라 Count 를 다르게 계산)
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam2[_mergeImageCount[Cam_Num] % LV_Config._lastImageCount] = (Bitmap)Capture_frame.Clone();
+                                #endregion
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                            LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                            //if (t_onecycle_check)
+                            //{
+                            //    m_Job_Mode0 = 0;
+                            //    t_onecycle_check = false;
+                            //    continue;
+                            //}
+                            //t_onecycle_check = true;
+                            Run_SW[Cam_Num].Reset();
+                            Run_SW[Cam_Num].Start();
+
+                            //lock (Capture_framebuffer[Cam_Num])
+                            {
+                                Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                                Capture_framebuffer[Cam_Num].Clear();
+                            }
                         }
 
                         if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
@@ -8455,7 +8983,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode2 = 0;
-                        DebugLogger.Instance().LogRecord("CAM2 PROC End");
+                        DebugLogger.Instance().LogRecord($"CAM2 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -8706,23 +9234,87 @@ namespace LV_Inspection_System.GUI
                     }
                     else if (m_Job_Mode3 == 1 && Capture_framebuffer[Cam_Num].Count > 0)
                     {
-                        DebugLogger.Instance().LogRecord("CAM3 PROC Start");
-                        LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
-                        //if (t_onecycle_check)
-                        //{
-                        //    m_Job_Mode3 = 0;
-                        //    t_onecycle_check = false;
-                        //    continue;
-                        //}
-                        //t_onecycle_check = true;
-                        Run_SW[Cam_Num].Reset();
-                        Run_SW[Cam_Num].Start();
-
                         Bitmap Capture_frame = null;
-                        //lock (Capture_framebuffer[Cam_Num])
+                        //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
+                        if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].Clear();
+                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+
+                            if (_is_NewFrame[Cam_Num])
+                            {
+                                _is_NewFrame[Cam_Num] = false;
+                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                if (_mergeProcessCount[Cam_Num] != 0)
+                                {
+                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                    _mergeProcessCount[Cam_Num] = 0;
+                                }
+                            }
+                            else if (_mergeProcessCount[Cam_Num] == 0)
+                            {
+                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                return;
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                {
+                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                }
+                                ++_mergeProcessCount[Cam_Num];
+                            }
+
+                            if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
+                            {
+                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                                LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                                Run_SW[Cam_Num].Reset();
+                                Run_SW[Cam_Num].Start();
+
+                                Capture_framebuffer[Cam_Num].Clear();
+                                _mergeProcessCount[Cam_Num] = 0;
+
+                                Capture_frame = Grayscale.CommonAlgorithms.BT709.Apply((Bitmap)LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num].Clone());
+
+                                #region LHJ - 240804 - 디버깅용, 240806(Merge 여부에 따라 Count 를 다르게 계산)
+                                // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+                                // 알고리즘을 다운 시키는 이미지가 있는지 확인
+                                // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 두 이미지)를 저장함
+                                LVApp.Instance().m_Config._lastImage_Cam3[_mergeImageCount[Cam_Num] % LV_Config._lastImageCount] = (Bitmap)Capture_frame.Clone();
+                                #endregion
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+
+                            LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
+                            //if (t_onecycle_check)
+                            //{
+                            //    m_Job_Mode0 = 0;
+                            //    t_onecycle_check = false;
+                            //    continue;
+                            //}
+                            //t_onecycle_check = true;
+                            Run_SW[Cam_Num].Reset();
+                            Run_SW[Cam_Num].Start();
+
+                            //lock (Capture_framebuffer[Cam_Num])
+                            {
+                                Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
+                                Capture_framebuffer[Cam_Num].Clear();
+                            }
                         }
                         if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                         {
@@ -9011,7 +9603,7 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode3 = 0;
-                        DebugLogger.Instance().LogRecord("CAM3 PROC End");
+                        DebugLogger.Instance().LogRecord($"CAM3 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -9975,7 +10567,6 @@ namespace LV_Inspection_System.GUI
             //                }
             //            }
         }
-
 
         private void dataGridView_AUTO_STATUS_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {

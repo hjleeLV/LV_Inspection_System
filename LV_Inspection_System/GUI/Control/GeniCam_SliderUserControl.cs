@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ThridLibray;
+using Matrox.MatroxImagingLibrary;
+using OpenCvSharp;
 
 namespace LV_Inspection_System.GUI.Control
 {

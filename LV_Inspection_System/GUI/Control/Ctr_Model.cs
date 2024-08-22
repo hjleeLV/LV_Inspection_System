@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using LV_Inspection_System.GUI;
 using OfficeOpenXml;
 using System.Threading;
+using Microsoft.VisualBasic;
 
 namespace LV_Inspection_System.GUI.Control
 {
@@ -1011,11 +1012,23 @@ namespace LV_Inspection_System.GUI.Control
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.learningvision.co.kr");
+            //System.Diagnostics.Process.Start("http://www.learningvision.co.kr");
         }
 
         private void comboBox_Language_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (LVApp.Instance().m_mainform.m_Start_Check && comboBox_Language.SelectedIndex != LVApp.Instance().m_Config.m_SetLanguage)
+            {
+                string input = Interaction.InputBox("Input Password to change the language", "Password", "");
+                //if (Interaction.InputBox("Input Password to change the language", "Password", "") != Properties.Settings.Default.PASSWD)
+                if (input != "7748" && input != "9542")
+                {
+                    comboBox_Language.SelectedIndex = LVApp.Instance().m_Config.m_SetLanguage;
+                    MessageBox.Show("Password Error");
+                    return;
+                }
+            }
+
             if (LVApp.Instance().m_Config.m_Check_Inspection_Mode && LVApp.Instance().m_mainform.m_Start_Check && !LVApp.Instance().m_mainform.Force_close)
             {
                 if (LVApp.Instance().m_Config.m_SetLanguage == 0)

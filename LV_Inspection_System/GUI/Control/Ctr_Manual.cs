@@ -1428,8 +1428,6 @@ namespace LV_Inspection_System.GUI.Control
                         CurrencyManager currencyManager0 = (CurrencyManager)LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.BindingContext[LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.DataSource];
                         currencyManager0.SuspendBinding();
 
-
-
                         if (strParameter == null || t_result_CNT < 2)
                         {
                             for (int i = 0; i < LVApp.Instance().m_Config.ds_DATA_0.Tables[0].Rows.Count; i++)
@@ -1438,7 +1436,6 @@ namespace LV_Inspection_System.GUI.Control
                                 {
                                     LVApp.Instance().m_Config.ds_DATA_0.Tables[1].Rows[i][3] = -1;
                                 }
-
                             }
                         }
                         for (int i = 0; i < t_result_CNT; i++)
@@ -1639,7 +1636,6 @@ namespace LV_Inspection_System.GUI.Control
             }
             catch// (System.Exception ex)
             {
-
             }
         }
 

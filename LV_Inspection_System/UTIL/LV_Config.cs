@@ -859,8 +859,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "판정방법";
                 comboboxColumn.Name = "판정방법";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Columns.Remove("판정방법");
@@ -875,8 +876,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Columns.Remove("J.Method");
@@ -891,8 +893,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_0.Columns.Remove("J.Method");
@@ -1288,8 +1291,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "판정방법";
                 comboboxColumn.Name = "판정방법";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_1.Columns.Remove("판정방법");
@@ -1304,8 +1308,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_1.Columns.Remove("J.Method");
@@ -1320,8 +1325,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_1.Columns.Remove("J.Method");
@@ -1714,8 +1720,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "판정방법";
                 comboboxColumn.Name = "판정방법";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_2.Columns.Remove("판정방법");
@@ -1730,8 +1737,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_2.Columns.Remove("J.Method");
@@ -1746,8 +1754,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_2.Columns.Remove("J.Method");
@@ -2138,8 +2147,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "판정방법";
                 comboboxColumn.Name = "판정방법";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_3.Columns.Remove("판정방법");
@@ -2154,8 +2164,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_3.Columns.Remove("J.Method");
@@ -2170,8 +2181,9 @@ namespace LV_Inspection_System.UTIL
 
                 DataGridViewComboBoxColumn comboboxColumn = new DataGridViewComboBoxColumn();
                 comboboxColumn.Items.Add("Min.");
-                comboboxColumn.Items.Add("Range");
                 comboboxColumn.Items.Add("Max.");
+                comboboxColumn.Items.Add("Range");
+                comboboxColumn.Items.Add("Rev-Range");
                 comboboxColumn.DataPropertyName = "J.Method";
                 comboboxColumn.Name = "J.Method";
                 LVApp.Instance().m_mainform.dataGridView_Setting_Value_3.Columns.Remove("J.Method");
@@ -6690,10 +6702,20 @@ namespace LV_Inspection_System.UTIL
                                 LVApp.Instance().m_mainform.ctr_PLC1.Send_Data_MC();
                             }
                         }
-
-                        if (m_judge_method == "Min")
+                        if (m_judge_method == "Min.")
                         {
                             if (m_val >= m_min && m_val >= -1)
+                            {
+                                Judgement_List[i] = true;
+                            }
+                            else
+                            {
+                                Judgement_List[i] = false;
+                            }
+                        }
+                        else if (m_judge_method == "Max.")
+                        {
+                            if (m_val <= m_max && m_val >= -1)
                             {
                                 Judgement_List[i] = true;
                             }
@@ -6713,9 +6735,9 @@ namespace LV_Inspection_System.UTIL
                                 Judgement_List[i] = false;
                             }
                         }
-                        else if (m_judge_method == "Max")
+                        else if (m_judge_method == "Rev-Range")
                         {
-                            if (m_val <= m_max && m_val >= -1)
+                            if ((m_val <= m_min || m_val >= m_max) && m_val >= -1)
                             {
                                 Judgement_List[i] = true;
                             }
@@ -9332,5 +9354,16 @@ namespace LV_Inspection_System.UTIL
             {
             }
         }
+
+        #region LHJ - 240804 디버깅용
+        // 검사 중 SW가 정지되는 현상을 디버깅 하기 위함
+        // 알고리즘을 다운 시키는 이미지가 있는지 확인
+        // 검사 종료 시, 카메라마다 마지막 이미지, 그 이전 이미지(총 _lastImageCount개 이미지)를 저장함
+        public const int _lastImageCount = 2;
+        public Bitmap[] _lastImage_Cam0 = new Bitmap[_lastImageCount];
+        public Bitmap[] _lastImage_Cam1 = new Bitmap[_lastImageCount];
+        public Bitmap[] _lastImage_Cam2 = new Bitmap[_lastImageCount];
+        public Bitmap[] _lastImage_Cam3 = new Bitmap[_lastImageCount];
+        #endregion
     }
 }
