@@ -17,6 +17,9 @@ using System.Collections;
 using System.Net.Sockets;
 using MCProtocol;
 using System.Threading.Tasks;
+using OpenCvSharp;
+using System.Net;
+using System.Security.Cryptography;
 
 namespace LV_Inspection_System.GUI.Control
 {
@@ -35,6 +38,12 @@ namespace LV_Inspection_System.GUI.Control
 
         Thread[] threads = new Thread[2];
         public bool m_threads_Check = false;
+
+        Thread MC_Rx_threads;
+        public bool MC_Rx_threads_Check = false;
+        Thread MC_Tx_threads;
+        public bool MC_Tx_threads_Check = false;
+
 
         public static char sSTX() { return Convert.ToChar(0x02); }
         public static char sETX() { return Convert.ToChar(0x03); }
@@ -807,6 +816,15 @@ namespace LV_Inspection_System.GUI.Control
                             LVApp.Instance().m_Config.ds_STATUS.Tables["AUTO STATUS"].Rows[2]["Value"] = "Error";
                         }
                     }
+
+                    if (!MC_Rx_threads_Check)
+                    {
+                        MCRx_Thread_Start();
+                    }
+                    if (!MC_Tx_threads_Check)
+                    {
+                        MCTx_Thread_Start();
+                    }
                 }
                 button_Send_Save_Click(sender, e);
                 for (int i = 0; i < 4; i++)
@@ -1060,6 +1078,15 @@ namespace LV_Inspection_System.GUI.Control
                 {
                     LVApp.Instance().m_DIO.Release();
                     m_threads_Check = false;
+
+                    if (MC_Rx_threads_Check)
+                    {
+                        MCRx_Thread_Stop();
+                    }
+                    if (MC_Tx_threads_Check)
+                    {
+                        MCTx_Thread_Stop();
+                    }
                 }
 
                 btnClose.Enabled = false;
@@ -1504,14 +1531,73 @@ namespace LV_Inspection_System.GUI.Control
 
                     if (worksheet.Cells[15, 5].Value != null)
                     {
-                        is_Open_MC_Client = worksheet.Cells[15, 5].Value.ToString() == "0" ? false : true;
-                        checkBox_MC.Checked = is_Open_MC_Client;
+                        checkBox_MC.Checked = Use_CAM1_CAM2_ROI2_MC_Tx = worksheet.Cells[15, 5].Value.ToString() == "0" ? false : true;
                     }
                     else
                     {
-                        checkBox_MC.Checked = false;
-                        is_Open_MC_Client = checkBox_MC.Checked;
+                        Use_CAM1_CAM2_ROI2_MC_Tx = checkBox_MC.Checked = false;
                     }
+
+
+                    // 2024.08.24 by CD
+                    // START
+                    if (worksheet.Cells[15, 6].Value != null)
+                    {
+                        checkBox_MC_Rx_Use.Checked = Use_MC_Rx = worksheet.Cells[15, 6].Value.ToString() == "0" ? false : true;
+                    }
+                    else
+                    {
+                        Use_MC_Rx = checkBox_MC_Rx_Use.Checked = false;
+                    }
+                    if (worksheet.Cells[15, 7].Value != null)
+                    {
+                        checkBox_MC_Tx_Use.Checked = Use_MC_Tx = worksheet.Cells[15, 7].Value.ToString() == "0" ? false : true;
+                    }
+                    else
+                    {
+                        Use_MC_Tx = checkBox_MC_Tx_Use.Checked = false;
+                    }
+                    if (worksheet.Cells[15, 8].Value != null)
+                    {
+                        decimal d_v = 1;
+                        decimal.TryParse(worksheet.Cells[15, 8].Value.ToString(), out d_v);
+                        numericUpDown_MC_Rx.Value = d_v;
+                        MC_Rx_Row_CNT = (int)d_v;
+                    }
+                    else
+                    {
+                        numericUpDown_MC_Rx.Value = 0x01;
+                        MC_Rx_Row_CNT = 1;
+                    }
+                    if (worksheet.Cells[15, 9].Value != null)
+                    {
+                        decimal d_v = 1;
+                        decimal.TryParse(worksheet.Cells[15, 9].Value.ToString(), out d_v);
+                        numericUpDown_MC_Tx.Value = d_v;
+                        MC_Tx_Row_CNT = (int)d_v;
+                    }
+                    else
+                    {
+                        numericUpDown_MC_Tx.Value = 0x01;
+                        MC_Tx_Row_CNT = 1;
+                    }
+
+                    string MC_Rx_filename = LVApp.Instance().excute_path + "\\Models\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + "MC_Rx_Table.csv";
+                    if (System.IO.File.Exists(MC_Rx_filename))
+                    {
+                        DT_MC_Rx.Clear();
+                        DT_MC_Rx.OpenCSVFile(MC_Rx_filename);
+                        button_MC_Rx_Apply_Click(sender, e);
+                    }
+                    DT_MC_Rx.WriteToCsvFile(MC_Rx_filename);
+                    string MC_Tx_filename = LVApp.Instance().excute_path + "\\Models\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + "MC_Tx_Table.csv";
+                    if (System.IO.File.Exists(MC_Tx_filename))
+                    {
+                        DT_MC_Tx.Clear();
+                        DT_MC_Tx.OpenCSVFile(MC_Tx_filename);
+                        button_MC_Tx_Apply_Click(sender, e);
+                    }
+                    // END
                 }
             }
             finally
@@ -1623,6 +1709,27 @@ namespace LV_Inspection_System.GUI.Control
                     worksheet.Cells[15, 4].Value = textBox_MinTime.Text;
 
                     worksheet.Cells[15, 5].Value = checkBox_MC.Checked == false ? 0 : 1;
+
+                    // 2024.08.24 by CD
+                    // START
+                    worksheet.Cells[15, 6].Value = checkBox_MC_Rx_Use.Checked == false ? 0 : 1;
+                    worksheet.Cells[15, 7].Value = checkBox_MC_Tx_Use.Checked == false ? 0 : 1;
+                    worksheet.Cells[15, 8].Value = ((int)numericUpDown_MC_Rx.Value).ToString();
+                    worksheet.Cells[15, 9].Value = ((int)numericUpDown_MC_Tx.Value).ToString();
+                    string MC_Rx_filename = LVApp.Instance().excute_path + "\\Models\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + "MC_Rx_Table.csv";
+                    if (System.IO.File.Exists(MC_Rx_filename))
+                    {
+                        System.IO.File.Delete(MC_Rx_filename);
+                    }
+                    DT_MC_Rx.WriteToCsvFile(MC_Rx_filename);
+                    string MC_Tx_filename = LVApp.Instance().excute_path + "\\Models\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + "MC_Tx_Table.csv";
+                    if (System.IO.File.Exists(MC_Tx_filename))
+                    {
+                        System.IO.File.Delete(MC_Tx_filename);
+                    }
+                    DT_MC_Tx.WriteToCsvFile(MC_Tx_filename);
+                    // END
+
 
                     int.TryParse(textBox_DELAYCAMMISS.Text, out m_DELAYCAMMISS);
                     float.TryParse(textBox_RESETDURATION.Text, out m_RESETDURATION);
@@ -1814,6 +1921,19 @@ namespace LV_Inspection_System.GUI.Control
             }
         }
 
+        public void MCRx_Thread_Start()
+        {
+            MC_Rx_threads_Check = true;
+            MC_Rx_threads = new Thread(ThreadProcMCRx);
+            MC_Rx_threads.Start();
+        }
+        public void MCTx_Thread_Start()
+        {
+            MC_Tx_threads_Check = true;
+            MC_Tx_threads = new Thread(ThreadProcMCTx);
+            MC_Tx_threads.Start();
+        }
+
         public void PLC_Thread_Stop()
         {
             try
@@ -1839,6 +1959,29 @@ namespace LV_Inspection_System.GUI.Control
             }
             catch
             { }
+        }
+
+        public void MCRx_Thread_Stop()
+        {
+            MC_Rx_threads_Check = false;
+            Thread.Sleep(100);
+            if (MC_Rx_threads != null && MC_Rx_threads.IsAlive)
+            {
+                MC_Rx_threads.Interrupt();
+                MC_Rx_threads.Abort();
+                MC_Rx_threads = null;
+            }
+        }
+        public void MCTx_Thread_Stop()
+        {
+            MC_Tx_threads_Check = false;
+            Thread.Sleep(100);
+            if (MC_Tx_threads != null && MC_Tx_threads.IsAlive)
+            {
+                MC_Tx_threads.Interrupt();
+                MC_Tx_threads.Abort();
+                MC_Tx_threads = null;
+            }
         }
 
         /// PLC로 부터 수신된 데이타를 가지고 온다. ///
@@ -4002,7 +4145,7 @@ namespace LV_Inspection_System.GUI.Control
             }
         }
 
-        public bool is_Open_MC_Client = false;
+        public bool Use_CAM1_CAM2_ROI2_MC_Tx = false;
         public double CAM2_ROI2_Value;
         public double CAM2_ROI2_Max;
         public double CAM2_ROI2_Min;
@@ -4022,7 +4165,7 @@ namespace LV_Inspection_System.GUI.Control
             }
             try
             {
-                if (Send_Data_MC_check || !is_Open_MC_Client)
+                if (Send_Data_MC_check || !Use_CAM1_CAM2_ROI2_MC_Tx)
                 {
                     return;
                 }
@@ -4039,7 +4182,7 @@ namespace LV_Inspection_System.GUI.Control
                         McProtocolApp.Open();
                     }
                     if (McProtocolApp.Connected)
-                    {                    
+                    {
                         //using (McProtocolApp.Open())
                         int m_size = 13;
                         int[] nData = new int[m_size];
@@ -4118,7 +4261,848 @@ namespace LV_Inspection_System.GUI.Control
 
         private void checkBox_MC_CheckedChanged(object sender, EventArgs e)
         {
-            is_Open_MC_Client = checkBox_MC.Checked;
+            Use_CAM1_CAM2_ROI2_MC_Tx = checkBox_MC.Checked;
         }
+
+        // 2024.08.24 by CD
+        // START
+        private bool Use_MC_Rx = false;
+        private bool Use_MC_Tx = false;
+        private int MC_Rx_Row_CNT = 1;
+        private int MC_Tx_Row_CNT = 1;
+        public DataTable DT_MC_Rx = new DataTable("MC_Rx");
+        public DataTable DT_MC_Tx = new DataTable("MC_Tx");
+
+        public bool[] CAM_Value_Updated = new bool[4] { false, false, false, false };
+        public double[] CAM0_Value = new double[40];
+        public double[] CAM1_Value = new double[40];
+        public double[] CAM2_Value = new double[40];
+        public double[] CAM3_Value = new double[40];
+
+        public int[] MC_Rx_CAM_Num = new int[4];
+        public bool[] MC_Rx_Request = new bool[4] { false, false, false, false };
+        public bool[] MC_Rx_Value_Updated = new bool[4] { false, false, false, false };
+        public int[] MC_Rx_Value = new int[4] { -1, -1, -1, -1 };
+
+        private void checkBox_MC_Rx_Use_CheckedChanged(object sender, EventArgs e)
+        {
+            Use_MC_Rx = checkBox_MC_Rx_Use.Checked;
+        }
+
+        private void checkBox_MC_Tx_Use_CheckedChanged(object sender, EventArgs e)
+        {
+            Use_MC_Tx = checkBox_MC_Tx_Use.Checked;
+        }
+
+        private void numericUpDown_MC_Rx_ValueChanged(object sender, EventArgs e)
+        {
+            MC_Rx_Row_CNT = (int)numericUpDown_MC_Rx.Value;
+        }
+
+        private void numericUpDown_MC_Tx_ValueChanged(object sender, EventArgs e)
+        {
+            MC_Tx_Row_CNT = (int)numericUpDown_MC_Tx.Value;
+        }
+
+        private void button_MC_Rx_Apply_Click(object sender, EventArgs e)
+        {
+            int Row_CNT = DT_MC_Rx.Rows.Count;
+            if (DT_MC_Rx.Columns.Count == 0)
+            {
+                DT_MC_Rx.Columns.Add("Address");
+                DT_MC_Rx.Columns.Add("카메라");
+                DT_MC_Rx.Columns.Add("값");
+                DT_MC_Rx.Columns.Add("비고");
+            }
+
+            if (Row_CNT < MC_Rx_Row_CNT)
+            {
+                for (int i = 0; i < MC_Rx_Row_CNT - Row_CNT; i++)
+                {
+                    DT_MC_Rx.Rows.Add("D", "CAM0", "", "셀ID(QR코드)");
+                }
+            }
+
+            if (Row_CNT > MC_Rx_Row_CNT)
+            {
+                for (int i = Row_CNT - 1; i >= MC_Rx_Row_CNT; i--)
+                {
+                    DT_MC_Rx.Rows.RemoveAt(i);
+                }
+            }
+
+            dataGridView_MC_Rx.DataSource = DT_MC_Rx;
+            dataGridView_MC_Rx.AllowUserToAddRows = false;
+            dataGridView_MC_Rx.AllowUserToDeleteRows = false;
+            dataGridView_MC_Rx.AllowUserToResizeColumns = false;
+            dataGridView_MC_Rx.AllowUserToResizeRows = false;
+            dataGridView_MC_Rx.RowHeadersWidth = 5;
+            dataGridView_MC_Rx.ColumnHeadersHeight = 26;
+            dataGridView_MC_Rx.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridView_MC_Rx.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dataGridView_MC_Rx.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView_MC_Rx.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView_MC_Rx.Font = new System.Drawing.Font("맑은 고딕", 8.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridView_MC_Rx.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView_MC_Rx.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("맑은 고딕", 8.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridView_MC_Rx.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            foreach (DataGridViewColumn column in dataGridView_MC_Rx.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            dataGridView_MC_Rx.ClearSelection();
+
+            foreach (DataGridViewRow row in dataGridView_MC_Rx.Rows)
+            {
+                string t_str = row.Cells[1].Value.ToString();
+                row.Cells[1].Value = null;
+                DataGridViewComboBoxCell dgvCmbCell = new DataGridViewComboBoxCell(); dgvCmbCell.FlatStyle = FlatStyle.Flat;
+                dgvCmbCell.Items.Add("ALL");
+                dgvCmbCell.Items.Add("CAM0");
+                dgvCmbCell.Items.Add("CAM1");
+                dgvCmbCell.Items.Add("CAM2");
+                dgvCmbCell.Items.Add("CAM3");
+
+                row.Cells[1] = dgvCmbCell;
+                bool t_exist = false;
+                foreach (var t_item in dgvCmbCell.Items)
+                {
+                    if (t_str == t_item.ToString())
+                    {
+                        t_exist = true;
+                    }
+                }
+                if (t_exist)
+                {
+                    row.Cells[1].Value = t_str;
+                }
+                else
+                {
+                    row.Cells[1].Value = "ALL";
+                }
+            }
+        }
+
+        private void button_MC_Tx_Apply_Click(object sender, EventArgs e)
+        {
+            int Row_CNT = DT_MC_Tx.Rows.Count;
+            if (DT_MC_Tx.Columns.Count == 0)
+            {
+                DT_MC_Tx.Columns.Add("Address");
+                DT_MC_Tx.Columns.Add("Type");
+                DT_MC_Tx.Columns.Add("카메라");
+                DT_MC_Tx.Columns.Add("ROI");
+                DT_MC_Tx.Columns.Add("SCALE");
+                DT_MC_Tx.Columns.Add("값");
+                DT_MC_Tx.Columns.Add("비고");
+            }
+
+            if (Row_CNT < MC_Tx_Row_CNT)
+            {
+                for (int i = 0; i < MC_Tx_Row_CNT - Row_CNT; i++)
+                {
+                    DT_MC_Tx.Rows.Add("D", "DWORD", "CAM0", "01", "1", "", "");
+                }
+            }
+
+            if (Row_CNT > MC_Tx_Row_CNT)
+            {
+                for (int i = Row_CNT - 1; i >= MC_Tx_Row_CNT; i--)
+                {
+                    DT_MC_Tx.Rows.RemoveAt(i);
+                }
+            }
+
+            dataGridView_MC_Tx.DataSource = DT_MC_Tx;
+            dataGridView_MC_Tx.AllowUserToAddRows = false;
+            dataGridView_MC_Tx.AllowUserToDeleteRows = false;
+            dataGridView_MC_Tx.AllowUserToResizeColumns = false;
+            dataGridView_MC_Tx.AllowUserToResizeRows = false;
+            dataGridView_MC_Tx.RowHeadersWidth = 5;
+            dataGridView_MC_Tx.ColumnHeadersHeight = 26;
+            dataGridView_MC_Tx.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridView_MC_Tx.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dataGridView_MC_Tx.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            dataGridView_MC_Tx.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView_MC_Tx.Font = new System.Drawing.Font("맑은 고딕", 8.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridView_MC_Tx.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView_MC_Tx.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("맑은 고딕", 8.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            dataGridView_MC_Tx.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            foreach (DataGridViewColumn column in dataGridView_MC_Tx.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            dataGridView_MC_Tx.ClearSelection();
+
+            foreach (DataGridViewRow row in dataGridView_MC_Tx.Rows)
+            {
+                string t_str = row.Cells[1].Value.ToString();
+                row.Cells[1].Value = null;
+                DataGridViewComboBoxCell dgvCmbCell0 = new DataGridViewComboBoxCell(); dgvCmbCell0.FlatStyle = FlatStyle.Flat;
+                dgvCmbCell0.Items.Add("WORD");
+                dgvCmbCell0.Items.Add("DWORD");
+
+                row.Cells[1] = dgvCmbCell0;
+                bool t_exist = false;
+                foreach (var t_item in dgvCmbCell0.Items)
+                {
+                    if (t_str == t_item.ToString())
+                    {
+                        t_exist = true;
+                    }
+                }
+                if (t_exist)
+                {
+                    row.Cells[1].Value = t_str;
+                }
+                else
+                {
+                    row.Cells[1].Value = "DWORD";
+                }
+
+                t_str = row.Cells[2].Value.ToString();
+                row.Cells[2].Value = null;
+                DataGridViewComboBoxCell dgvCmbCell1 = new DataGridViewComboBoxCell(); dgvCmbCell1.FlatStyle = FlatStyle.Flat;
+                dgvCmbCell1.Items.Add("CAM0");
+                dgvCmbCell1.Items.Add("CAM1");
+                dgvCmbCell1.Items.Add("CAM2");
+                dgvCmbCell1.Items.Add("CAM3");
+                dgvCmbCell1.Items.Add("사용안함");
+
+                row.Cells[2] = dgvCmbCell1;
+                t_exist = false;
+                foreach (var t_item in dgvCmbCell1.Items)
+                {
+                    if (t_str == t_item.ToString())
+                    {
+                        t_exist = true;
+                    }
+                }
+                if (t_exist)
+                {
+                    row.Cells[2].Value = t_str;
+                }
+                else
+                {
+                    row.Cells[2].Value = "사용안함";
+                }
+
+                t_str = row.Cells[3].Value.ToString();
+                row.Cells[3].Value = null;
+                DataGridViewComboBoxCell dgvCmbCell2 = new DataGridViewComboBoxCell(); dgvCmbCell2.FlatStyle = FlatStyle.Flat;
+                dgvCmbCell2.Items.Add("고정값");
+                for (int i = 1; i <= 40; i++)
+                {
+                    dgvCmbCell2.Items.Add(i.ToString("00"));
+                }
+
+                row.Cells[3] = dgvCmbCell2;
+                t_exist = false;
+                foreach (var t_item in dgvCmbCell2.Items)
+                {
+                    if (t_str == t_item.ToString())
+                    {
+                        t_exist = true;
+                    }
+                }
+                if (t_exist)
+                {
+                    row.Cells[3].Value = t_str;
+                }
+                else
+                {
+                    row.Cells[3].Value = "고정값";
+                }
+            }
+        }
+
+        #region 모든 카메라에서 검사가 끝났을 때 한번에 데이터 전송. 240827- 각 카메라마다 각각 전송하도록 변경. ThreadProcMCTx 참고
+        bool Data_MC_Tx_check = false;
+        public void Data_MC_Tx()
+        {
+            try
+            {
+                if (!Use_MC_Tx)
+                {
+                    for (int cam = 0; cam < 4; cam++)
+                    { // Update flag false로 바꿈
+                        CAM_Value_Updated[cam] = false;
+                    }
+                    Data_MC_Tx_check = false;
+                    return;
+                }
+
+                if (Data_MC_Tx_check)
+                {
+                    return;
+                }
+
+                bool Data_Full_Check = true;
+
+                for (int cam = 0; cam < 4; cam++)
+                {
+                    if (LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[cam])
+                    { // 카메라 사용안하면 무조건 update 되었다고 생각
+                        CAM_Value_Updated[cam] = true;
+                    }
+                    else
+                    {// 카메라 사용
+                        if (!CAM_Value_Updated[cam])
+                        { // 사용하는 카메라의 값이 update 안되어 있다면...
+                            Data_Full_Check = false;
+                        }
+                    }
+                }
+
+                if (Data_Full_Check)
+                { // 모든 카메라 값이 update 되었을때
+                    if (!McProtocolApp.Connected)
+                    { //MCProtocol 접속 안되어 있으면 접속하기
+                        McProtocolApp.HostName = textBox_SERVER_IP.Text;
+                        McProtocolApp.PortNumber = int.Parse(textBox_SERVER_PORT.Text);
+                        McProtocolApp.CommandFrame = Mitsubishi.McFrame.MC3E;
+                        McProtocolApp.Open();
+                    }
+
+                    if (McProtocolApp.Connected)
+                    { // 접속 되면
+                        Data_MC_Tx_check = true;
+                        for (int cam = 0; cam < 4; cam++)
+                        { // Update flag false로 바꿈
+                            CAM_Value_Updated[cam] = false;
+                        }
+
+                        // 보내야 할 data 수 계산
+                        int _row_cnt = DT_MC_Tx.Rows.Count;
+                        List<Tuple<string, int, int>> Tx_list = new List<Tuple<string, int, int>>();//주소, Type, Value
+                        for (int idx = 0; idx < _row_cnt; idx++)
+                        {
+                            var _row = DT_MC_Tx.Rows[idx];
+                            if (_row[2].ToString() == "사용안함")
+                            {
+
+                            }
+                            else if (_row[2].ToString() == "CAM0")
+                            {
+                                int t_ROI = -1;
+                                int.TryParse(_row[3].ToString(), out t_ROI);
+                                double t_Scale = 1;
+                                double.TryParse(_row[4].ToString(), out t_Scale);
+
+                                if (t_ROI <= 0)
+                                {// 고정값
+
+                                }
+                                else
+                                {// ROI값
+                                    _row[5] = (int)(CAM0_Value[t_ROI - 1] * t_Scale);
+                                }
+
+                                int t_Type = 2;
+                                if (_row[1].ToString() == "WORD")
+                                {
+                                    t_Type = 1;
+                                }
+                                // 주소와 값을 list에 넣기
+                                int t_Value = 0;
+                                int.TryParse(_row[5].ToString(), out t_Value);
+                                Tx_list.Add(new Tuple<string, int, int>(_row[0].ToString(), t_Type, t_Value));
+                            }
+                            else if (_row[2].ToString() == "CAM1")
+                            {
+                                int t_ROI = -1;
+                                int.TryParse(_row[3].ToString(), out t_ROI);
+                                double t_Scale = 1;
+                                double.TryParse(_row[4].ToString(), out t_Scale);
+
+                                if (t_ROI <= 0)
+                                {// 고정값
+
+                                }
+                                else
+                                {// ROI값
+                                    _row[5] = (int)(CAM1_Value[t_ROI - 1] * t_Scale);
+                                }
+
+                                int t_Type = 2;
+                                if (_row[1].ToString() == "WORD")
+                                {
+                                    t_Type = 1;
+                                }
+                                // 주소와 값을 list에 넣기
+                                int t_Value = 0;
+                                int.TryParse(_row[5].ToString(), out t_Value);
+                                Tx_list.Add(new Tuple<string, int, int>(_row[0].ToString(), t_Type, t_Value));
+                            }
+                            else if (_row[2].ToString() == "CAM2")
+                            {
+                                int t_ROI = -1;
+                                int.TryParse(_row[3].ToString(), out t_ROI);
+                                double t_Scale = 1;
+                                double.TryParse(_row[4].ToString(), out t_Scale);
+
+                                if (t_ROI <= 0)
+                                {// 고정값
+
+                                }
+                                else
+                                {// ROI값
+                                    _row[5] = (int)(CAM2_Value[t_ROI - 1] * t_Scale);
+                                }
+
+                                int t_Type = 2;
+                                if (_row[1].ToString() == "WORD")
+                                {
+                                    t_Type = 1;
+                                }
+                                // 주소와 값을 list에 넣기
+                                int t_Value = 0;
+                                int.TryParse(_row[5].ToString(), out t_Value);
+                                Tx_list.Add(new Tuple<string, int, int>(_row[0].ToString(), t_Type, t_Value));
+                            }
+                            else if (_row[2].ToString() == "CAM3")
+                            {
+                                int t_ROI = -1;
+                                int.TryParse(_row[3].ToString(), out t_ROI);
+                                double t_Scale = 1;
+                                double.TryParse(_row[4].ToString(), out t_Scale);
+
+                                if (t_ROI <= 0)
+                                {// 고정값
+
+                                }
+                                else
+                                {// ROI값
+                                    _row[5] = (int)(CAM3_Value[t_ROI - 1] * t_Scale);
+                                }
+
+                                int t_Type = 2;
+                                if (_row[1].ToString() == "WORD")
+                                {
+                                    t_Type = 1;
+                                }
+                                // 주소와 값을 list에 넣기
+                                int t_Value = 0;
+                                int.TryParse(_row[5].ToString(), out t_Value);
+                                Tx_list.Add(new Tuple<string, int, int>(_row[0].ToString(), t_Type, t_Value));
+                            }
+                        }
+
+                        string _log = "MC Tx:";
+                        foreach (var _data in Tx_list)
+                        {
+                            if (_data.Item2 == 1)
+                            {
+                                McProtocolApp.SetDevice(_data.Item1, _data.Item3);
+                            }
+                            else
+                            {
+                                int[] nData = new int[2];
+                                int[] t_nData = Convert_Data(_data.Item3);
+                                nData[0] = t_nData[0]; nData[1] = t_nData[1];
+                                McProtocolApp.WriteDeviceBlock(_data.Item1, 2, nData);
+                            }
+                            _log += " [" + _data.Item1 + ":" + _data.Item3.ToString() + "]";
+                        }
+                        if (LVApp.Instance().m_Config.PLC_Judge_view)
+                        {
+                            add_Log(_log);
+                        }
+                    }
+                    Data_MC_Tx_check = false;
+                }
+            }
+            catch
+            {
+
+            }
+        }
+        #endregion
+
+        //bool Data_MC_Rx_check = false;
+        //public void Data_MC_Rx()
+        //{
+        //    try
+        //    {
+        //        if (Data_MC_Rx_check)
+        //        {
+        //            return;
+        //        }
+
+        //        Data_MC_Rx_check = true;
+
+        //        if (!Use_MC_Rx)
+        //        {
+        //            for (int cam = 0; cam < 4; cam++)
+        //            { // Update flag false로 바꿈
+        //                MC_Rx_Value_Updated[cam] = false;
+        //            }
+        //            Data_MC_Rx_check = false;
+        //            return;
+        //        }
+
+        //        for (int cam = 0; cam < 4; cam++)
+        //        {
+        //            if (LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[cam])
+        //            { // 카메라 사용안하면 무조건 update 되었다고 생각
+        //                MC_Rx_Value_Updated[cam] = true;
+        //            }
+        //        }
+
+        //        if (!McProtocolApp.Connected)
+        //        { //MCProtocol 접속 안되어 있으면 접속하기
+        //            McProtocolApp.HostName = textBox_SERVER_IP.Text;
+        //            McProtocolApp.PortNumber = int.Parse(textBox_SERVER_PORT.Text);
+        //            McProtocolApp.CommandFrame = Mitsubishi.McFrame.MC3E;
+        //            McProtocolApp.Open();
+        //        }
+
+        //        if (McProtocolApp.Connected)
+        //        { // 접속 되면
+        //            if (!McProtocolApp.Connected)
+        //            { //MCProtocol 접속 안되어 있으면 접속하기
+        //                McProtocolApp.HostName = textBox_SERVER_IP.Text;
+        //                McProtocolApp.PortNumber = int.Parse(textBox_SERVER_PORT.Text);
+        //                McProtocolApp.CommandFrame = Mitsubishi.McFrame.MC3E;
+        //                McProtocolApp.Open();
+        //            }
+
+        //            if (McProtocolApp.Connected)
+        //            { // 접속 되면
+        //                // 받아야 할 data 수 계산
+        //                string _log = "MC Rx:";
+
+        //                int _row_cnt = DT_MC_Tx.Rows.Count;
+        //                for (int idx = 0; idx < _row_cnt; idx++)
+        //                {
+        //                    var _row = DT_MC_Rx.Rows[idx];
+        //                    if (_row[1].ToString() == "사용안함")
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        Task<int> _v = McProtocolApp.GetDevice(DT_MC_Rx.Rows[idx][0].ToString());
+        //                        int t_v = _v.Result;
+        //                        _row[2] = t_v;
+        //                        _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
+
+        //                        if (_row[1].ToString() == "CAM0")
+        //                        {
+        //                            MC_Rx_Value[0] = t_v;
+        //                            MC_Rx_Value_Updated[0] = true;
+        //                        }
+        //                        else if (_row[1].ToString() == "CAM1")
+        //                        {
+        //                            MC_Rx_Value[1] = t_v;
+        //                            MC_Rx_Value_Updated[1] = true;
+        //                        }
+        //                        else if (_row[1].ToString() == "CAM2")
+        //                        {
+        //                            MC_Rx_Value[2] = t_v;
+        //                            MC_Rx_Value_Updated[2] = true;
+        //                        }
+        //                        else if (_row[1].ToString() == "CAM3")
+        //                        {
+        //                            MC_Rx_Value[3] = t_v;
+        //                            MC_Rx_Value_Updated[3] = true;
+        //                        }
+        //                    }
+        //                }
+
+        //                add_Log(_log);
+        //            }
+        //            Data_MC_Rx_check = false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        Data_MC_Rx_check = false;
+        //    }
+        //}
+
+        object _isMCRead_Lock = new object();
+        void ThreadProcMCRx()
+        {
+            try
+            {
+                int _cam = 0;
+                while (MC_Rx_threads_Check)
+                {
+                    if (!MC_Rx_threads_Check)
+                    {
+                        break;
+                    }
+                    if (!Use_MC_Rx)
+                    {
+                        Thread.Sleep(10);
+                        continue;
+                    }
+
+                    if (!McProtocolApp.Connected)
+                    { //MCProtocol 접속 안되어 있으면 접속하기
+                        McProtocolApp.HostName = textBox_SERVER_IP.Text;
+                        McProtocolApp.PortNumber = int.Parse(textBox_SERVER_PORT.Text);
+                        McProtocolApp.CommandFrame = Mitsubishi.McFrame.MC3E;
+                        McProtocolApp.Open();
+                        continue;
+                    }
+
+                    // 받는게 ALL 인지 체크
+                    bool _All_check = false;
+                    int _row_cnt = DT_MC_Rx.Rows.Count;
+                    for (int idx = 0; idx < _row_cnt; idx++)
+                    {
+                        var _row = DT_MC_Rx.Rows[idx];
+                        if (_row[1].ToString() == "ALL")
+                        {
+                            _All_check = true;
+                        }
+                    }
+
+                    if (_All_check)
+                    {
+                        if (MC_Rx_Request[0] || MC_Rx_Request[1] || MC_Rx_Request[2] || MC_Rx_Request[3])
+                        {
+                            string _log = "MC Rx:";
+                            for (int idx = 0; idx < _row_cnt; idx++)
+                            {
+                                var _row = DT_MC_Rx.Rows[idx];
+                                if (_row[1].ToString() == "ALL")
+                                {
+                                    string _address = DT_MC_Rx.Rows[idx][0].ToString();
+                                    int[] arrDeviceValue = new int[1];
+                                    lock (_isMCRead_Lock)
+                                    {
+                                        Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, 1, arrDeviceValue);
+                                        McTask.Wait();
+                                    }
+                                    int t_v = arrDeviceValue[0];
+
+                                    if (t_v >= 0)
+                                    {
+                                        for (int i = 0; i < 4; i++)
+                                        {
+                                            MC_Rx_Value[i] = t_v;
+                                            MC_Rx_Value_Updated[i] = true;
+                                            MC_Rx_Request[i] = false;
+                                        }
+                                        _row[2] = t_v;
+                                        _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
+
+                                        if (LVApp.Instance().m_Config.PLC_Judge_view)
+                                        {
+                                            add_Log(_log);
+                                        }
+
+                                        if (dataGridView_MC_Rx.InvokeRequired)
+                                        {
+                                            dataGridView_MC_Rx.Invoke((MethodInvoker)delegate
+                                            {
+                                                dataGridView_MC_Rx.Refresh();
+                                            });
+                                        }
+                                        else
+                                        {
+                                            dataGridView_MC_Rx.Refresh();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    { // ALL 없으면
+                        if (MC_Rx_Request[_cam])// && !MC_Rx_Value_Updated[_cam])
+                        {
+                            string _log = "MC Rx:";
+                            for (int idx = 0; idx < _row_cnt; idx++)
+                            {
+                                var _row = DT_MC_Rx.Rows[idx];
+                                if (_row[1].ToString() == "CAM" + _cam.ToString())
+                                {
+                                    string _address = DT_MC_Rx.Rows[idx][0].ToString();
+                                    int[] arrDeviceValue = new int[1];
+                                    lock (_isMCRead_Lock)
+                                    {
+                                        Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, 1, arrDeviceValue);
+                                        McTask.Wait();
+                                    }
+                                    int t_v = arrDeviceValue[0];
+                                    if (_row[1].ToString() == "CAM" + _cam.ToString() && t_v >= 0)
+                                    {
+                                        MC_Rx_Value[_cam] = t_v;
+                                        MC_Rx_Value_Updated[_cam] = true;
+                                        _row[2] = t_v;
+                                        _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
+                                    }
+
+                                    if (dataGridView_MC_Rx.InvokeRequired)
+                                    {
+                                        dataGridView_MC_Rx.Invoke((MethodInvoker)delegate
+                                        {
+                                            dataGridView_MC_Rx.Refresh();
+                                        });
+                                    }
+                                    else
+                                    {
+                                        dataGridView_MC_Rx.Refresh();
+                                    }
+                                }
+                            }
+                            if (MC_Rx_Value_Updated[_cam])
+                            {
+                                MC_Rx_Request[_cam] = false;
+                                if (LVApp.Instance().m_Config.PLC_Judge_view)
+                                {
+                                    add_Log(_log);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Thread.Sleep(10);
+                        }
+                        _cam++;
+                        if (_cam == 4)
+                        {
+                            _cam = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogger.Instance().LogRecord($"MCRx Error: {ex.StackTrace}");
+                MC_Rx_threads_Check = false;
+            }
+        }
+
+        void ThreadProcMCTx()
+        {
+            try
+            {
+                int _cam = 0;
+                while (MC_Tx_threads_Check)
+                {
+                    if (!MC_Tx_threads_Check)
+                    {
+                        break;
+                    }
+                    if (!Use_MC_Tx)
+                    {
+                        Thread.Sleep(10);
+                        continue;
+                    }
+
+                    if (CAM_Value_Updated[_cam])
+                    {
+                        if (!McProtocolApp.Connected)
+                        { //MCProtocol 접속 안되어 있으면 접속하기
+                            McProtocolApp.HostName = textBox_SERVER_IP.Text;
+                            McProtocolApp.PortNumber = int.Parse(textBox_SERVER_PORT.Text);
+                            McProtocolApp.CommandFrame = Mitsubishi.McFrame.MC3E;
+                            McProtocolApp.Open();
+                        }
+
+                        if (McProtocolApp.Connected)
+                        { // 접속 되면
+                            CAM_Value_Updated[_cam] = false;
+                            // 보내야 할 data 수 계산
+                            int _row_cnt = DT_MC_Tx.Rows.Count;
+                            List<Tuple<string, int, int>> Tx_list = new List<Tuple<string, int, int>>();//주소, Type, Value
+                            for (int idx = 0; idx < _row_cnt; idx++)
+                            {
+                                var _row = DT_MC_Tx.Rows[idx];
+                                if (_row[2].ToString() == "CAM" + _cam.ToString())
+                                {
+                                    int t_ROI = -1;
+                                    int.TryParse(_row[3].ToString(), out t_ROI);
+                                    double t_Scale = 1;
+                                    double.TryParse(_row[4].ToString(), out t_Scale);
+
+                                    if (t_ROI <= 0)
+                                    {// 고정값
+
+                                    }
+                                    else
+                                    {// ROI값
+                                        if (_cam == 0)
+                                        {
+                                            _row[5] = (int)(CAM0_Value[t_ROI - 1] * t_Scale);
+                                        }
+                                        if (_cam == 1)
+                                        {
+                                            _row[5] = (int)(CAM1_Value[t_ROI - 1] * t_Scale);
+                                        }
+                                        if (_cam == 2)
+                                        {
+                                            _row[5] = (int)(CAM2_Value[t_ROI - 1] * t_Scale);
+                                        }
+                                        if (_cam == 3)
+                                        {
+                                            _row[5] = (int)(CAM3_Value[t_ROI - 1] * t_Scale);
+                                        }
+                                    }
+
+                                    int t_Type = 2;
+                                    if (_row[1].ToString() == "WORD")
+                                    {
+                                        t_Type = 1;
+                                    }
+                                    // 주소와 값을 list에 넣기
+                                    int t_Value = 0;
+                                    int.TryParse(_row[5].ToString(), out t_Value);
+                                    Tx_list.Add(new Tuple<string, int, int>(_row[0].ToString(), t_Type, t_Value));
+                                }
+                            }
+
+                            string _log = "MC Tx:";
+                            foreach (var _data in Tx_list)
+                            {
+                                if (_data.Item2 == 1)
+                                {
+                                    lock (_isMCRead_Lock)
+                                    {
+                                        McProtocolApp.SetDevice(_data.Item1, _data.Item3);
+                                    }
+                                }
+                                else
+                                {
+                                    int[] nData = new int[2];
+                                    int[] t_nData = Convert_Data(_data.Item3);
+                                    nData[0] = t_nData[0]; nData[1] = t_nData[1];
+                                    lock (_isMCRead_Lock)
+                                    {
+                                        McProtocolApp.WriteDeviceBlock(_data.Item1, 2, nData);
+                                    }
+                                }
+                                _log += " [" + _data.Item1 + ":" + _data.Item3.ToString() + "]";
+                            }
+                            if (LVApp.Instance().m_Config.PLC_Judge_view)
+                            {
+                                add_Log(_log);
+                            }
+                        }
+                    }
+                    _cam++;
+                    _cam %= 4;
+                }
+            }
+            catch(Exception ex)
+            {
+                MC_Tx_threads_Check = false;
+                DebugLogger.Instance().LogRecord($"MCTx Error: {ex.StackTrace}");
+            }
+        }
+
+        private void button_MCRx_Test_Click(object sender, EventArgs e)
+        {
+            MC_Rx_Request[0] = MC_Rx_Request[1] = MC_Rx_Request[2] = MC_Rx_Request[3] = true;
+        }
+
+        // 끝 2024.08.27 by CD
     }
 }

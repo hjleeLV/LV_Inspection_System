@@ -41,8 +41,11 @@
             this.label16 = new System.Windows.Forms.Label();
             this.comboBox_SlaveID = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.button_LOG_CLEAR = new System.Windows.Forms.Button();
             this.txt1 = new System.Windows.Forms.TextBox();
+            this.richTextBox_LOG = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox_MC = new System.Windows.Forms.CheckBox();
             this.label38 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
             this.cbReceiveFormat = new System.Windows.Forms.ComboBox();
@@ -87,10 +90,19 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txt2 = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
+            this.panel_MC = new System.Windows.Forms.Panel();
+            this.dataGridView_MC_Tx = new System.Windows.Forms.DataGridView();
+            this.numericUpDown_MC_Tx = new System.Windows.Forms.NumericUpDown();
+            this.button_MC_Tx_Apply = new System.Windows.Forms.Button();
+            this.label28 = new System.Windows.Forms.Label();
+            this.checkBox_MC_Tx_Use = new System.Windows.Forms.CheckBox();
+            this.numericUpDown_MC_Rx = new System.Windows.Forms.NumericUpDown();
+            this.dataGridView_MC_Rx = new System.Windows.Forms.DataGridView();
+            this.button_MC_Rx_Apply = new System.Windows.Forms.Button();
+            this.label27 = new System.Windows.Forms.Label();
+            this.checkBox_MC_Rx_Use = new System.Windows.Forms.CheckBox();
             this.textBox_MinTime = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
-            this.button_LOG_CLEAR = new System.Windows.Forms.Button();
-            this.richTextBox_LOG = new System.Windows.Forms.RichTextBox();
             this.textBox_RESETDURATION = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
             this.textBox_DELAYCAMMISS = new System.Windows.Forms.TextBox();
@@ -117,7 +129,7 @@
             this.label19 = new System.Windows.Forms.Label();
             this.textBox_Delay0 = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.checkBox_MC = new System.Windows.Forms.CheckBox();
+            this.button_MCRx_Test = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -126,6 +138,11 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox_D.SuspendLayout();
+            this.panel_MC.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_MC_Tx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_MC_Tx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_MC_Rx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_MC_Rx)).BeginInit();
             this.SuspendLayout();
             // 
             // serialPort1
@@ -147,7 +164,9 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.button_View);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox3);
+            this.splitContainer1.Panel1.Controls.Add(this.button_LOG_CLEAR);
             this.splitContainer1.Panel1.Controls.Add(this.txt1);
+            this.splitContainer1.Panel1.Controls.Add(this.richTextBox_LOG);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
             this.splitContainer1.Panel1.Controls.Add(this.txt_Data);
@@ -162,10 +181,9 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.panel_MC);
             this.splitContainer1.Panel2.Controls.Add(this.textBox_MinTime);
             this.splitContainer1.Panel2.Controls.Add(this.label26);
-            this.splitContainer1.Panel2.Controls.Add(this.button_LOG_CLEAR);
-            this.splitContainer1.Panel2.Controls.Add(this.richTextBox_LOG);
             this.splitContainer1.Panel2.Controls.Add(this.textBox_RESETDURATION);
             this.splitContainer1.Panel2.Controls.Add(this.label25);
             this.splitContainer1.Panel2.Controls.Add(this.textBox_DELAYCAMMISS);
@@ -192,7 +210,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.label19);
             this.splitContainer1.Panel2.Controls.Add(this.textBox_Delay0);
             this.splitContainer1.Panel2.Controls.Add(this.label18);
-            this.splitContainer1.Size = new System.Drawing.Size(1013, 676);
+            this.splitContainer1.Size = new System.Drawing.Size(1410, 676);
             this.splitContainer1.SplitterDistance = 337;
             this.splitContainer1.TabIndex = 38;
             this.splitContainer1.TabStop = false;
@@ -314,6 +332,19 @@
             this.label15.TabIndex = 22;
             this.label15.Text = "국번";
             // 
+            // button_LOG_CLEAR
+            // 
+            this.button_LOG_CLEAR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_LOG_CLEAR.Font = new System.Drawing.Font("맑은 고딕", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_LOG_CLEAR.Location = new System.Drawing.Point(1352, 9);
+            this.button_LOG_CLEAR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button_LOG_CLEAR.Name = "button_LOG_CLEAR";
+            this.button_LOG_CLEAR.Size = new System.Drawing.Size(49, 20);
+            this.button_LOG_CLEAR.TabIndex = 69;
+            this.button_LOG_CLEAR.Text = "클리어";
+            this.button_LOG_CLEAR.UseVisualStyleBackColor = true;
+            this.button_LOG_CLEAR.Click += new System.EventHandler(this.button_LOG_CLEAR_Click);
+            // 
             // txt1
             // 
             this.txt1.Location = new System.Drawing.Point(227, 282);
@@ -323,6 +354,19 @@
             this.txt1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txt1.Size = new System.Drawing.Size(544, 50);
             this.txt1.TabIndex = 25;
+            // 
+            // richTextBox_LOG
+            // 
+            this.richTextBox_LOG.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox_LOG.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.richTextBox_LOG.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.richTextBox_LOG.Location = new System.Drawing.Point(995, 7);
+            this.richTextBox_LOG.Name = "richTextBox_LOG";
+            this.richTextBox_LOG.Size = new System.Drawing.Size(409, 325);
+            this.richTextBox_LOG.TabIndex = 78;
+            this.richTextBox_LOG.Text = "";
             // 
             // groupBox2
             // 
@@ -353,6 +397,17 @@
             this.groupBox2.TabIndex = 67;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "통신 설정";
+            // 
+            // checkBox_MC
+            // 
+            this.checkBox_MC.AutoSize = true;
+            this.checkBox_MC.Location = new System.Drawing.Point(19, 254);
+            this.checkBox_MC.Name = "checkBox_MC";
+            this.checkBox_MC.Size = new System.Drawing.Size(152, 19);
+            this.checkBox_MC.TabIndex = 72;
+            this.checkBox_MC.Text = "Data Send through MC";
+            this.checkBox_MC.UseVisualStyleBackColor = true;
+            this.checkBox_MC.CheckedChanged += new System.EventHandler(this.checkBox_MC_CheckedChanged);
             // 
             // label38
             // 
@@ -862,10 +917,175 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
+            // panel_MC
+            // 
+            this.panel_MC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel_MC.Controls.Add(this.button_MCRx_Test);
+            this.panel_MC.Controls.Add(this.dataGridView_MC_Tx);
+            this.panel_MC.Controls.Add(this.numericUpDown_MC_Tx);
+            this.panel_MC.Controls.Add(this.button_MC_Tx_Apply);
+            this.panel_MC.Controls.Add(this.label28);
+            this.panel_MC.Controls.Add(this.checkBox_MC_Tx_Use);
+            this.panel_MC.Controls.Add(this.numericUpDown_MC_Rx);
+            this.panel_MC.Controls.Add(this.dataGridView_MC_Rx);
+            this.panel_MC.Controls.Add(this.button_MC_Rx_Apply);
+            this.panel_MC.Controls.Add(this.label27);
+            this.panel_MC.Controls.Add(this.checkBox_MC_Rx_Use);
+            this.panel_MC.Location = new System.Drawing.Point(8, 37);
+            this.panel_MC.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.panel_MC.Name = "panel_MC";
+            this.panel_MC.Size = new System.Drawing.Size(1402, 295);
+            this.panel_MC.TabIndex = 81;
+            // 
+            // dataGridView_MC_Tx
+            // 
+            this.dataGridView_MC_Tx.AllowUserToAddRows = false;
+            this.dataGridView_MC_Tx.AllowUserToResizeColumns = false;
+            this.dataGridView_MC_Tx.AllowUserToResizeRows = false;
+            this.dataGridView_MC_Tx.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView_MC_Tx.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_MC_Tx.Location = new System.Drawing.Point(523, 35);
+            this.dataGridView_MC_Tx.Name = "dataGridView_MC_Tx";
+            this.dataGridView_MC_Tx.RowHeadersWidth = 21;
+            this.dataGridView_MC_Tx.RowTemplate.Height = 23;
+            this.dataGridView_MC_Tx.Size = new System.Drawing.Size(876, 257);
+            this.dataGridView_MC_Tx.TabIndex = 82;
+            // 
+            // numericUpDown_MC_Tx
+            // 
+            this.numericUpDown_MC_Tx.Location = new System.Drawing.Point(716, 6);
+            this.numericUpDown_MC_Tx.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.numericUpDown_MC_Tx.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_MC_Tx.Name = "numericUpDown_MC_Tx";
+            this.numericUpDown_MC_Tx.Size = new System.Drawing.Size(59, 23);
+            this.numericUpDown_MC_Tx.TabIndex = 81;
+            this.numericUpDown_MC_Tx.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown_MC_Tx.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_MC_Tx.ValueChanged += new System.EventHandler(this.numericUpDown_MC_Tx_ValueChanged);
+            // 
+            // button_MC_Tx_Apply
+            // 
+            this.button_MC_Tx_Apply.ForeColor = System.Drawing.Color.White;
+            this.button_MC_Tx_Apply.Image = ((System.Drawing.Image)(resources.GetObject("button_MC_Tx_Apply.Image")));
+            this.button_MC_Tx_Apply.Location = new System.Drawing.Point(781, 2);
+            this.button_MC_Tx_Apply.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_MC_Tx_Apply.Name = "button_MC_Tx_Apply";
+            this.button_MC_Tx_Apply.Size = new System.Drawing.Size(86, 30);
+            this.button_MC_Tx_Apply.TabIndex = 80;
+            this.button_MC_Tx_Apply.Text = "적용";
+            this.button_MC_Tx_Apply.Click += new System.EventHandler(this.button_MC_Tx_Apply_Click);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(644, 9);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(65, 15);
+            this.label28.TabIndex = 79;
+            this.label28.Text = "Address 수";
+            // 
+            // checkBox_MC_Tx_Use
+            // 
+            this.checkBox_MC_Tx_Use.AutoSize = true;
+            this.checkBox_MC_Tx_Use.Location = new System.Drawing.Point(523, 8);
+            this.checkBox_MC_Tx_Use.Name = "checkBox_MC_Tx_Use";
+            this.checkBox_MC_Tx_Use.Size = new System.Drawing.Size(114, 19);
+            this.checkBox_MC_Tx_Use.TabIndex = 78;
+            this.checkBox_MC_Tx_Use.Text = "송신(비전→PLC)";
+            this.checkBox_MC_Tx_Use.UseVisualStyleBackColor = true;
+            this.checkBox_MC_Tx_Use.CheckedChanged += new System.EventHandler(this.checkBox_MC_Tx_Use_CheckedChanged);
+            // 
+            // numericUpDown_MC_Rx
+            // 
+            this.numericUpDown_MC_Rx.Location = new System.Drawing.Point(199, 6);
+            this.numericUpDown_MC_Rx.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numericUpDown_MC_Rx.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_MC_Rx.Name = "numericUpDown_MC_Rx";
+            this.numericUpDown_MC_Rx.Size = new System.Drawing.Size(59, 23);
+            this.numericUpDown_MC_Rx.TabIndex = 77;
+            this.numericUpDown_MC_Rx.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown_MC_Rx.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_MC_Rx.ValueChanged += new System.EventHandler(this.numericUpDown_MC_Rx_ValueChanged);
+            // 
+            // dataGridView_MC_Rx
+            // 
+            this.dataGridView_MC_Rx.AllowUserToAddRows = false;
+            this.dataGridView_MC_Rx.AllowUserToResizeColumns = false;
+            this.dataGridView_MC_Rx.AllowUserToResizeRows = false;
+            this.dataGridView_MC_Rx.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.dataGridView_MC_Rx.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_MC_Rx.Location = new System.Drawing.Point(6, 35);
+            this.dataGridView_MC_Rx.Name = "dataGridView_MC_Rx";
+            this.dataGridView_MC_Rx.RowHeadersWidth = 21;
+            this.dataGridView_MC_Rx.RowTemplate.Height = 23;
+            this.dataGridView_MC_Rx.Size = new System.Drawing.Size(511, 257);
+            this.dataGridView_MC_Rx.TabIndex = 76;
+            // 
+            // button_MC_Rx_Apply
+            // 
+            this.button_MC_Rx_Apply.ForeColor = System.Drawing.Color.White;
+            this.button_MC_Rx_Apply.Image = ((System.Drawing.Image)(resources.GetObject("button_MC_Rx_Apply.Image")));
+            this.button_MC_Rx_Apply.Location = new System.Drawing.Point(264, 2);
+            this.button_MC_Rx_Apply.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.button_MC_Rx_Apply.Name = "button_MC_Rx_Apply";
+            this.button_MC_Rx_Apply.Size = new System.Drawing.Size(86, 30);
+            this.button_MC_Rx_Apply.TabIndex = 75;
+            this.button_MC_Rx_Apply.Text = "적용";
+            this.button_MC_Rx_Apply.Click += new System.EventHandler(this.button_MC_Rx_Apply_Click);
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(127, 9);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(65, 15);
+            this.label27.TabIndex = 74;
+            this.label27.Text = "Address 수";
+            // 
+            // checkBox_MC_Rx_Use
+            // 
+            this.checkBox_MC_Rx_Use.AutoSize = true;
+            this.checkBox_MC_Rx_Use.Location = new System.Drawing.Point(6, 8);
+            this.checkBox_MC_Rx_Use.Name = "checkBox_MC_Rx_Use";
+            this.checkBox_MC_Rx_Use.Size = new System.Drawing.Size(114, 19);
+            this.checkBox_MC_Rx_Use.TabIndex = 73;
+            this.checkBox_MC_Rx_Use.Text = "수신(PLC→비전)";
+            this.checkBox_MC_Rx_Use.UseVisualStyleBackColor = true;
+            this.checkBox_MC_Rx_Use.CheckedChanged += new System.EventHandler(this.checkBox_MC_Rx_Use_CheckedChanged);
+            // 
             // textBox_MinTime
             // 
             this.textBox_MinTime.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_MinTime.Location = new System.Drawing.Point(854, 14);
+            this.textBox_MinTime.Location = new System.Drawing.Point(854, 7);
             this.textBox_MinTime.Name = "textBox_MinTime";
             this.textBox_MinTime.Size = new System.Drawing.Size(87, 23);
             this.textBox_MinTime.TabIndex = 80;
@@ -876,37 +1096,11 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(743, 17);
+            this.label26.Location = new System.Drawing.Point(743, 11);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(103, 15);
             this.label26.TabIndex = 79;
             this.label26.Text = "최소처리시간(ms)";
-            // 
-            // button_LOG_CLEAR
-            // 
-            this.button_LOG_CLEAR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_LOG_CLEAR.Font = new System.Drawing.Font("맑은 고딕", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button_LOG_CLEAR.Location = new System.Drawing.Point(937, 182);
-            this.button_LOG_CLEAR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button_LOG_CLEAR.Name = "button_LOG_CLEAR";
-            this.button_LOG_CLEAR.Size = new System.Drawing.Size(49, 20);
-            this.button_LOG_CLEAR.TabIndex = 69;
-            this.button_LOG_CLEAR.Text = "클리어";
-            this.button_LOG_CLEAR.UseVisualStyleBackColor = true;
-            this.button_LOG_CLEAR.Click += new System.EventHandler(this.button_LOG_CLEAR_Click);
-            // 
-            // richTextBox_LOG
-            // 
-            this.richTextBox_LOG.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox_LOG.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.richTextBox_LOG.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.richTextBox_LOG.Location = new System.Drawing.Point(4, 181);
-            this.richTextBox_LOG.Name = "richTextBox_LOG";
-            this.richTextBox_LOG.Size = new System.Drawing.Size(985, 148);
-            this.richTextBox_LOG.TabIndex = 78;
-            this.richTextBox_LOG.Text = "";
             // 
             // textBox_RESETDURATION
             // 
@@ -930,7 +1124,7 @@
             // textBox_DELAYCAMMISS
             // 
             this.textBox_DELAYCAMMISS.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_DELAYCAMMISS.Location = new System.Drawing.Point(478, 48);
+            this.textBox_DELAYCAMMISS.Location = new System.Drawing.Point(478, 7);
             this.textBox_DELAYCAMMISS.Name = "textBox_DELAYCAMMISS";
             this.textBox_DELAYCAMMISS.Size = new System.Drawing.Size(48, 25);
             this.textBox_DELAYCAMMISS.TabIndex = 75;
@@ -941,7 +1135,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(300, 52);
+            this.label24.Location = new System.Drawing.Point(300, 11);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(159, 15);
             this.label24.TabIndex = 74;
@@ -981,7 +1175,7 @@
             // 
             this.textBox_CAMREFCNT.Enabled = false;
             this.textBox_CAMREFCNT.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_CAMREFCNT.Location = new System.Drawing.Point(478, 14);
+            this.textBox_CAMREFCNT.Location = new System.Drawing.Point(478, 8);
             this.textBox_CAMREFCNT.Name = "textBox_CAMREFCNT";
             this.textBox_CAMREFCNT.Size = new System.Drawing.Size(48, 25);
             this.textBox_CAMREFCNT.TabIndex = 69;
@@ -992,7 +1186,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.Enabled = false;
-            this.label22.Location = new System.Drawing.Point(300, 18);
+            this.label22.Location = new System.Drawing.Point(300, 12);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(123, 15);
             this.label22.TabIndex = 68;
@@ -1007,7 +1201,7 @@
             "CLASS3",
             "NONE",
             "OK"});
-            this.comboBox_NOOBJECT.Location = new System.Drawing.Point(644, 113);
+            this.comboBox_NOOBJECT.Location = new System.Drawing.Point(118, 7);
             this.comboBox_NOOBJECT.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.comboBox_NOOBJECT.Name = "comboBox_NOOBJECT";
             this.comboBox_NOOBJECT.Size = new System.Drawing.Size(87, 23);
@@ -1019,7 +1213,7 @@
             // 
             this.Button_Send_Apply.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Button_Send_Apply.BackgroundImage")));
             this.Button_Send_Apply.ForeColor = System.Drawing.Color.White;
-            this.Button_Send_Apply.Location = new System.Drawing.Point(190, 14);
+            this.Button_Send_Apply.Location = new System.Drawing.Point(190, 8);
             this.Button_Send_Apply.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Button_Send_Apply.Name = "Button_Send_Apply";
             this.Button_Send_Apply.Size = new System.Drawing.Size(94, 118);
@@ -1031,7 +1225,7 @@
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(549, 117);
+            this.label36.Location = new System.Drawing.Point(23, 11);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(87, 15);
             this.label36.TabIndex = 70;
@@ -1051,7 +1245,7 @@
             // textBox_TxInterval
             // 
             this.textBox_TxInterval.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_TxInterval.Location = new System.Drawing.Point(638, 15);
+            this.textBox_TxInterval.Location = new System.Drawing.Point(638, 7);
             this.textBox_TxInterval.Name = "textBox_TxInterval";
             this.textBox_TxInterval.Size = new System.Drawing.Size(87, 23);
             this.textBox_TxInterval.TabIndex = 64;
@@ -1072,7 +1266,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(549, 18);
+            this.label17.Location = new System.Drawing.Point(549, 11);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(79, 15);
             this.label17.TabIndex = 63;
@@ -1159,7 +1353,7 @@
             // textBox_Delay0
             // 
             this.textBox_Delay0.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_Delay0.Location = new System.Drawing.Point(133, 14);
+            this.textBox_Delay0.Location = new System.Drawing.Point(133, 8);
             this.textBox_Delay0.Name = "textBox_Delay0";
             this.textBox_Delay0.Size = new System.Drawing.Size(48, 25);
             this.textBox_Delay0.TabIndex = 60;
@@ -1169,22 +1363,21 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(11, 18);
+            this.label18.Location = new System.Drawing.Point(11, 12);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(116, 15);
             this.label18.TabIndex = 59;
             this.label18.Text = "CAM0 Trigger Delay";
             // 
-            // checkBox_MC
+            // button_MCRx_Test
             // 
-            this.checkBox_MC.AutoSize = true;
-            this.checkBox_MC.Location = new System.Drawing.Point(19, 254);
-            this.checkBox_MC.Name = "checkBox_MC";
-            this.checkBox_MC.Size = new System.Drawing.Size(152, 19);
-            this.checkBox_MC.TabIndex = 72;
-            this.checkBox_MC.Text = "Data Send through MC";
-            this.checkBox_MC.UseVisualStyleBackColor = true;
-            this.checkBox_MC.CheckedChanged += new System.EventHandler(this.checkBox_MC_CheckedChanged);
+            this.button_MCRx_Test.Location = new System.Drawing.Point(356, 6);
+            this.button_MCRx_Test.Name = "button_MCRx_Test";
+            this.button_MCRx_Test.Size = new System.Drawing.Size(75, 23);
+            this.button_MCRx_Test.TabIndex = 83;
+            this.button_MCRx_Test.Text = "Test";
+            this.button_MCRx_Test.UseVisualStyleBackColor = true;
+            this.button_MCRx_Test.Click += new System.EventHandler(this.button_MCRx_Test_Click);
             // 
             // Ctr_PLC
             // 
@@ -1192,7 +1385,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
             this.Name = "Ctr_PLC";
-            this.Size = new System.Drawing.Size(1013, 676);
+            this.Size = new System.Drawing.Size(1410, 676);
             this.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.Ctr_PLC_ControlRemoved);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
@@ -1208,6 +1401,12 @@
             this.groupBox1.PerformLayout();
             this.groupBox_D.ResumeLayout(false);
             this.groupBox_D.PerformLayout();
+            this.panel_MC.ResumeLayout(false);
+            this.panel_MC.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_MC_Tx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_MC_Tx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_MC_Rx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_MC_Rx)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1302,5 +1501,17 @@
         private System.Windows.Forms.TextBox textBox_MinTime;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.CheckBox checkBox_MC;
+        private System.Windows.Forms.Panel panel_MC;
+        private System.Windows.Forms.CheckBox checkBox_MC_Rx_Use;
+        internal System.Windows.Forms.Button button_MC_Rx_Apply;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.NumericUpDown numericUpDown_MC_Rx;
+        private System.Windows.Forms.DataGridView dataGridView_MC_Rx;
+        private System.Windows.Forms.DataGridView dataGridView_MC_Tx;
+        private System.Windows.Forms.NumericUpDown numericUpDown_MC_Tx;
+        internal System.Windows.Forms.Button button_MC_Tx_Apply;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.CheckBox checkBox_MC_Tx_Use;
+        private System.Windows.Forms.Button button_MCRx_Test;
     }
 }

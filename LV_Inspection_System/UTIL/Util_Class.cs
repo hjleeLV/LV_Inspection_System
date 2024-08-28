@@ -15,6 +15,7 @@ using System.Data;
 //using lc_handle_t = System.UInt32;
 using lc_handle_t = System.Int64;
 using System.Diagnostics;
+using System.Net;
 
 namespace LV_Inspection_System
 {
@@ -47,7 +48,7 @@ namespace LV_Inspection_System
 
         private int[,] frameRate_sum = new int[10,8];
         private int[] frameRate_idx = new int[8];
-        public float[] m_FPS = new float[8]; 
+        public float[] m_FPS = new float[8];
 
         public void CalculateFrameRate(int t_num)
         {
@@ -299,29 +300,34 @@ namespace LV_Inspection_System
     {
         public static void WriteToCsvFile(this DataTable dataTable, string filePath)
         {
-            StringBuilder fileContent = new StringBuilder();
-
-            foreach (var col in dataTable.Columns)
+            try
             {
-                fileContent.Append(col.ToString() + ",");
-            }
+                StringBuilder fileContent = new StringBuilder();
 
-            fileContent.Replace(",", System.Environment.NewLine, fileContent.Length - 1, 1);
-
-            foreach (DataRow dr in dataTable.Rows)
-            {
-
-                foreach (var column in dr.ItemArray)
+                foreach (var col in dataTable.Columns)
                 {
-                    fileContent.Append("\"" + column.ToString() + "\",");
+                    fileContent.Append(col.ToString() + ",");
                 }
 
                 fileContent.Replace(",", System.Environment.NewLine, fileContent.Length - 1, 1);
-            }
 
-            fileContent.Append(System.Environment.NewLine);
-            //System.IO.File.WriteAllText(filePath, fileContent.ToString(), Encoding.UTF8);
-            System.IO.File.AppendAllText(filePath, fileContent.ToString(), Encoding.UTF8);
+                foreach (DataRow dr in dataTable.Rows)
+                {
+
+                    foreach (var column in dr.ItemArray)
+                    {
+                        fileContent.Append("\"" + column.ToString() + "\",");
+                    }
+
+                    fileContent.Replace(",", System.Environment.NewLine, fileContent.Length - 1, 1);
+                }
+
+                fileContent.Append(System.Environment.NewLine);
+                //System.IO.File.WriteAllText(filePath, fileContent.ToString(), Encoding.UTF8);
+                System.IO.File.AppendAllText(filePath, fileContent.ToString(), Encoding.UTF8);
+            }
+            catch
+            { }
         }
 
 
@@ -330,11 +336,15 @@ namespace LV_Inspection_System
             string strpath = filepath; //csv file path
             try
             {
-                DataRow mydr;
+                DataRow mydr; bool blnFlag = true;
                 string strline;
                 string[] aryline;
                 StreamReader mysr = new StreamReader(strpath, System.Text.Encoding.Default);
                 bool t_check_file = false; int t_line_num = 0;
+                if (mycsvdt.Columns.Count > 0)
+                {
+                    mycsvdt.Columns.Clear();
+                }
                 while ((strline = mysr.ReadLine()) != null)
                 {
                     aryline = strline.Split(new char[] { ',' });
@@ -344,12 +354,22 @@ namespace LV_Inspection_System
                         continue;
                     }
                     //fill data into datatable
-                    if (aryline[0] == "구분" || aryline[0] == "Item")
+                    if (aryline[0] == "구분" || aryline[0] == "Item" || aryline[0] == "Address")
                     {
                         if (!t_check_file)
                         {
                             t_check_file = true;
                         }
+
+                        if (blnFlag)
+                        {
+                            for (int i = 0; i < aryline.Length; i++)
+                            {
+                                DataColumn mydc = new DataColumn(aryline[i]);
+                                mycsvdt.Columns.Add(mydc);
+                            }
+                        }
+                        blnFlag = false;
                     }
                     else
                     {
@@ -369,7 +389,7 @@ namespace LV_Inspection_System
                             }
                         }
                         mydr = mycsvdt.NewRow();
-                        for (int i = 0; i < 2; i++)
+                        for (int i = 0; i < mydr.ItemArray.Length; i++)
                         {
                             mydr[i] = aryline[i].Substring(1, aryline[i].Length - 2);
                         }
@@ -583,7 +603,7 @@ namespace LV_Inspection_System
         }
 
         //=====================================================================
-        //  2진수로 
+        //  2진수로
         //=====================================================================
         public static string Bin(uint ival)
         {
@@ -859,7 +879,7 @@ namespace LV_Inspection_System
                     pen.DashStyle = DashStyle.Solid;
                     g.DrawEllipse(pen, new Rectangle((rect.X + rect.Width / 2) - m_radius_w, (rect.Y + rect.Height / 2) - m_radius_h, 2 * m_radius_w, 2 * m_radius_h));
                 }
-                
+
                 foreach (PosSizableRect pos in Enum.GetValues(typeof(PosSizableRect)))
                 {
                     g.DrawRectangle(new Pen(Color.Red, 1), GetRect(pos));
@@ -1734,7 +1754,7 @@ namespace LV_Inspection_System
 
             if (rect.X + rect.Width > mPictureBox.Width)
             {
-                rect.Width = mPictureBox.Width - rect.X - 1; // -1 to be still show 
+                rect.Width = mPictureBox.Width - rect.X - 1; // -1 to be still show
                 if (allowDeformingDuringMovement == false)
                 {
                     mIsClick = false;
@@ -1742,7 +1762,7 @@ namespace LV_Inspection_System
             }
             if (rect.Y + rect.Height > mPictureBox.Height)
             {
-                rect.Height = mPictureBox.Height - rect.Y - 1;// -1 to be still show 
+                rect.Height = mPictureBox.Height - rect.Y - 1;// -1 to be still show
                 if (allowDeformingDuringMovement == false)
                 {
                     mIsClick = false;
@@ -2123,7 +2143,7 @@ namespace LV_Inspection_System
 
             if (rect.X + rect.Width > mPictureBox.Width)
             {
-                rect.Width = mPictureBox.Width - rect.X - 1; // -1 to be still show 
+                rect.Width = mPictureBox.Width - rect.X - 1; // -1 to be still show
                 if (allowDeformingDuringMovement == false)
                 {
                     mIsClick = false;
@@ -2131,7 +2151,7 @@ namespace LV_Inspection_System
             }
             if (rect.Y + rect.Height > mPictureBox.Height)
             {
-                rect.Height = mPictureBox.Height - rect.Y - 1;// -1 to be still show 
+                rect.Height = mPictureBox.Height - rect.Y - 1;// -1 to be still show
                 if (allowDeformingDuringMovement == false)
                 {
                     mIsClick = false;
@@ -2370,7 +2390,7 @@ namespace LV_Inspection_System
                 zgc.GraphPane.GraphObjList.Clear();
                 zgc.Invalidate();
                 CreateChart3(zgc);
-            }                        
+            }
         }
         // Call this method from the Form_Load method, passing your ZedGraphControl
         public static void CreateChart3(ZedGraphControl zgc)
@@ -2405,7 +2425,7 @@ namespace LV_Inspection_System
             bar1.Bar.Fill = new Fill(Color.DarkRed, Color.White, Color.DarkRed, 0);
             BarItem bar2 = myPane.AddBar("OK", null, tInput_OK, Color.DarkBlue);
             bar2.Bar.Fill = new Fill(Color.DarkBlue, Color.White, Color.DarkBlue, 0);
- 
+
             myPane.XAxis.MajorTic.IsBetweenLabels = true;
 
             if (m_Cam_Num == 1)
@@ -2683,12 +2703,12 @@ namespace LV_Inspection_System
                 //        LC_close(handle);
                 //        return false;
                 //    }
-                //    // 현재일 보다 빠르면  
+                //    // 현재일 보다 빠르면
                 //}
                 //else
                 //{
-                //    // 현재일 보다 느리면  
-                //} 
+                //    // 현재일 보다 느리면
+                //}
 
                 //System.IO.File.WriteAllText(@"0_block.txt", str1);
 
@@ -2764,7 +2784,7 @@ namespace LV_Inspection_System
         /// The number of records that have been written to the output stream so far.
         /// </summary>
         private int recordsWritten = 0;
-        
+
         /// <summary>
         /// The number of records written to the output stream so far. Note that this doesn't include the header line.
         /// </summary>
@@ -2781,7 +2801,8 @@ namespace LV_Inspection_System
         /// </summary>
         /// <param name="filename">The filename to write the csv to.</param>
         public CSVWriter(string filename)
-            : this(new StreamWriter(filename, true, System.Text.Encoding.UTF8, 128))
+             : this(new StreamWriter(filename, true, System.Text.Encoding.Default, 128))
+        //: this(new StreamWriter(filename, true, System.Text.Encoding.UTF8, 128))
         {
         }
 

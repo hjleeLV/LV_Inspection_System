@@ -2415,7 +2415,7 @@ namespace LV_Inspection_System.UTIL
                         if (ds_LOG.Tables[Cam_num].Columns.Count > 0)
                         {
                             string[] header = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                            header[0] = "LOT";
+                            header[0] = "셀ID";
                             for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                             {
                                 header[j + 1] = ds_LOG.Tables[Cam_num].Columns[j].ColumnName;
@@ -2444,7 +2444,7 @@ namespace LV_Inspection_System.UTIL
                             if (ds_LOG.Tables[Cam_num].Columns.Count > 0)
                             {
                                 string[] header = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                header[0] = "LOT";
+                                header[0] = "셀ID";
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
                                     header[j + 1] = ds_LOG.Tables[Cam_num].Columns[j].ColumnName;
@@ -2472,7 +2472,7 @@ namespace LV_Inspection_System.UTIL
                             if (ds_LOG.Tables[Cam_num].Columns.Count > 0)
                             {
                                 string[] header = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                header[0] = "LOT";
+                                header[0] = "셀ID";
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
                                     header[j + 1] = ds_LOG.Tables[Cam_num].Columns[j].ColumnName;
@@ -2531,7 +2531,7 @@ namespace LV_Inspection_System.UTIL
                         {
                             if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                             {
-                                t_int_log_Total[i] = t_cnt+1;
+                                t_int_log_Total[i] = t_cnt + 2;
                                 t_cnt += ds_LOG.Tables[i].Columns.Count-1;
                                 if (i > 0)
                                 {
@@ -2542,10 +2542,11 @@ namespace LV_Inspection_System.UTIL
 
                         if (t_cnt > 0)
                         {
-                            string[] header = new string[t_cnt + 1];
-                            t_str_log_Total = new string[t_cnt + 1];
+                            string[] header = new string[t_cnt + 2];
+                            t_str_log_Total = new string[t_cnt + 2];
                             header[0] = "Result";
-                            t_cnt = 1;
+                            header[1] = "셀ID";
+                            t_cnt = 2;
                             for (int i = 0; i < 4; i++)
                             {
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
@@ -2595,7 +2596,7 @@ namespace LV_Inspection_System.UTIL
                             {
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                                 {
-                                    t_int_log_Total[i] = t_cnt + 1;
+                                    t_int_log_Total[i] = t_cnt + 2;
                                     t_cnt += ds_LOG.Tables[i].Columns.Count-1;
                                     if (i > 0)
                                     {
@@ -2606,10 +2607,11 @@ namespace LV_Inspection_System.UTIL
 
                             if (t_cnt > 0)
                             {
-                                string[] header = new string[t_cnt + 1];
-                                t_str_log_Total = new string[t_cnt + 1];
+                                string[] header = new string[t_cnt + 2];
+                                t_str_log_Total = new string[t_cnt + 2];
                                 header[0] = "Result";
-                                t_cnt = 1;
+                                header[1] = "셀ID";
+                                t_cnt = 2;
                                 for (int i = 0; i < 4; i++)
                                 {
                                     if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
@@ -2658,7 +2660,7 @@ namespace LV_Inspection_System.UTIL
                             {
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                                 {
-                                    t_int_log_Total[i] = t_cnt + 1;
+                                    t_int_log_Total[i] = t_cnt + 2;
                                     t_cnt += ds_LOG.Tables[i].Columns.Count-1;
                                     if (i > 0)
                                     {
@@ -2669,10 +2671,11 @@ namespace LV_Inspection_System.UTIL
 
                             if (t_cnt > 0)
                             {
-                                string[] header = new string[t_cnt + 1];
-                                t_str_log_Total = new string[t_cnt + 1];
+                                string[] header = new string[t_cnt + 2];
+                                t_str_log_Total = new string[t_cnt + 2];
                                 header[0] = "Result";
-                                t_cnt = 1;
+                                header[1] = "셀ID";
+                                t_cnt = 2;
                                 for (int i = 0; i < 4; i++)
                                 {
                                     if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
@@ -2760,7 +2763,7 @@ namespace LV_Inspection_System.UTIL
                         if (ds_LOG.Tables[Cam_num].Columns.Count > 0)
                         {
                             string[] header = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                            header[0] = "LOT";
+                            header[0] = "셀ID";
                             for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                             {
                                 header[j + 1] = ds_LOG.Tables[Cam_num].Columns[j].ColumnName;
@@ -2789,7 +2792,7 @@ namespace LV_Inspection_System.UTIL
                             if (ds_LOG.Tables[Cam_num].Columns.Count > 0)
                             {
                                 string[] header = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                header[0] = "LOT";
+                                header[0] = "셀ID";
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
                                     header[j + 1] = ds_LOG.Tables[Cam_num].Columns[j].ColumnName;
@@ -2817,7 +2820,7 @@ namespace LV_Inspection_System.UTIL
                             if (ds_LOG.Tables[Cam_num].Columns.Count > 0)
                             {
                                 string[] header = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                header[0] = "LOT";
+                                header[0] = "셀ID";
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
                                     header[j + 1] = ds_LOG.Tables[Cam_num].Columns[j].ColumnName;
@@ -2870,7 +2873,7 @@ namespace LV_Inspection_System.UTIL
                         {
                             if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                             {
-                                t_int_log_Total[i] = t_cnt + 1;
+                                t_int_log_Total[i] = t_cnt + 2;
                                 t_cnt += ds_LOG.Tables[i].Columns.Count - 1;
                                 if (i > 0)
                                 {
@@ -2881,10 +2884,11 @@ namespace LV_Inspection_System.UTIL
 
                         if (t_cnt > 0)
                         {
-                            string[] header = new string[t_cnt + 1];
-                            t_str_log_Total = new string[t_cnt + 1];
+                            string[] header = new string[t_cnt + 2];
+                            t_str_log_Total = new string[t_cnt + 2];
                             header[0] = "Result";
-                            t_cnt = 1;
+                            header[1] = "셀ID";
+                            t_cnt = 2;
                             for (int i = 0; i < 4; i++)
                             {
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
@@ -2938,7 +2942,7 @@ namespace LV_Inspection_System.UTIL
                             {
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                                 {
-                                    t_int_log_Total[i] = t_cnt + 1;
+                                    t_int_log_Total[i] = t_cnt + 2;
                                     t_cnt += ds_LOG.Tables[i].Columns.Count - 1;
                                     if (i > 0)
                                     {
@@ -2949,10 +2953,11 @@ namespace LV_Inspection_System.UTIL
 
                             if (t_cnt > 0)
                             {
-                                string[] header = new string[t_cnt + 1];
-                                t_str_log_Total = new string[t_cnt + 1];
+                                string[] header = new string[t_cnt + 2];
+                                t_str_log_Total = new string[t_cnt + 2];
                                 header[0] = "Result";
-                                t_cnt = 1;
+                                header[1] = "셀ID";
+                                t_cnt = 2;
                                 for (int i = 0; i < 4; i++)
                                 {
                                     if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
@@ -3005,7 +3010,7 @@ namespace LV_Inspection_System.UTIL
                             {
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                                 {
-                                    t_int_log_Total[i] = t_cnt + 1;
+                                    t_int_log_Total[i] = t_cnt + 2;
                                     t_cnt += ds_LOG.Tables[i].Columns.Count - 1;
                                     if (i > 0)
                                     {
@@ -3016,10 +3021,11 @@ namespace LV_Inspection_System.UTIL
 
                             if (t_cnt > 0)
                             {
-                                string[] header = new string[t_cnt + 1];
-                                t_str_log_Total = new string[t_cnt + 1];
+                                string[] header = new string[t_cnt + 2];
+                                t_str_log_Total = new string[t_cnt + 2];
                                 header[0] = "Result";
-                                t_cnt = 1;
+                                header[1] = "셀ID";
+                                t_cnt = 2;
                                 for (int i = 0; i < 4; i++)
                                 {
                                     if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
@@ -4237,7 +4243,7 @@ namespace LV_Inspection_System.UTIL
                                 if (m_Data_Log_Use_Check)
                                 {
                                     t_str_log0 = new string[ds_LOG.Tables[Cam_num].Columns.Count+1];
-                                    t_str_log0[0] = m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                    t_str_log0[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0].ToString();//m_lot_str;//t_str_log_Total[0] = m_lot_str;
                                     int t_t_idx = 0;
                                     for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                     {
@@ -4382,7 +4388,7 @@ namespace LV_Inspection_System.UTIL
                             if (m_Data_Log_Use_Check)
                             {
                                 t_str_log1 = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                t_str_log1[0] = m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                t_str_log1[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1].ToString(); //m_lot_str;//t_str_log_Total[0] = m_lot_str;
                                 int t_t_idx = 0;
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
@@ -4527,7 +4533,7 @@ namespace LV_Inspection_System.UTIL
                             if (m_Data_Log_Use_Check)
                             {
                                 t_str_log2 = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                t_str_log2[0] = m_lot_str; //t_str_log_Total[0] = m_lot_str;
+                                t_str_log2[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2].ToString();//m_lot_str; //t_str_log_Total[0] = m_lot_str;
                                 int t_t_idx = 0;
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
@@ -4670,7 +4676,7 @@ namespace LV_Inspection_System.UTIL
                             if (m_Data_Log_Use_Check)
                             {
                                 t_str_log3 = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                t_str_log3[0] = m_lot_str; //t_str_log_Total[0] = m_lot_str;
+                                t_str_log3[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3].ToString();//m_lot_str; //t_str_log_Total[0] = m_lot_str;
                                 int t_t_idx = 0;
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
@@ -4904,6 +4910,55 @@ namespace LV_Inspection_System.UTIL
                         {
                             t_str_log_Total[0] = "OK";
                         }
+
+                        t_str_log_Total[1] = "";
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0] >= 0)
+                        {
+                            t_str_log_Total[1] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0].ToString();
+                        }
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] >= 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0])
+                        {
+                            if (t_str_log_Total[1].Length > 0)
+                            {
+                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1].ToString();
+                            }
+                            else
+                            {
+                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1].ToString();
+                            }
+                        }
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] >= 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1])
+                        {
+                            if (t_str_log_Total[1].Length > 0)
+                            {
+                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2].ToString();
+                            }
+                            else
+                            {
+                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2].ToString();
+                            }
+                        }
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] >= 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2])
+                        {
+                            if (t_str_log_Total[1].Length > 0)
+                            {
+                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3].ToString();
+                            }
+                            else
+                            {
+                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3].ToString();
+                            }
+                        }
+
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[0] =
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[1] =
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[2] =
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[3] = false;
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0] =
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] =
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] =
+                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] = -1;
+
                         t_bool_log_Total[0] = true;
                         t_bool_log_Total[1] = true;
                         t_bool_log_Total[2] = true;
@@ -6576,7 +6631,7 @@ namespace LV_Inspection_System.UTIL
 
                         if (DS.Tables[1].Rows[i][3] != null)
                         {
-                            if (m_Bending_Check[Cam_num,i] && (DS.Tables[0].Rows[i][2].ToString().Contains("합산") || DS.Tables[0].Rows[i][2].ToString().ToUpper().Contains("SUM")))
+                            if (m_Bending_Check[Cam_num, i] && (DS.Tables[0].Rows[i][2].ToString().Contains("합산") || DS.Tables[0].Rows[i][2].ToString().ToUpper().Contains("SUM")))
                             {
                                 m_Bending_count_tmp[i]++;
                                 if (m_Bending_count[i] == m_Bending_count_tmp[i])
@@ -6681,6 +6736,23 @@ namespace LV_Inspection_System.UTIL
                         else if (m_class == "CLASS 3")
                         {
                             Check_Class[2] = false;
+                        }
+
+                        if (Cam_num == 0)
+                        {
+                            LVApp.Instance().m_mainform.ctr_PLC1.CAM0_Value[i] = m_val;
+                        }
+                        else if (Cam_num == 1)
+                        {
+                            LVApp.Instance().m_mainform.ctr_PLC1.CAM1_Value[i] = m_val;
+                        }
+                        else if (Cam_num == 2)
+                        {
+                            LVApp.Instance().m_mainform.ctr_PLC1.CAM2_Value[i] = m_val;
+                        }
+                        else if (Cam_num == 3)
+                        {
+                            LVApp.Instance().m_mainform.ctr_PLC1.CAM3_Value[i] = m_val;
                         }
 
                         if (i == 1)
@@ -7201,8 +7273,10 @@ namespace LV_Inspection_System.UTIL
                         }
                         LVApp.Instance().m_mainform.ctr_Graph1.t_update_check = false;
                     }
-
                 }
+
+                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Value_Updated[Cam_num] = true;
+                //LVApp.Instance().m_mainform.ctr_PLC1.Data_MC_Tx();
 
                 if (!ok_ng)
                 {

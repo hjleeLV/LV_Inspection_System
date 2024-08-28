@@ -1379,7 +1379,7 @@ namespace LV_Inspection_System.GUI
                     }
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode && Simulation_mode)
                     {
-                        Thread.Sleep(1000 / 3);
+                        Thread.Sleep(1000 / 2);
                     }
                     else
                     {
@@ -3340,6 +3340,7 @@ namespace LV_Inspection_System.GUI
                             ctrCam4_GrabComplete(sender, e);
                         }
                         m_Job_Mode0 = 1;
+                        ctr_PLC1.MC_Rx_Request[Cam_Num] = true;
 
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[1] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[1] == 3 && !ctr_Camera_Setting2.Force_USE.Checked)
                         {
@@ -3647,6 +3648,7 @@ namespace LV_Inspection_System.GUI
                             ctrCam4_GrabComplete(sender, e);
                         }
                         m_Job_Mode1 = 1;
+                        ctr_PLC1.MC_Rx_Request[Cam_Num] = true;
 
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
                         {
@@ -3960,6 +3962,7 @@ namespace LV_Inspection_System.GUI
                             ctrCam4_GrabComplete(sender, e);
                         }
                         m_Job_Mode2 = 1;
+                        ctr_PLC1.MC_Rx_Request[Cam_Num] = true;
 
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
                         {
@@ -4119,7 +4122,7 @@ namespace LV_Inspection_System.GUI
                 // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
                 if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                 {
-                    DebugLogger.Instance().LogRecord($"AREA CAM1 Grab: {ctr_Camera_Setting2.Grab_Num}");
+                    DebugLogger.Instance().LogRecord($"AREA CAM3 Grab: {ctr_Camera_Setting4.Grab_Num}");
                 }
                 else
                 {
@@ -4273,6 +4276,7 @@ namespace LV_Inspection_System.GUI
                             ctrCam3_GrabComplete(sender, e);
                         }
                         m_Job_Mode3 = 1;
+                        ctr_PLC1.MC_Rx_Request[Cam_Num] = true;
 
                         if (LVApp.Instance().m_Config.m_Interlock_Cam[0] == Cam_Num && LVApp.Instance().m_Config.m_Cam_Kind[0] == 3 && !ctr_Camera_Setting1.Force_USE.Checked)
                         {
@@ -5846,7 +5850,7 @@ namespace LV_Inspection_System.GUI
                 }
                 else
                 {
-                    //timer_Refresh_Amount.Interval = 1000 / 4;
+                    //timer_Refresh_Amount.Interval = 1000 / 2;
                 }
                 //timer_Refresh_Amount.Interval = 100;
                 //LVApp.Instance().m_Config.Load_Judge_Data();
@@ -7742,6 +7746,17 @@ namespace LV_Inspection_System.GUI
                                     }
                                 }
                             }
+
+                            int t_wait_cnt = 0;
+                            while (!ctr_PLC1.MC_Rx_Value_Updated[Cam_Num])
+                            {
+                                Thread.Sleep(1);
+                                t_wait_cnt++;
+                                if (t_wait_cnt >= ctr_PLC1.m_MinProcessingTime)
+                                {
+                                    break;
+                                }
+                            }
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
 
@@ -8344,6 +8359,18 @@ namespace LV_Inspection_System.GUI
                                     }
                                 }
                             }
+
+                            int t_wait_cnt = 0;
+                            while (!ctr_PLC1.MC_Rx_Value_Updated[Cam_Num])
+                            {
+                                Thread.Sleep(1);
+                                t_wait_cnt++;
+                                if (t_wait_cnt >= ctr_PLC1.m_MinProcessingTime)
+                                {
+                                    break;
+                                }
+                            }
+
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
 
@@ -8962,6 +8989,18 @@ namespace LV_Inspection_System.GUI
                                     }
                                 }
                             }
+
+                            int t_wait_cnt = 0;
+                            while (!ctr_PLC1.MC_Rx_Value_Updated[Cam_Num])
+                            {
+                                Thread.Sleep(1);
+                                t_wait_cnt++;
+                                if (t_wait_cnt >= ctr_PLC1.m_MinProcessingTime)
+                                {
+                                    break;
+                                }
+                            }
+
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
 
@@ -9582,6 +9621,18 @@ namespace LV_Inspection_System.GUI
                                     }
                                 }
                             }
+
+                            int t_wait_cnt = 0;
+                            while (!ctr_PLC1.MC_Rx_Value_Updated[Cam_Num])
+                            {
+                                Thread.Sleep(1);
+                                t_wait_cnt++;
+                                if (t_wait_cnt >= ctr_PLC1.m_MinProcessingTime)
+                                {
+                                    break;
+                                }
+                            }
+
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
 
