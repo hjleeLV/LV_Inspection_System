@@ -324,7 +324,7 @@ namespace LV_Inspection_System
 
                 fileContent.Append(System.Environment.NewLine);
                 //System.IO.File.WriteAllText(filePath, fileContent.ToString(), Encoding.UTF8);
-                System.IO.File.AppendAllText(filePath, fileContent.ToString(), Encoding.UTF8);
+                System.IO.File.AppendAllText(filePath, fileContent.ToString(), Encoding.Default);
             }
             catch
             { }

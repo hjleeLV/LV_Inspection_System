@@ -4243,7 +4243,10 @@ namespace LV_Inspection_System.UTIL
                                 if (m_Data_Log_Use_Check)
                                 {
                                     t_str_log0 = new string[ds_LOG.Tables[Cam_num].Columns.Count+1];
-                                    t_str_log0[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0].ToString();//m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                    t_str_log0[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];//m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                    LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[Cam_num] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];
+                                    LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[Cam_num] = false;
+                                    LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num] = string.Empty;
                                     int t_t_idx = 0;
                                     for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                     {
@@ -4388,7 +4391,10 @@ namespace LV_Inspection_System.UTIL
                             if (m_Data_Log_Use_Check)
                             {
                                 t_str_log1 = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                t_str_log1[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1].ToString(); //m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                t_str_log1[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];//m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[Cam_num] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[Cam_num] = false;
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num] = string.Empty;
                                 int t_t_idx = 0;
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
@@ -4533,7 +4539,10 @@ namespace LV_Inspection_System.UTIL
                             if (m_Data_Log_Use_Check)
                             {
                                 t_str_log2 = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                t_str_log2[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2].ToString();//m_lot_str; //t_str_log_Total[0] = m_lot_str;
+                                t_str_log2[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];//m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[Cam_num] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[Cam_num] = false;
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num] = string.Empty;
                                 int t_t_idx = 0;
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
@@ -4676,7 +4685,10 @@ namespace LV_Inspection_System.UTIL
                             if (m_Data_Log_Use_Check)
                             {
                                 t_str_log3 = new string[ds_LOG.Tables[Cam_num].Columns.Count + 1];
-                                t_str_log3[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3].ToString();//m_lot_str; //t_str_log_Total[0] = m_lot_str;
+                                t_str_log3[0] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];//m_lot_str;//t_str_log_Total[0] = m_lot_str;
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[Cam_num] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num];
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[Cam_num] = false;
+                                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value[Cam_num] = string.Empty;
                                 int t_t_idx = 0;
                                 for (int j = 0; j < ds_LOG.Tables[Cam_num].Columns.Count; j++)
                                 {
@@ -4912,52 +4924,53 @@ namespace LV_Inspection_System.UTIL
                         }
 
                         t_str_log_Total[1] = "";
-                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0] >= 0)
+                        
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[0].Length > 0)
                         {
-                            t_str_log_Total[1] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0].ToString();
+                            t_str_log_Total[1] = LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[0];
                         }
-                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] >= 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0])
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[1].Length > 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[0] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[1])
                         {
-                            if (t_str_log_Total[1].Length > 0)
+                            if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[1].Length > 0)
                             {
-                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1].ToString();
+                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[1];
                             }
                             else
                             {
-                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1].ToString();
+                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[1];
                             }
                         }
-                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] >= 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1])
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[2].Length > 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[1] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[2])
                         {
-                            if (t_str_log_Total[1].Length > 0)
+                            if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[2].Length > 0)
                             {
-                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2].ToString();
+                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[2];
                             }
                             else
                             {
-                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2].ToString();
+                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[2];
                             }
                         }
-                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] >= 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2])
+                        if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[3].Length > 0 && LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[2] != LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[3])
                         {
-                            if (t_str_log_Total[1].Length > 0)
+                            if (LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[3].Length > 0)
                             {
-                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3].ToString();
+                                t_str_log_Total[1] += "_" + LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[3];
                             }
                             else
                             {
-                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3].ToString();
+                                t_str_log_Total[1] += LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_STR_Value_for_LOG[3];
                             }
                         }
 
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[0] =
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[1] =
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[2] =
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[3] = false;
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0] =
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] =
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] =
-                        LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] = -1;
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[0] =
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[1] =
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[2] =
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value_Updated[3] = false;
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[0] =
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[1] =
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[2] =
+                        //LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Value[3] = -1;
 
                         t_bool_log_Total[0] = true;
                         t_bool_log_Total[1] = true;

@@ -3945,7 +3945,6 @@ namespace LV_Inspection_System.GUI.Control
             return;
         }
 
-
         private void label36_Click(object sender, EventArgs e)
         {
 
@@ -4283,6 +4282,8 @@ namespace LV_Inspection_System.GUI.Control
         public bool[] MC_Rx_Request = new bool[4] { false, false, false, false };
         public bool[] MC_Rx_Value_Updated = new bool[4] { false, false, false, false };
         public int[] MC_Rx_Value = new int[4] { -1, -1, -1, -1 };
+        public string[] MC_Rx_STR_Value = new string[4] { "", "", "", "" };
+        public string[] MC_Rx_STR_Value_for_LOG = new string[4] { "", "", "", "" };
 
         private void checkBox_MC_Rx_Use_CheckedChanged(object sender, EventArgs e)
         {
@@ -4721,6 +4722,18 @@ namespace LV_Inspection_System.GUI.Control
         }
         #endregion
 
+        public void MC_Rx_Tx_Table_Enable(bool flag)
+        {
+            foreach (DataGridViewColumn column in dataGridView_MC_Rx.Columns)
+            {
+                column.ReadOnly = !flag;
+            }
+            foreach (DataGridViewColumn column in dataGridView_MC_Tx.Columns)
+            {
+                column.ReadOnly = !flag;
+            }
+        }
+
         //bool Data_MC_Rx_check = false;
         //public void Data_MC_Rx()
         //{
@@ -4873,42 +4886,78 @@ namespace LV_Inspection_System.GUI.Control
                                 if (_row[1].ToString() == "ALL")
                                 {
                                     string _address = DT_MC_Rx.Rows[idx][0].ToString();
-                                    int[] arrDeviceValue = new int[1];
+                                    int read_length = 10;
+                                    int[] arrDeviceValue = new int[read_length];
                                     lock (_isMCRead_Lock)
                                     {
-                                        Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, 1, arrDeviceValue);
+                                        Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, read_length, arrDeviceValue);
                                         McTask.Wait();
                                     }
-                                    int t_v = arrDeviceValue[0];
 
-                                    if (t_v >= 0)
+                                    // arrDeviceValue에서 20개 Ascii code 변환
+                                    string t_str = PLCWordToAscii(arrDeviceValue);
+
+                                    _row[2] = t_str;
+                                    for (int i = 0; i < 4; i++)
                                     {
-                                        for (int i = 0; i < 4; i++)
-                                        {
-                                            MC_Rx_Value[i] = t_v;
-                                            MC_Rx_Value_Updated[i] = true;
-                                            MC_Rx_Request[i] = false;
-                                        }
-                                        _row[2] = t_v;
-                                        _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
+                                        MC_Rx_STR_Value[i] = t_str;
+                                        MC_Rx_Value_Updated[i] = true;
+                                    }
+                                    _log += " [" + _row[0].ToString() + ":" + t_str + "]";
 
-                                        if (LVApp.Instance().m_Config.PLC_Judge_view)
-                                        {
-                                            add_Log(_log);
-                                        }
+                                    if (LVApp.Instance().m_Config.PLC_Judge_view)
+                                    {
+                                        add_Log(_log);
+                                    }
 
-                                        if (dataGridView_MC_Rx.InvokeRequired)
-                                        {
-                                            dataGridView_MC_Rx.Invoke((MethodInvoker)delegate
-                                            {
-                                                dataGridView_MC_Rx.Refresh();
-                                            });
-                                        }
-                                        else
+                                    if (dataGridView_MC_Rx.InvokeRequired)
+                                    {
+                                        dataGridView_MC_Rx.Invoke((MethodInvoker)delegate
                                         {
                                             dataGridView_MC_Rx.Refresh();
-                                        }
+                                        });
                                     }
+                                    else
+                                    {
+                                        dataGridView_MC_Rx.Refresh();
+                                    }
+
+                                    //int[] arrDeviceValue = new int[1];
+                                    //lock (_isMCRead_Lock)
+                                    //{
+                                    //    Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, 1, arrDeviceValue);
+                                    //    McTask.Wait();
+                                    //}
+                                    //int t_v = arrDeviceValue[0];
+
+                                    //if (t_v >= 0)
+                                    //{
+                                    //    for (int i = 0; i < 4; i++)
+                                    //    {
+                                    //        MC_Rx_Value[i] = t_v;
+                                    //        MC_Rx_Value_Updated[i] = true;
+                                    //        MC_Rx_Request[i] = false;
+                                    //    }
+                                    //    _row[2] = t_v;
+                                    //    _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
+
+                                    //    if (LVApp.Instance().m_Config.PLC_Judge_view)
+                                    //    {
+                                    //        add_Log(_log);
+                                    //    }
+
+                                    //    if (dataGridView_MC_Rx.InvokeRequired)
+                                    //    {
+                                    //        dataGridView_MC_Rx.Invoke((MethodInvoker)delegate
+                                    //        {
+                                    //            dataGridView_MC_Rx.Refresh();
+                                    //        });
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        dataGridView_MC_Rx.Refresh();
+                                    //    }
+                                    //}
                                 }
                             }
                         }
@@ -4924,20 +4973,29 @@ namespace LV_Inspection_System.GUI.Control
                                 if (_row[1].ToString() == "CAM" + _cam.ToString())
                                 {
                                     string _address = DT_MC_Rx.Rows[idx][0].ToString();
-                                    int[] arrDeviceValue = new int[1];
+                                    int read_length = 10;
+                                    int[] arrDeviceValue = new int[read_length];
                                     lock (_isMCRead_Lock)
                                     {
-                                        Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, 1, arrDeviceValue);
+                                        Task<byte[]> McTask = McProtocolApp.ReadDeviceBlock(_address, read_length, arrDeviceValue);
                                         McTask.Wait();
                                     }
-                                    int t_v = arrDeviceValue[0];
-                                    if (_row[1].ToString() == "CAM" + _cam.ToString() && t_v >= 0)
-                                    {
-                                        MC_Rx_Value[_cam] = t_v;
-                                        MC_Rx_Value_Updated[_cam] = true;
-                                        _row[2] = t_v;
-                                        _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
-                                    }
+
+                                    // arrDeviceValue에서 20개 Ascii code 변환
+                                    MC_Rx_STR_Value[_cam] = PLCWordToAscii(arrDeviceValue);
+
+                                    MC_Rx_Value_Updated[_cam] = true;
+                                    _row[2] = MC_Rx_STR_Value[_cam];
+                                    _log += " [" + _row[0].ToString() + ":" + MC_Rx_STR_Value[_cam] + "]";
+
+                                    //int t_v = arrDeviceValue[0];
+                                    //if (_row[1].ToString() == "CAM" + _cam.ToString() && t_v >= 0)
+                                    //{
+                                    //    MC_Rx_Value[_cam] = t_v;
+                                    //    MC_Rx_Value_Updated[_cam] = true;
+                                    //    _row[2] = t_v;
+                                    //    _log += " [" + _row[0].ToString() + ":" + t_v.ToString() + "]";
+                                    //}
 
                                     if (dataGridView_MC_Rx.InvokeRequired)
                                     {
@@ -5101,6 +5159,42 @@ namespace LV_Inspection_System.GUI.Control
         private void button_MCRx_Test_Click(object sender, EventArgs e)
         {
             MC_Rx_Request[0] = MC_Rx_Request[1] = MC_Rx_Request[2] = MC_Rx_Request[3] = true;
+        }
+
+
+        /// <summary>
+        /// PLC에서 받은 값(연속된 word 주소의 값)을 8bit씩 쪼개어 Ascii 를 참고하여 문자열로 변환
+        /// 앞 주소의 값 부터 변환
+        /// </summary>
+        /// <param name="value"> 연속된 word 주소의 값(16bit 정수) </param>
+        /// <returns></returns>
+        private string PLCWordToAscii(int[] value)
+        {
+            try
+            {
+                byte byte_high, byte_low;
+                string ret = string.Empty;
+                for (int i = 0; i < value.Count(); ++i)
+                {
+                    if (value[i] < 0)
+                    {
+                        ret += "??";
+                    }
+                    else
+                    {
+                        byte_high = (byte)(value[i] >> 8);
+                        byte_low = (byte)(value[i] & 0xFF);
+                        // Ascii 코드가 31보다 작은 값이 들어오면 null로 바꿈(ret에 포함되지 않음)
+                        ret += $"{(char)(byte_low > 31 ? byte_low : 0)}{(char)(byte_high > 31 ? byte_high : 0)}";
+                    }
+                }
+                return ret;
+            }
+            catch
+            {
+
+            }
+            return "";
         }
 
         // 끝 2024.08.27 by CD

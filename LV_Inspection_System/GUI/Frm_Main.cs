@@ -5998,6 +5998,7 @@ namespace LV_Inspection_System.GUI
                 //}
 
                 ctr_PLC1.button_Send_Save_Click(sender, e);
+                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Tx_Table_Enable(false);
                 //add_Log("Step_04");
                 if (!m_ImageSavethread_Check)
                 {
@@ -6263,7 +6264,7 @@ namespace LV_Inspection_System.GUI
                         ctr_PLC1.PLC_L_WRITE("LX1111", 0); // 검사중지
                     }
                 }
-
+                LVApp.Instance().m_mainform.ctr_PLC1.MC_Rx_Tx_Table_Enable(true);
 
                 LVApp.Instance().m_Config.m_Check_Inspection_Mode = false;
 
