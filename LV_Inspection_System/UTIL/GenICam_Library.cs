@@ -525,7 +525,7 @@ namespace LV_Inspection_System.UTIL
                 //}
             }
             CAM[Cam_Num].Dev.StreamGrabber.Start();
-
+            DebugLogger.Instance().LogRecord($"(User)Area H CAM{Cam_Num.ToString()} Conti Grab Start");
             //AcquisitionModeEnum.Continuous
             //CAM[Cam_Num].Dev.GrabUsingGrabLoopThread();
         }
@@ -567,6 +567,7 @@ namespace LV_Inspection_System.UTIL
                 LVApp.Instance().m_mainform.ctr_Camera_Setting4.GeniCam_sliderOffsetX.UpdateValues();
                 LVApp.Instance().m_mainform.ctr_Camera_Setting4.GeniCam_sliderOffsetY.UpdateValues();
             }
+            DebugLogger.Instance().LogRecord($"(User)Area H CAM{Cam_Num.ToString()} Conti Grab Stop Called");
         }
 
         //private ThridLibray.IDevice m_dev;
@@ -614,30 +615,34 @@ namespace LV_Inspection_System.UTIL
                 if (Cam_Num == 0)
                 {
                     CAM[Cam_Num].Dev.CameraOpened += OnCameraOpen_0;
-                    //CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_0;
+                    CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_0;   // 250221 LHJ 사용하지 않는 부분이었으나, 영상 획득 중지건을 디버깅하기 위해 다시 사용함
                     CAM[Cam_Num].Dev.CameraClosed += OnCameraClose_0;
                     CAM[Cam_Num].Dev.StreamGrabber.ImageGrabbed += OnImageGrabbed_0;
+                    CAM[Cam_Num].Dev.StreamGrabber.GrabStoped += GrabStopped_0;
                 }
                 if (Cam_Num == 1)
                 {
                     CAM[Cam_Num].Dev.CameraOpened += OnCameraOpen_1;
-                    //CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_1;
+                    CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_1;   // 250221 LHJ 사용하지 않는 부분이었으나, 영상 획득 중지건을 디버깅하기 위해 다시 사용함
                     CAM[Cam_Num].Dev.CameraClosed += OnCameraClose_1;
                     CAM[Cam_Num].Dev.StreamGrabber.ImageGrabbed += OnImageGrabbed_1;
+                    CAM[Cam_Num].Dev.StreamGrabber.GrabStoped += GrabStopped_1;
                 }
                 if (Cam_Num == 2)
                 {
                     CAM[Cam_Num].Dev.CameraOpened += OnCameraOpen_2;
-                    //CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_2;
+                    CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_2;   // 250221 LHJ 사용하지 않는 부분이었으나, 영상 획득 중지건을 디버깅하기 위해 다시 사용함
                     CAM[Cam_Num].Dev.CameraClosed += OnCameraClose_2;
                     CAM[Cam_Num].Dev.StreamGrabber.ImageGrabbed += OnImageGrabbed_2;
+                    CAM[Cam_Num].Dev.StreamGrabber.GrabStoped += GrabStopped_2;
                 }
                 if (Cam_Num == 3)
                 {
                     CAM[Cam_Num].Dev.CameraOpened += OnCameraOpen_3;
-                    //CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_3;
+                    CAM[Cam_Num].Dev.ConnectionLost += OnConnectLoss_3;   // 250221 LHJ 사용하지 않는 부분이었으나, 영상 획득 중지건을 디버깅하기 위해 다시 사용함
                     CAM[Cam_Num].Dev.CameraClosed += OnCameraClose_3;
                     CAM[Cam_Num].Dev.StreamGrabber.ImageGrabbed += OnImageGrabbed_3;
+                    CAM[Cam_Num].Dev.StreamGrabber.GrabStoped += GrabStopped_3;
                 }
 
 
@@ -741,7 +746,7 @@ namespace LV_Inspection_System.UTIL
 
                 CAM[Cam_Num].Dev.Close();
                 CAM[Cam_Num].Dev = null;
-               CAM[Cam_Num].Connection = false;
+                CAM[Cam_Num].Connection = false;
             }
             catch (Exception exception)
             {
@@ -759,24 +764,42 @@ namespace LV_Inspection_System.UTIL
         }
         private void OnCameraClose_0(object sender, EventArgs e)
         {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM0 Close");
             int t_Cam_num = 0;
             CAM[t_Cam_num].Connection = false;
             CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_0;
             CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_0;
             CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_0;
             CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_0;
+            CAM[t_Cam_num].Dev.StreamGrabber.GrabStoped -= GrabStopped_0;
             //Close(t_Cam_num);
         }
         private void OnConnectLoss_0(object sender, EventArgs e)
         {
-            int t_Cam_num = 0;
-            CAM[t_Cam_num].Connection = false;
-            CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_0;
-            CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_0;
-            CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_0;
-            CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_0;
-            //Close(t_Cam_num);
-            //Open(t_Cam_num);
+            #region LHJ 250221 영상 획득이 되지 않는 건
+            // 로그를 추가하고 (원래 이 함수는 사용하지 않은 함수였기 때문에) 기존 구현 내용을 모두 주석처리 함
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM0 Connection Lost");
+            LVApp.Instance().m_mainform.Camera_Connection_check_flag = false;
+            if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+            {
+                LVApp.Instance().m_mainform.button_INSPECTION_Click(null, null);
+                MessageBox.Show("Inspection Stop - Camera Connection Lost. Restart Program!", "CAM0 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Camera Connection Lost - Restart Program!", "CAM0 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return;
+            #endregion
+
+            //int t_Cam_num = 0;
+            //CAM[t_Cam_num].Connection = false;
+            //CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_0;
+            //CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_0;
+            //CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_0;
+            //CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_0;
+            ////Close(t_Cam_num);
+            ////Open(t_Cam_num);
         }
         private void OnImageGrabbed_0(Object sender, GrabbedEventArgs e)
         {
@@ -798,26 +821,43 @@ namespace LV_Inspection_System.UTIL
         }
         private void OnCameraClose_1(object sender, EventArgs e)
         {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM1 Close");
             int t_Cam_num = 1;
             CAM[t_Cam_num].Connection = false;
             CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_1;
             CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_1;
             CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_1;
             CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_1;
+            CAM[t_Cam_num].Dev.StreamGrabber.GrabStoped -= GrabStopped_1;
             //Close(t_Cam_num);
         }
         private void OnConnectLoss_1(object sender, EventArgs e)
         {
-            int t_Cam_num = 1;
-            CAM[t_Cam_num].Connection = false;
-            CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_1;
-            CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_1;
-            CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_1;
-            CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_1;
-            //Close(t_Cam_num);
-            //Open(t_Cam_num);
-        }
+            #region LHJ 250221 영상 획득이 되지 않는 건
+            // 로그를 추가하고 (원래 이 함수는 사용하지 않은 함수였기 때문에) 기존 구현 내용을 모두 주석처리 함
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM1 Connection Lost");
+            LVApp.Instance().m_mainform.Camera_Connection_check_flag = false;
+            if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+            {
+                LVApp.Instance().m_mainform.button_INSPECTION_Click(null, null);
+                MessageBox.Show("Inspection Stop - Camera Connection Lost. Restart Program!", "CAM1 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Camera Connection Lost - Restart Program!", "CAM1 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return;
+            #endregion
 
+            //int t_Cam_num = 1;
+            //CAM[t_Cam_num].Connection = false;
+            //CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_1;
+            //CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_1;
+            //CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_1;
+            //CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_1;
+            ////Close(t_Cam_num);
+            ////Open(t_Cam_num);
+        }
         private void OnImageGrabbed_1(Object sender, GrabbedEventArgs e)
         {
             if (LVApp.Instance().m_Config.m_Cam_Kind[1] == 5)
@@ -838,24 +878,42 @@ namespace LV_Inspection_System.UTIL
         }
         private void OnCameraClose_2(object sender, EventArgs e)
         {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM2 Close");
             int t_Cam_num = 2;
             CAM[t_Cam_num].Connection = false;
             CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_2;
             CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_2;
             CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_2;
             CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_2;
+            CAM[t_Cam_num].Dev.StreamGrabber.GrabStoped -= GrabStopped_2;
             //Close(t_Cam_num);
         }
         private void OnConnectLoss_2(object sender, EventArgs e)
         {
-            int t_Cam_num = 2;
-            CAM[t_Cam_num].Connection = false;
-            CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_2;
-            CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_2;
-            CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_2;
-            CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_2;
-            //Close(t_Cam_num);
-            //Open(t_Cam_num);
+            #region LHJ 250221 영상 획득이 되지 않는 건
+            // 로그를 추가하고 (원래 이 함수는 사용하지 않은 함수였기 때문에) 기존 구현 내용을 모두 주석처리 함
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM2 Connection Lost");
+            LVApp.Instance().m_mainform.Camera_Connection_check_flag = false;
+            if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+            {
+                LVApp.Instance().m_mainform.button_INSPECTION_Click(null, null);
+                MessageBox.Show("Inspection Stop - Camera Connection Lost. Restart Program!", "CAM2 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Camera Connection Lost - Restart Program!", "CAM2 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return;
+            #endregion
+
+            //int t_Cam_num = 2;
+            //CAM[t_Cam_num].Connection = false;
+            //CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_2;
+            //CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_2;
+            //CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_2;
+            //CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_2;
+            ////Close(t_Cam_num);
+            ////Open(t_Cam_num);
         }
         private void OnImageGrabbed_2(Object sender, GrabbedEventArgs e)
         {
@@ -877,24 +935,42 @@ namespace LV_Inspection_System.UTIL
         }
         private void OnCameraClose_3(object sender, EventArgs e)
         {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM3 Close");
             int t_Cam_num = 3;
             CAM[t_Cam_num].Connection = false;
             CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_3;
             CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_3;
             CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_3;
             CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_3;
+            CAM[t_Cam_num].Dev.StreamGrabber.GrabStoped -= GrabStopped_3;
             //Close(t_Cam_num);
         }
         private void OnConnectLoss_3(object sender, EventArgs e)
         {
-            int t_Cam_num = 3;
-            CAM[t_Cam_num].Connection = false;
-            CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_3;
-            CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_3;
-            CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_3;
-            CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_3;
-            //Close(t_Cam_num);
-            //Open(t_Cam_num);
+            #region LHJ 250221 영상 획득이 되지 않는 건
+            // 로그를 추가하고 (원래 이 함수는 사용하지 않은 함수였기 때문에) 기존 구현 내용을 모두 주석처리 함
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM3 Connection Lost");
+            LVApp.Instance().m_mainform.Camera_Connection_check_flag = false;
+            if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+            {
+                LVApp.Instance().m_mainform.button_INSPECTION_Click(null, null);
+                MessageBox.Show("Inspection Stop - Camera Connection Lost. Restart Program!", "CAM3 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Camera Connection Lost - Restart Program!", "CAM3 Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return;
+            #endregion
+
+            //int t_Cam_num = 3;
+            //CAM[t_Cam_num].Connection = false;
+            //CAM[t_Cam_num].Dev.CameraOpened -= OnCameraOpen_3;
+            //CAM[t_Cam_num].Dev.ConnectionLost -= OnConnectLoss_3;
+            //CAM[t_Cam_num].Dev.CameraClosed -= OnCameraClose_3;
+            //CAM[t_Cam_num].Dev.StreamGrabber.ImageGrabbed -= OnImageGrabbed_3;
+            ////Close(t_Cam_num);
+            ////Open(t_Cam_num);
         }
         private void OnImageGrabbed_3(Object sender, GrabbedEventArgs e)
         {
@@ -908,5 +984,27 @@ namespace LV_Inspection_System.UTIL
             }
             LVApp.Instance().m_mainform.ctrCam4_GrabComplete(sender, e);
         }
+
+        #region 250221 LHJ 영상 획득이 되지 않는 건 디버깅용
+        private void GrabStopped_0(object sender, EventArgs e)
+        {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM0 Grab Stopped");
+        }
+
+        private void GrabStopped_1(object sender, EventArgs e)
+        {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM1 Grab Stopped");
+        }
+
+        private void GrabStopped_2(object sender, EventArgs e)
+        {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM2 Grab Stopped");
+        }
+
+        private void GrabStopped_3(object sender, EventArgs e)
+        {
+            DebugLogger.Instance().LogRecord("(dll)Area H CAM3 Grab Stopped");
+        }
+        #endregion
     }
 }

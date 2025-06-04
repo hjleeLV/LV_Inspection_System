@@ -100,7 +100,6 @@ namespace LV_Inspection_System
             {
                 sw.WriteLine(OutStr);
                 sw.Flush();
-                
             }
             catch (Exception)
             {

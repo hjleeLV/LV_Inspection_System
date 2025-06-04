@@ -1,17 +1,14 @@
-﻿using System;
+﻿using PylonC.NET;
+using PylonC.NETSupportLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
-using PylonC.NETSupportLibrary;
-using PylonC.NET;
 //using Euresys.MultiCam;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace ctrBaslerCam
 {
@@ -38,6 +35,56 @@ namespace ctrBaslerCam
         private Stopwatch Cam_SW = new Stopwatch();
 
         private Color Grid_Line_Color = Color.LightGoldenrodYellow;
+
+        #region 250220 - LHJ 영상 획득이 멈추는 현상 확인용
+        public delegate void GrabbingStartedEventHandler();
+        public event GrabbingStartedEventHandler GrabbingStartedEvent;
+
+        public delegate void GrabbingStoppedEventHandler();
+        public event GrabbingStoppedEventHandler GrabbingStoppedEvent;
+
+        public delegate void GrabErrorEventHandler(Exception grabException, string additionalErrorMessage);
+        public event GrabErrorEventHandler GrabErrorEvent;
+
+        public delegate void DeviceRemovedEventHandler();
+        public event DeviceRemovedEventHandler DeviceRemovedEvent;
+
+
+        /* Notify that grabbing has started. This event could be used to update the state of the GUI. */
+        protected void OnGrabbingStartedEvent()
+        {
+            if (GrabbingStartedEvent != null)
+            {
+                GrabbingStartedEvent();
+            }
+        }
+
+        /* Notify that grabbing has stopped. This event could be used to update the state of the GUI. */
+        protected void OnGrabbingStoppedEvent()
+        {
+            if (GrabbingStoppedEvent != null)
+            {
+                GrabbingStoppedEvent();
+            }
+        }
+
+        /* Notify that the grabbing had errors and deliver the information. */
+        protected void OnGrabErrorEvent(Exception grabException, string additionalErrorMessage)
+        {
+            if (GrabErrorEvent != null)
+            {
+                GrabErrorEvent(grabException, additionalErrorMessage);
+            }
+        }
+
+        protected void OnDeviceRemovedEvent()
+        {
+            if (DeviceRemovedEvent !=null)
+            {
+                DeviceRemovedEvent();
+            }
+        }
+        #endregion
 
         public ctrCam()
         {
@@ -216,7 +263,8 @@ namespace ctrBaslerCam
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                // 250225 - LHJ - MessageBox가 (카메라 연결이 끊겼음이 감지되었을 때)검사 강제 종료를 방해해서 주석처리 함
+                //MessageBox.Show(ex.ToString());
             }
             if (!m_imageProvider.IsOpen)
             {
@@ -352,6 +400,7 @@ namespace ctrBaslerCam
                 BeginInvoke(new ImageProvider.GrabErrorEventHandler(OnGrabErrorEventCallback), grabException, additionalErrorMessage);
                 return;
             }
+            OnGrabErrorEvent(grabException, additionalErrorMessage);
         }
         /* Handles the event related to the removal of a currently open device. */
         private void OnDeviceRemovedEventCallback()
@@ -362,6 +411,7 @@ namespace ctrBaslerCam
                 BeginInvoke(new ImageProvider.DeviceRemovedEventHandler(OnDeviceRemovedEventCallback));
                 return;
             }
+            OnDeviceRemovedEvent();
         }
         /* Handles the event related to a device being open. */
         private void OnDeviceOpenedEventCallback()
@@ -396,6 +446,7 @@ namespace ctrBaslerCam
                 BeginInvoke(new ImageProvider.GrabbingStartedEventHandler(OnGrabbingStartedEventCallback));
                 return;
             }
+            OnGrabbingStartedEvent();
         }
         /* Handles the event related to the image provider having stopped grabbing. */
         private void OnGrabbingStoppedEventCallback()
@@ -406,6 +457,7 @@ namespace ctrBaslerCam
                 BeginInvoke(new ImageProvider.GrabbingStoppedEventHandler(OnGrabbingStoppedEventCallback));
                 return;
             }
+            OnGrabbingStoppedEvent();
         }
 
         public Bitmap ConvertTo24bpp(Image img)

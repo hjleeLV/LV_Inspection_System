@@ -22,6 +22,10 @@ using OfficeOpenXml;
 using LV_Inspection_System.UTIL;
 using OpenCvSharp;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using ctrBaslerCam;
+using Microsoft.VisualBasic;
+using System.Collections.Concurrent;
 
 namespace LV_Inspection_System.GUI
 {
@@ -45,6 +49,8 @@ namespace LV_Inspection_System.GUI
         Thread[] Probe_threads = new Thread[4];
         Thread[] Viewthreads = new Thread[4];
         //private System.Windows.Forms.Timer[] timer_Cam = new System.Windows.Forms.Timer[4];
+        // 250314_LHJ - 알고리즘 처리 쓰레드에서 Dispose 부분의 지연이 생기는 현상 완화 테스트
+        Thread[] imageDispose_Thread = new Thread[4];
 
 
         Thread ImageSavethread = null;
@@ -514,6 +520,10 @@ namespace LV_Inspection_System.GUI
                 //LVApp.Instance().m_Config.Set_Parameters();
                 richTextBox_LOG.ResetText();
                 splitContainer11.SplitterDistance = splitContainer16.SplitterDistance = splitContainer19.SplitterDistance = splitContainer21.SplitterDistance = 650;
+
+                // 250314 - LHJ UI창 최소화 후 최대화 시 UI 프리징 현상(ThreadProc0 에서 LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename); 호출이 지연됨) 을 완화하기 위해 임시 조치함
+                neoTabWindow_MAIN.SelectedIndex = 1;
+                neoTabWindow_MAIN.SelectedIndex = 0;
             }
             catch
             { }
@@ -599,7 +609,7 @@ namespace LV_Inspection_System.GUI
                     }
                 }
 
-                if (!Camera_Connectio_check_flag)
+                if (!Camera_Connection_check_flag)
                 {
                     t_CAM_Check = false;
                 }
@@ -941,29 +951,41 @@ namespace LV_Inspection_System.GUI
                                 threads[i].Abort();
                                 threads[i] = null;
                             }
+                            if (imageDispose_Thread[i].IsAlive)
+                            {
+                                imageDispose_Thread[i].Abort();
+                                imageDispose_Thread[i] = null;
+                            }
+
                             if (i == 0)
                             {
                                 m_Job_Mode0 = 0;
                                 threads[i] = new Thread(ThreadProc0);
+                                imageDispose_Thread[i] = new Thread(DisposeImage_0);
                             }
                             if (i == 1)
                             {
                                 m_Job_Mode1 = 0;
                                 threads[i] = new Thread(ThreadProc1);
+                                imageDispose_Thread[i] = new Thread(DisposeImage_1);
                             }
                             if (i == 2)
                             {
                                 m_Job_Mode2 = 0;
                                 threads[i] = new Thread(ThreadProc2);
+                                imageDispose_Thread[i] = new Thread(DisposeImage_2);
                             }
                             if (i == 3)
                             {
                                 m_Job_Mode3 = 0;
                                 threads[i] = new Thread(ThreadProc3);
+                                imageDispose_Thread[i] = new Thread(DisposeImage_3);
                             }
                             m_Threads_Check[i] = true;
                             threads[i].IsBackground = true;
                             threads[i].Start();
+                            imageDispose_Thread[i].IsBackground = true;
+                            imageDispose_Thread[i].Start();
 
                             add_Log("CAM" + i.ToString() + " Inspection Thread Restart");
                             if (Capture_framebuffer[i].Count > 0)
@@ -1696,9 +1718,10 @@ namespace LV_Inspection_System.GUI
                 //}
                 //this.Invoke(_dt);
             }
-            catch
+            catch (Exception e)
             {
                 add_Log("Image save error! 저장중지");
+                DebugLogger.Instance().LogRecord($"{e.Message}, {e.StackTrace}");
                 m_ImageSavethread_Check = false;
                 //Thread.Sleep(10);
                 //if (ImageSavethread != null && ImageSavethread.IsAlive)
@@ -3193,7 +3216,13 @@ namespace LV_Inspection_System.GUI
 
         private Stopwatch[] Interval_SW = new Stopwatch[4];
         private readonly int[] _interval = { 200, 200, 200, 200 };
+        /// <summary>
+        /// (Merge 기능 사용 중일 때) 카메라에서 영상 획득하는 간격을 확인하고, 간격이 충분히 벌어졌으면 새로운 제품이라고 간주함
+        /// </summary>
         private bool[] _is_NewFrame = { false, false, false, false };
+        /// <summary>
+        /// 개별이미지를 Merge하여 완성된 이미지의 갯수
+        /// </summary>
         private int[] _mergeImageCount = { 0, 0, 0, 0 };
         public void ctrCam1_GrabComplete(object sender, EventArgs e)
         {
@@ -3207,7 +3236,8 @@ namespace LV_Inspection_System.GUI
                 // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
                 if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                 {
-                    DebugLogger.Instance().LogRecord($"AREA CAM0 Grab: {ctr_Camera_Setting1.Grab_Num}");
+                    //DebugLogger.Instance().LogRecord($"AREA CAM0 Grab Count: {ctr_Camera_Setting1.Grab_Num.ToString()}");
+                    DebugLogger.Instance().LogRecord($"G A C0: {ctr_Camera_Setting1.Grab_Num.ToString()}");
                 }
                 else
                 {
@@ -3248,7 +3278,7 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
                                 {
-                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘에는 아직 전달되지 않았음(이전 이미지 처리 중)
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -3260,20 +3290,21 @@ namespace LV_Inspection_System.GUI
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
                                     ++_mergeImageCount[Cam_Num];
-                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                    //DebugLogger.Instance().LogRecord($"AREA CAM0 Start Merge Grab: {_mergeImageCount[Cam_Num].ToString()} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
+                                    DebugLogger.Instance().LogRecord($"G M A C0: {_mergeImageCount[Cam_Num].ToString()} P: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
 
                                     if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
                                     {
                                         // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        DebugLogger.Instance().LogRecord($"Cam0 Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
                                         LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                     }
                                 }
                                 else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
                                 {
-                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지
+                                    // Case 1) 이번 제품 이미지가 들어오는 도중에, 이전 이미지 알고리즘이 처리 완료 됨
+                                    // Case 2) 이번 제품에 대해 영상을 충분히 획득하였으며, 알고리즘까지 호출이 되었는데도 계속 이미지가 들어오는 경우
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -3401,7 +3432,7 @@ namespace LV_Inspection_System.GUI
                     }
                     else
                     {
-                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} Miss!");
+                        DebugLogger.Instance().LogRecord("CAM0 Miss!");
                     }
                     // 신규 코드 - End
                     #endregion
@@ -3494,7 +3525,8 @@ namespace LV_Inspection_System.GUI
                 // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
                 if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                 {
-                    DebugLogger.Instance().LogRecord($"AREA CAM1 Grab: {ctr_Camera_Setting2.Grab_Num}");
+                    //DebugLogger.Instance().LogRecord($"AREA CAM1 Grab Count: {ctr_Camera_Setting2.Grab_Num.ToString()}");
+                    DebugLogger.Instance().LogRecord($"G A C1: {ctr_Camera_Setting2.Grab_Num.ToString()}");
                 }
                 else
                 {
@@ -3555,7 +3587,7 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
                                 {
-                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘에는 아직 전달되지 않았음(이전 이미지 처리 중)
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -3567,20 +3599,21 @@ namespace LV_Inspection_System.GUI
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
                                     ++_mergeImageCount[Cam_Num];
-                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                    //DebugLogger.Instance().LogRecord($"AREA CAM1 Start Merge Grab: {_mergeImageCount[Cam_Num].ToString()} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
+                                    DebugLogger.Instance().LogRecord($"G M A C1: {_mergeImageCount[Cam_Num].ToString()} P: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
 
                                     if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
                                     {
                                         // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        DebugLogger.Instance().LogRecord($"Cam1 Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
                                         LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                     }
                                 }
                                 else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
                                 {
-                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지
+                                    // Case 1) 이번 제품 이미지가 들어오는 도중에, 이전 이미지 알고리즘이 처리 완료 됨
+                                    // Case 2) 이번 제품에 대해 영상을 충분히 획득하였으며, 알고리즘까지 호출이 되었는데도 계속 이미지가 들어오는 경우
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -3709,7 +3742,7 @@ namespace LV_Inspection_System.GUI
                     }
                     else
                     {
-                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} Miss!");
+                        DebugLogger.Instance().LogRecord("CAM1 Miss!");
                     }
                     // 신규 코드 - End
                     #endregion
@@ -3805,7 +3838,8 @@ namespace LV_Inspection_System.GUI
                 // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
                 if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                 {
-                    DebugLogger.Instance().LogRecord($"AREA CAM2 Grab: {ctr_Camera_Setting3.Grab_Num}");
+                    //DebugLogger.Instance().LogRecord($"AREA CAM2 Grab Count: {ctr_Camera_Setting3.Grab_Num.ToString()}");
+                    DebugLogger.Instance().LogRecord($"G A C2: {ctr_Camera_Setting3.Grab_Num.ToString()}");
                 }
                 else
                 {
@@ -3868,7 +3902,7 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
                                 {
-                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘에는 아직 전달되지 않았음(이전 이미지 처리 중)
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -3880,20 +3914,21 @@ namespace LV_Inspection_System.GUI
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
                                     ++_mergeImageCount[Cam_Num];
-                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                    //DebugLogger.Instance().LogRecord($"AREA CAM2 Start Merge Grab: {_mergeImageCount[Cam_Num].ToString()} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
+                                    DebugLogger.Instance().LogRecord($"G M A C2: {_mergeImageCount[Cam_Num].ToString()} P: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
 
                                     if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
                                     {
                                         // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        DebugLogger.Instance().LogRecord($"Cam2 Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
                                         LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                     }
                                 }
                                 else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
                                 {
-                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지
+                                    // Case 1) 이번 제품 이미지가 들어오는 도중에, 이전 이미지 알고리즘이 처리 완료 됨
+                                    // Case 2) 이번 제품에 대해 영상을 충분히 획득하였으며, 알고리즘까지 호출이 되었는데도 계속 이미지가 들어오는 경우
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -4021,7 +4056,7 @@ namespace LV_Inspection_System.GUI
                     }
                     else
                     {
-                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} Miss!");
+                        DebugLogger.Instance().LogRecord($"CAM2 Miss!");
                     }
                     // 신규 코드 - End
                     #endregion
@@ -4119,7 +4154,8 @@ namespace LV_Inspection_System.GUI
                 // Merge 기능을 사용하지 않을 때만 로그를 추가하고, Merge 기능을 사용 중일 때는 Merge 후에 로그를 쓰도록 변경 함
                 if (!LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                 {
-                    DebugLogger.Instance().LogRecord($"AREA CAM1 Grab: {ctr_Camera_Setting2.Grab_Num}");
+                    //DebugLogger.Instance().LogRecord($"AREA CAM3 Grab Count: {ctr_Camera_Setting4.Grab_Num.ToString()}");
+                    DebugLogger.Instance().LogRecord($"G A C3: {ctr_Camera_Setting4.Grab_Num.ToString()}");
                 }
                 else
                 {
@@ -4182,7 +4218,7 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == -1)
                                 {
-                                    // 한 제품에 대해 Merge는 완료, 알고리즘은 동작 중일 때
+                                    // 한 제품에 대해 Merge는 완료, 알고리즘에는 아직 전달되지 않았음(이전 이미지 처리 중)
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -4194,20 +4230,21 @@ namespace LV_Inspection_System.GUI
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
                                     ++_mergeImageCount[Cam_Num];
-                                    DebugLogger.Instance().LogRecord($"AREA CAM{Cam_Num} Start Merge Grab: {_mergeImageCount[Cam_Num]} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                    //DebugLogger.Instance().LogRecord($"AREA CAM3 Start Merge Grab: {_mergeImageCount[Cam_Num].ToString()} Previous Merge Count: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
+                                    DebugLogger.Instance().LogRecord($"G M A C3: {_mergeImageCount[Cam_Num].ToString()} P: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
 
                                     if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] != 0)
                                     {
                                         // Interval이 긴데도 Image_Merge Index가 남아 있으면,이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                        DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num]}");
+                                        DebugLogger.Instance().LogRecord($"Cam3 Miss! - Previous Remain: {LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num].ToString()}");
                                         LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                     }
                                 }
                                 else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
                                 {
-                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 예외
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지
+                                    // Case 1) 이번 제품 이미지가 들어오는 도중에, 이전 이미지 알고리즘이 처리 완료 됨
+                                    // Case 2) 이번 제품에 대해 영상을 충분히 획득하였으며, 알고리즘까지 호출이 되었는데도 계속 이미지가 들어오는 경우
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -4320,7 +4357,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     //add_Log("CAM" + Cam_Num.ToString() + " Miss!");
-                    #region LHJ - 240806 - 이미지 Merge 기능을 사용하지 않을 때만 Cam Miss 체크를 함
+                    #region region LHJ - 240806 - 이미지 Merge 기능을 사용할 때는 Cam Miss 로그를 남기지 않고, Merge 후 Cam Miss 개수를 남길 수 있도록 준비
                     // 사유 : Image Merge 기능은 고속획득 기반으로 + 이미지 누락을 감안하고 동작
                     // 기존 코드 - Start
                     //DebugLogger.Instance().LogRecord("CAM" + Cam_Num.ToString() + " Miss!");
@@ -4334,7 +4371,7 @@ namespace LV_Inspection_System.GUI
                     }
                     else
                     {
-                        DebugLogger.Instance().LogRecord($"CAM{Cam_Num} MIss!");
+                        DebugLogger.Instance().LogRecord($"CAM3 Miss!");
                     }
 
                     // 신규 코드 - End
@@ -4425,7 +4462,7 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting1.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(4);
 
-                DebugLogger.Instance().LogRecord("MIL CAM0 Grab: " + ctr_Camera_Setting1.Grab_Num.ToString());
+                DebugLogger.Instance().LogRecord("MIL CAM0 Grab Count: " + ctr_Camera_Setting1.Grab_Num.ToString());
 
                 //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
                 //{
@@ -4586,7 +4623,7 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting2.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(5);
 
-                DebugLogger.Instance().LogRecord("MIL CAM1 Grab: " + ctr_Camera_Setting2.Grab_Num.ToString());
+                DebugLogger.Instance().LogRecord("MIL CAM1 Grab Count: " + ctr_Camera_Setting2.Grab_Num.ToString());
 
                 //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
                 //{
@@ -4747,7 +4784,7 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting3.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(6);
 
-                DebugLogger.Instance().LogRecord("MIL CAM2 Grab: " + ctr_Camera_Setting3.Grab_Num.ToString());
+                DebugLogger.Instance().LogRecord("MIL CAM2 Grab Count: " + ctr_Camera_Setting3.Grab_Num.ToString());
 
                 //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
                 //{
@@ -4908,7 +4945,7 @@ namespace LV_Inspection_System.GUI
                 ctr_Camera_Setting4.Grab_Num++;
                 LVApp.Instance().t_Util.CalculateFrameRate(7);
 
-                DebugLogger.Instance().LogRecord("MIL CAM3 Grab: " + ctr_Camera_Setting4.Grab_Num.ToString());
+                DebugLogger.Instance().LogRecord("MIL CAM3 Grab Count: " + ctr_Camera_Setting4.Grab_Num.ToString());
 
                 //if (LVApp.Instance().m_Config.m_Cam_Log_Method == 4)
                 //{
@@ -5742,7 +5779,9 @@ namespace LV_Inspection_System.GUI
                     {
                         _mergeImageCount[Cam_Num] = 0;
                     }
+                    _processCount[Cam_Num] = 0;
                 }
+
                 #endregion
 
                 this.Refresh();
@@ -5767,25 +5806,27 @@ namespace LV_Inspection_System.GUI
 
         public void button_INSPECTION_Click(object sender, EventArgs e)
         {
-            //if (!Camera_Connectio_check_flag)
-            //{
-            //    if (LVApp.Instance().m_Config.m_SetLanguage == 0)
-            //    {
-            //        add_Log("카메라 연결을 점검하세요!");
-            //        MessageBox.Show("카메라 연결을 점검하세요!");
-            //    }
-            //    else if (LVApp.Instance().m_Config.m_SetLanguage == 1)
-            //    {
-            //        add_Log("Check Camera connection!");
-            //        MessageBox.Show("Check Camera connection!");
-            //    }
-            //    else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
-            //    {//중국어
-            //        add_Log("检查摄像机连接!");
-            //        MessageBox.Show("检查摄像机连接!");
-            //    }
-            //    return;
-            //}
+            isAccessible_EquipSetting = false;
+            if (!LVApp.Instance().m_Config.m_Check_Inspection_Mode && !Camera_Connection_check_flag)
+            {
+                if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+                {
+                    add_Log("카메라 연결을 점검하세요!");
+                    MessageBox.Show("카메라 연결을 확인하세요!", "카메라 에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (LVApp.Instance().m_Config.m_SetLanguage == 1)
+                {
+                    add_Log("Check Camera connection!");
+                    MessageBox.Show("Check Camera connection!", "Camera Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
+                {//중국어
+                    add_Log("检查摄像机连接!");
+                    MessageBox.Show("检查摄像机连接!");
+                    MessageBox.Show("检查摄像机连接!", "Camera Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
 
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 0] += 100;
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 1] += 30;
@@ -6028,10 +6069,7 @@ namespace LV_Inspection_System.GUI
                     }
                 }
 
-
                 Inspection_Thread_Start();
-
-
 
                 Thread.Sleep(100);
                 if (!Simulation_mode)
@@ -6126,30 +6164,37 @@ namespace LV_Inspection_System.GUI
                         ctr_PLC1.PLC_L_WRITE("LX1111", 0); // 검사중지
                     }
                 }
+                DebugLogger.Instance().LoggerStatusEvent -= new LoggerStatusHandler(LoggerStatusEvent); // 250318 - LHJ, 검사 중에 Ctr_LogView에 로그를 업데이트하지 않도록 함. UI 버벅임 완화
             }
             else
             {
-                string msg = "";
-                if (LVApp.Instance().m_Config.m_SetLanguage == 0)
-                {//한국어
-                    msg = "검사를 정지 하시겠습니까?";
-                }
-                else if (LVApp.Instance().m_Config.m_SetLanguage == 1)
-                {//영어
-                    msg = "Do you want to stop?";
-                }
-                else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
-                {//중국어
-                    msg = "是否要停止?";
-                }
-
-                if (!Force_close && !LVApp.Instance().m_Config.m_Check_Server_Operation)
+                if (Camera_Connection_check_flag)
                 {
-                    if (MessageBox.Show(msg, " STOP", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    // 250225 LHJ 카메라 연결이 끊겼음이 감지되었을 때, 강제로 검사를 종료하는 기능이 추가되어, 이 경우에는 메시지 박스를 생성하지 않고 바로 검사 종료 함
+                    string msg = "";
+                    if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+                    {//한국어
+                        msg = "검사를 정지 하시겠습니까?";
+                    }
+                    else if (LVApp.Instance().m_Config.m_SetLanguage == 1)
+                    {//영어
+                        msg = "Do you want to stop?";
+                    }
+                    else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
+                    {//중국어
+                        msg = "是否要停止?";
+                    }
+
+                    if (!Force_close && !LVApp.Instance().m_Config.m_Check_Server_Operation)
                     {
-                        return;
+                        if (MessageBox.Show(msg, " STOP", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        {
+                            return;
+                        }
                     }
                 }
+                DebugLogger.Instance().LoggerStatusEvent -= new LoggerStatusHandler(LoggerStatusEvent); // 이벤트 중복 구독 방지
+                DebugLogger.Instance().LoggerStatusEvent += new LoggerStatusHandler(LoggerStatusEvent); // 250318 - LHJ, 검사 중에 Ctr_LogView에 로그를 업데이트하지 않도록 한 것을 (검사를 종료하였으니)다시 업데이트 하도록 함
 
                 button_RESET.Enabled = true;
 
@@ -7013,10 +7058,10 @@ namespace LV_Inspection_System.GUI
             return converted;
         }
 
-        bool Camera_Connectio_check_flag = true;
+        public bool Camera_Connection_check_flag = true;
         public void Camera_Connection_Check()
         {
-            Camera_Connectio_check_flag = true;
+            Camera_Connection_check_flag = true;
 
             if (LVApp.Instance().m_Config.m_Cam_Total_Num >= 1 && !ctr_Camera_Setting1.Force_USE.Checked && (LVApp.Instance().m_Config.m_Interlock_Cam[0] == -1 || LVApp.Instance().m_Config.m_Interlock_Cam[0] == 0))
             {
@@ -7024,21 +7069,21 @@ namespace LV_Inspection_System.GUI
                 {
                     if (!LVApp.Instance().m_MIL.CAM0_Initialized)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else if (LVApp.Instance().m_Config.m_Cam_Kind[0] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[0] == 6)
                 {
                     if (!LVApp.Instance().m_GenICam.CAM[0].Connection)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else
                 {
                     if (!LVApp.Instance().m_mainform.ctrCam1.m_imageProvider.IsOpen)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
             }
@@ -7048,14 +7093,14 @@ namespace LV_Inspection_System.GUI
                 {
                     if (!LVApp.Instance().m_MIL.CAM1_Initialized)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else if (LVApp.Instance().m_Config.m_Cam_Kind[1] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[1] == 6)
                 {
                     if (!LVApp.Instance().m_GenICam.CAM[1].Connection)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else
@@ -7063,7 +7108,7 @@ namespace LV_Inspection_System.GUI
 
                     if (!LVApp.Instance().m_mainform.ctrCam2.m_imageProvider.IsOpen)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
             }
@@ -7073,21 +7118,21 @@ namespace LV_Inspection_System.GUI
                 {
                     if (!LVApp.Instance().m_MIL.CAM2_Initialized)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else if (LVApp.Instance().m_Config.m_Cam_Kind[2] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[2] == 6)
                 {
                     if (!LVApp.Instance().m_GenICam.CAM[2].Connection)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else
                 {
                     if (!LVApp.Instance().m_mainform.ctrCam3.m_imageProvider.IsOpen)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
             }
@@ -7097,21 +7142,21 @@ namespace LV_Inspection_System.GUI
                 {
                     if (!LVApp.Instance().m_MIL.CAM3_Initialized)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else if (LVApp.Instance().m_Config.m_Cam_Kind[3] == 5 || LVApp.Instance().m_Config.m_Cam_Kind[3] == 6)
                 {
                     if (!LVApp.Instance().m_GenICam.CAM[3].Connection)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
                 else
                 {
                     if (!LVApp.Instance().m_mainform.ctrCam4.m_imageProvider.IsOpen)
                     {
-                        Camera_Connectio_check_flag = false;
+                        Camera_Connection_check_flag = false;
                     }
                 }
             }
@@ -7124,7 +7169,7 @@ namespace LV_Inspection_System.GUI
             //    check = false;
             //}
 
-            if (Camera_Connectio_check_flag)
+            if (Camera_Connection_check_flag)
             {
                 if (LVApp.Instance().m_Config.m_SetLanguage == 0)
                 {
@@ -7197,11 +7242,11 @@ namespace LV_Inspection_System.GUI
 
         public void Inspection_Thread_Start()
         {
-            DebugLogger.Instance().LogRecord("Inspection Thread Start");
             if (m_Threads_Check[0])
             {
                 return;
             }
+            DebugLogger.Instance().LogRecord("Inspection Thread Start");
             for (int i = 0; i < 4; i++)
             {
                 if (threads[i] != null && threads[i].IsAlive)
@@ -7209,6 +7254,12 @@ namespace LV_Inspection_System.GUI
                     threads[i].Abort();
                     threads[i] = null;
                 }
+                if (imageDispose_Thread[i] !=null && imageDispose_Thread[i].IsAlive)
+                {
+                    imageDispose_Thread[i].Abort();
+                    imageDispose_Thread[i] = null;
+                }
+
                 //Viewthreads[i] = null;
                 if (Probe_threads[i] != null && Probe_threads[i].IsAlive)
                 {
@@ -7235,6 +7286,10 @@ namespace LV_Inspection_System.GUI
             threads[1] = new Thread(ThreadProc1); threads[1].IsBackground = true;
             threads[2] = new Thread(ThreadProc2); threads[2].IsBackground = true;
             threads[3] = new Thread(ThreadProc3); threads[3].IsBackground = true;
+            imageDispose_Thread[0] = new Thread(DisposeImage_0); imageDispose_Thread[0].IsBackground = true;
+            imageDispose_Thread[1] = new Thread(DisposeImage_1); imageDispose_Thread[1].IsBackground = true;
+            imageDispose_Thread[2] = new Thread(DisposeImage_2); imageDispose_Thread[2].IsBackground = true;
+            imageDispose_Thread[3] = new Thread(DisposeImage_3); imageDispose_Thread[3].IsBackground = true;
             //threads[0].Priority = ThreadPriority.Highest;
             //threads[1].Priority = ThreadPriority.Highest;
             //threads[2].Priority = ThreadPriority.Highest;
@@ -7259,6 +7314,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[0].Start();
+                    imageDispose_Thread[0].Start();
                     if (LVApp.Instance().m_Config.Image_Merge_Check[0])
                     {
                         DebugLogger.Instance().LogRecord("Try 0");
@@ -7276,6 +7332,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[1].Start();
+                    imageDispose_Thread[1].Start();
                     if (LVApp.Instance().m_Config.Image_Merge_Check[1])
                     {
                         DebugLogger.Instance().LogRecord("Try 1");
@@ -7293,6 +7350,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[2].Start();
+                    imageDispose_Thread[2].Start();
                     if (LVApp.Instance().m_Config.Image_Merge_Check[2])
                     {
                         DebugLogger.Instance().LogRecord("Try 2");
@@ -7311,6 +7369,7 @@ namespace LV_Inspection_System.GUI
                 else
                 {
                     threads[3].Start();
+                    imageDispose_Thread[3].Start();
                     if (LVApp.Instance().m_Config.Image_Merge_Check[3])
                     {
                         //ImageMergeThread[3].Start();
@@ -7321,7 +7380,6 @@ namespace LV_Inspection_System.GUI
 
         public void Inspection_Thread_Stop()
         {
-            DebugLogger.Instance().LogRecord("Inspection Thread Stop");
             try
             {
                 for (int i = 0; i < 4; i++)
@@ -7333,6 +7391,10 @@ namespace LV_Inspection_System.GUI
                         if (threads[i].IsAlive)
                         {
                             threads[i].Abort();
+                        }
+                        if (imageDispose_Thread[i].IsAlive)
+                        {
+                            imageDispose_Thread[i].Abort();
                         }
                         //Viewthreads[i].Abort();
                         if (Probe_threads[i].IsAlive)
@@ -7351,6 +7413,7 @@ namespace LV_Inspection_System.GUI
                 //timer_Cam[1].Tick -= new System.EventHandler(timer_Cam1_Simulation_Tick);
                 //timer_Cam[2].Tick -= new System.EventHandler(timer_Cam2_Simulation_Tick);
                 //timer_Cam[3].Tick -= new System.EventHandler(timer_Cam3_Simulation_Tick);
+                DebugLogger.Instance().LogRecord("Inspection Thread Stop");
             }
             catch
             {
@@ -7367,6 +7430,15 @@ namespace LV_Inspection_System.GUI
             }
         }
 
+        /// <summary>
+        /// 250226 LHJ ThreadProc의 처리 횟수를 확인하고, (특히 CAM MISS가 발생하였을 때) Proc Start로그와 Proc End 로그를 매칭하기 위해 추가함
+        /// </summary>
+        private int[] _processCount = { 0, 0, 0, 0 };
+
+        /// <summary>
+        /// ThreadProc에서 완성된 이미지를 만들기 위해 Merge 처리 중인 개별 이미지의 갯수 <br/>
+        /// 이미지 하나를 완성하면 0으로 초기화 됨
+        /// </summary>
         private int[] _mergeProcessCount = { 0, 0, 0, 0 };
 
         /// <summary>
@@ -7390,41 +7462,45 @@ namespace LV_Inspection_System.GUI
                         //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
                         if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+                            using (Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap)
+                            {
+                                Capture_framebuffer[Cam_Num].RemoveAt(0);
 
-                            if (_is_NewFrame[Cam_Num])
-                            {
-                                _is_NewFrame[Cam_Num] = false;
-                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                if (_mergeProcessCount[Cam_Num] != 0)
+                                if (_is_NewFrame[Cam_Num])
                                 {
-                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
-                                    _mergeProcessCount[Cam_Num] = 0;
+                                    _is_NewFrame[Cam_Num] = false;
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                    if (_mergeProcessCount[Cam_Num] != 0)
+                                    {
+                                        // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                        _mergeProcessCount[Cam_Num] = 0;
+                                    }
                                 }
-                            }
-                            else if (_mergeProcessCount[Cam_Num] == 0)
-                            {
-                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
-                                return;
-                            }
+                                else if (_mergeProcessCount[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                    return;
+                                }
 
-                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                            {
-                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                                 {
-                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                    using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                    {
+                                        g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    }
+                                    ++_mergeProcessCount[Cam_Num];
                                 }
-                                ++_mergeProcessCount[Cam_Num];
                             }
 
                             if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                             {
-                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                                ++_processCount[Cam_Num];
+                                //DebugLogger.Instance().LogRecord($"CAM0 M PROC Start: {_processCount[Cam_Num].ToString()}");
+                                DebugLogger.Instance().LogRecord($"P M S C0: {_processCount[Cam_Num].ToString()}");
 
                                 LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                                 Run_SW[Cam_Num].Reset();
@@ -7449,7 +7525,9 @@ namespace LV_Inspection_System.GUI
                         }
                         else
                         {
-                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                            ++_processCount[Cam_Num];
+                            //DebugLogger.Instance().LogRecord($"CAM0 PROC Start: {_processCount[Cam_Num].ToString()}");
+                            DebugLogger.Instance().LogRecord($"P S C0: {_processCount[Cam_Num].ToString()}");
 
                             LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                             //if (t_onecycle_check)
@@ -7461,7 +7539,6 @@ namespace LV_Inspection_System.GUI
                             //t_onecycle_check = true;
                             Run_SW[Cam_Num].Reset();
                             Run_SW[Cam_Num].Start();
-
                             //lock (Capture_framebuffer[Cam_Num])
                             {
                                 Capture_frame = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
@@ -7558,9 +7635,9 @@ namespace LV_Inspection_System.GUI
                         {
                             if (m_Result_Job_Mode0 == 0)
                             {
+                                LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                 //lock (Result_framebuffer[Cam_Num])
                                 {
-                                    LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] = 0;
                                     Result_framebuffer[Cam_Num].Add((Bitmap)Capture_frame.Clone());
                                     //m_Result_Job_Mode0 = 1;
                                 }
@@ -7673,7 +7750,6 @@ namespace LV_Inspection_System.GUI
                                 {
                                     LVApp.Instance().m_Config.SSF_Result_Image_Save(Cam_Num, (Bitmap)t_bmp.Clone(), 1);
                                 }
-
                                 t_bmp.Dispose();
                                 //if (m_Result_Job_Mode0 == 0)
                                 //{
@@ -7694,7 +7770,6 @@ namespace LV_Inspection_System.GUI
                                 //    }
                                 //}
                             }
-
                             //if (!t_Judge && ctr_PLC1.m_threads_Check)
                             //if (ctr_PLC1.m_threads_Check && Judge != 40)
                             if (LVApp.Instance().m_Config.Inspection_Delay[Cam_Num] > 0)
@@ -7712,13 +7787,12 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (t_Judge)
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_OK";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_OK";
                                 }
                                 else
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_NG";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_NG";
                                 }
-
                                 //filename = LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, Capture_frame, false);
                             }
                             else
@@ -7744,21 +7818,22 @@ namespace LV_Inspection_System.GUI
                             }
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
-
                         Run_SW[Cam_Num].Stop();
-                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = "FPS : " + LVApp.Instance().t_Util.m_FPS[Cam_Num].ToString("0.0") + "/" + LVApp.Instance().t_Util.m_FPS[Cam_Num + 4].ToString("0.0");
-                        LVApp.Instance().m_Config.m_TT[Cam_Num] = "T/T : " + Run_SW[Cam_Num].ElapsedMilliseconds.ToString() + "ms";
+                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = $"FPS : {LVApp.Instance().t_Util.m_FPS[Cam_Num]:0.0}/{LVApp.Instance().t_Util.m_FPS[Cam_Num + 4]:0.0}";
+                        LVApp.Instance().m_Config.m_TT[Cam_Num] = $"T/T : {Run_SW[Cam_Num].ElapsedMilliseconds.ToString()}ms";
 
                         //lock (Capture_framebuffer[Cam_Num])
                         //if (Capture_framebuffer[Cam_Num].Count > 0)
                         //{
                         //    Capture_framebuffer[Cam_Num].Clear();
                         //}
-                        Capture_frame.Dispose();
+                        //Capture_frame?.Dispose();
+                        processImage_0.Enqueue(Capture_frame);  // 250314 - LHJ Dispose에서 가끔 지연되는 경우가 있어, 별도 쓰레드에서 처리함
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode0 = 0;
-                        DebugLogger.Instance().LogRecord($"CAM0 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        //DebugLogger.Instance().LogRecord($"CAM0 PROC End: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        DebugLogger.Instance().LogRecord($"P E C0: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -7784,6 +7859,7 @@ namespace LV_Inspection_System.GUI
                 //{
                 //    Capture_framebuffer[Cam_Num].Clear();
                 //}
+                DebugLogger.Instance().LogRecord($"CAM0 Proc Thread Error");
             }
         }
 
@@ -8003,41 +8079,45 @@ namespace LV_Inspection_System.GUI
                         //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
                         if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+                            using (Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap)
+                            {
+                                Capture_framebuffer[Cam_Num].RemoveAt(0);
 
-                            if (_is_NewFrame[Cam_Num])
-                            {
-                                _is_NewFrame[Cam_Num] = false;
-                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                if (_mergeProcessCount[Cam_Num] != 0)
+                                if (_is_NewFrame[Cam_Num])
                                 {
-                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
-                                    _mergeProcessCount[Cam_Num] = 0;
+                                    _is_NewFrame[Cam_Num] = false;
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                    if (_mergeProcessCount[Cam_Num] != 0)
+                                    {
+                                        // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                        _mergeProcessCount[Cam_Num] = 0;
+                                    }
                                 }
-                            }
-                            else if (_mergeProcessCount[Cam_Num] == 0)
-                            {
-                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
-                                return;
-                            }
+                                else if (_mergeProcessCount[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                    return;
+                                }
 
-                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                            {
-                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                                 {
-                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                    using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                    {
+                                        g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    }
+                                    ++_mergeProcessCount[Cam_Num];
                                 }
-                                ++_mergeProcessCount[Cam_Num];
                             }
 
                             if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                             {
-                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                                ++_processCount[Cam_Num];
+                                //DebugLogger.Instance().LogRecord($"CAM1 M PROC Start: {_processCount[Cam_Num].ToString()}");
+                                DebugLogger.Instance().LogRecord($"P M S C1: {_processCount[Cam_Num].ToString()}");
 
                                 LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                                 Run_SW[Cam_Num].Reset();
@@ -8062,7 +8142,9 @@ namespace LV_Inspection_System.GUI
                         }
                         else
                         {
-                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                            ++_processCount[Cam_Num];
+                            //DebugLogger.Instance().LogRecord($"CAM1 PROC Start: {_processCount[Cam_Num].ToString()}");
+                            DebugLogger.Instance().LogRecord($"P S C1: {_processCount[Cam_Num].ToString()}");
 
                             LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                             //if (t_onecycle_check)
@@ -8316,11 +8398,11 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (t_Judge)
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_OK";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_OK";
                                 }
                                 else
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_NG";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_NG";
                                 }
                                 //filename = LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, Capture_frame, false);
                             }
@@ -8347,26 +8429,26 @@ namespace LV_Inspection_System.GUI
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
 
-
                         //if (Run_SW[Cam_Num].ElapsedMilliseconds < 50)
                         //{
                         //    Thread.Sleep(50 - (int)Run_SW[Cam_Num].ElapsedMilliseconds);
                         //}
                         Run_SW[Cam_Num].Stop();
-                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = "FPS : " + LVApp.Instance().t_Util.m_FPS[Cam_Num].ToString("0.0") + "/" + LVApp.Instance().t_Util.m_FPS[Cam_Num + 4].ToString("0.0");
-                        LVApp.Instance().m_Config.m_TT[Cam_Num] = "T/T : " + Run_SW[Cam_Num].ElapsedMilliseconds.ToString() + "ms";
+                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = $"FPS : {LVApp.Instance().t_Util.m_FPS[Cam_Num]:0.0}/{LVApp.Instance().t_Util.m_FPS[Cam_Num + 4]:0.0}";
+                        LVApp.Instance().m_Config.m_TT[Cam_Num] = $"T/T : {Run_SW[Cam_Num].ElapsedMilliseconds.ToString()}ms";
 
                         //lock (Capture_framebuffer[Cam_Num])
                         //if (Capture_framebuffer[Cam_Num].Count > 0)
                         //{
                         //    Capture_framebuffer[Cam_Num].Clear();
                         //}
-                        Capture_frame.Dispose();
-
+                        //Capture_frame?.Dispose();
+                        processImage_1.Enqueue(Capture_frame);  // 250314 - LHJ Dispose에서 가끔 지연되는 경우가 있어, 별도 쓰레드에서 처리함
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode1 = 0;
-                        DebugLogger.Instance().LogRecord($"CAM1 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        //DebugLogger.Instance().LogRecord($"CAM1 PROC End: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        DebugLogger.Instance().LogRecord($"P E C1: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -8392,6 +8474,7 @@ namespace LV_Inspection_System.GUI
                 //{
                 //    Capture_framebuffer[Cam_Num].Clear();
                 //}
+                DebugLogger.Instance().LogRecord($"CAM1 Proc Thread Error");
             }
         }
 
@@ -8621,41 +8704,45 @@ namespace LV_Inspection_System.GUI
                         //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
                         if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+                            using (Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap)
+                            {
+                                Capture_framebuffer[Cam_Num].RemoveAt(0);
 
-                            if (_is_NewFrame[Cam_Num])
-                            {
-                                _is_NewFrame[Cam_Num] = false;
-                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                if (_mergeProcessCount[Cam_Num] != 0)
+                                if (_is_NewFrame[Cam_Num])
                                 {
-                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
-                                    _mergeProcessCount[Cam_Num] = 0;
+                                    _is_NewFrame[Cam_Num] = false;
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                    if (_mergeProcessCount[Cam_Num] != 0)
+                                    {
+                                        // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                        _mergeProcessCount[Cam_Num] = 0;
+                                    }
                                 }
-                            }
-                            else if (_mergeProcessCount[Cam_Num] == 0)
-                            {
-                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
-                                return;
-                            }
+                                else if (_mergeProcessCount[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                    return;
+                                }
 
-                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                            {
-                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                                 {
-                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                    using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                    {
+                                        g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    }
+                                    ++_mergeProcessCount[Cam_Num];
                                 }
-                                ++_mergeProcessCount[Cam_Num];
                             }
 
                             if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                             {
-                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                                ++_processCount[Cam_Num];
+                                //DebugLogger.Instance().LogRecord($"CAM2 M PROC Start: {_processCount[Cam_Num].ToString()}");
+                                DebugLogger.Instance().LogRecord($"P M S C2: {_processCount[Cam_Num].ToString()}");
 
                                 LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                                 Run_SW[Cam_Num].Reset();
@@ -8680,7 +8767,9 @@ namespace LV_Inspection_System.GUI
                         }
                         else
                         {
-                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                            ++_processCount[Cam_Num];
+                            //DebugLogger.Instance().LogRecord($"CAM2 PROC Start: {_processCount[Cam_Num].ToString()}");
+                            DebugLogger.Instance().LogRecord($"P S C2: {_processCount[Cam_Num].ToString()}");
 
                             LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                             //if (t_onecycle_check)
@@ -8933,11 +9022,11 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (t_Judge)
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_OK";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_OK";
                                 }
                                 else
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_NG";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_NG";
                                 }
                                 //filename = LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, Capture_frame, false);
                             }
@@ -8965,25 +9054,26 @@ namespace LV_Inspection_System.GUI
                             LVApp.Instance().m_Config.Add_Log_Data(Cam_Num, filename);
                         }
 
-
                         //if (Run_SW[Cam_Num].ElapsedMilliseconds < 50)
                         //{
                         //    Thread.Sleep(50 - (int)Run_SW[Cam_Num].ElapsedMilliseconds);
                         //}
                         Run_SW[Cam_Num].Stop();
-                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = "FPS : " + LVApp.Instance().t_Util.m_FPS[Cam_Num].ToString("0.0") + "/" + LVApp.Instance().t_Util.m_FPS[Cam_Num + 4].ToString("0.0");
-                        LVApp.Instance().m_Config.m_TT[Cam_Num] = "T/T : " + Run_SW[Cam_Num].ElapsedMilliseconds.ToString() + "ms";
+                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = $"FPS : {LVApp.Instance().t_Util.m_FPS[Cam_Num]:0.0}/{LVApp.Instance().t_Util.m_FPS[Cam_Num + 4]:0.0}";
+                        LVApp.Instance().m_Config.m_TT[Cam_Num] = $"T/T : {Run_SW[Cam_Num].ElapsedMilliseconds.ToString()}ms";
 
                         //lock (Capture_framebuffer[Cam_Num])
                         //if (Capture_framebuffer[Cam_Num].Count > 0)
                         //{
                         //    Capture_framebuffer[Cam_Num].Clear();
                         //}
-                        Capture_frame.Dispose();
+                        //Capture_frame?.Dispose();
+                        processImage_2.Enqueue(Capture_frame);  // 250314 - LHJ Dispose에서 가끔 지연되는 경우가 있어, 별도 쓰레드에서 처리함
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode2 = 0;
-                        DebugLogger.Instance().LogRecord($"CAM2 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        //DebugLogger.Instance().LogRecord($"CAM2 PROC End: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        DebugLogger.Instance().LogRecord($"P E C2: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -9009,6 +9099,7 @@ namespace LV_Inspection_System.GUI
                 //{
                 //    Capture_framebuffer[Cam_Num].Clear();
                 //}
+                DebugLogger.Instance().LogRecord($"CAM2 Proc Thread Error");
             }
 
         }
@@ -9238,41 +9329,45 @@ namespace LV_Inspection_System.GUI
                         //DebugLogger.Instance().LogRecord($"mergeProcessCount : {_mergeProcessCount[Cam_Num]}");
                         if (LVApp.Instance().m_Config.Image_Merge_Check[Cam_Num])
                         {
-                            Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap;
-                            Capture_framebuffer[Cam_Num].RemoveAt(0);
+                            using (Bitmap Capture_frame_For_Merge = Capture_framebuffer[Cam_Num][0].Clone() as Bitmap)
+                            {
+                                Capture_framebuffer[Cam_Num].RemoveAt(0);
 
-                            if (_is_NewFrame[Cam_Num])
-                            {
-                                _is_NewFrame[Cam_Num] = false;
-                                LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
-                                if (_mergeProcessCount[Cam_Num] != 0)
+                                if (_is_NewFrame[Cam_Num])
                                 {
-                                    // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
-                                    //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
-                                    _mergeProcessCount[Cam_Num] = 0;
+                                    _is_NewFrame[Cam_Num] = false;
+                                    LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num] = new Bitmap(Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height * LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num]);
+                                    if (_mergeProcessCount[Cam_Num] != 0)
+                                    {
+                                        // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
+                                        _mergeProcessCount[Cam_Num] = 0;
+                                    }
                                 }
-                            }
-                            else if (_mergeProcessCount[Cam_Num] == 0)
-                            {
-                                // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
-                                // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
-                                // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
-                                return;
-                            }
+                                else if (_mergeProcessCount[Cam_Num] == 0)
+                                {
+                                    // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
+                                    // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
+                                    // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                    return;
+                                }
 
-                            if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
-                            {
-                                Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
-                                using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                if (_mergeProcessCount[Cam_Num] >= 0 && _mergeProcessCount[Cam_Num] < LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                                 {
-                                    g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    Rectangle bounds = new Rectangle(0, Capture_frame_For_Merge.Height * _mergeProcessCount[Cam_Num], Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height);
+                                    using (Graphics g = Graphics.FromImage(LVApp.Instance().m_Config.Image_Merge_BMP[Cam_Num]))
+                                    {
+                                        g.DrawImage(Capture_frame_For_Merge, bounds, 0, 0, Capture_frame_For_Merge.Width, Capture_frame_For_Merge.Height, GraphicsUnit.Pixel);
+                                    }
+                                    ++_mergeProcessCount[Cam_Num];
                                 }
-                                ++_mergeProcessCount[Cam_Num];
                             }
 
                             if (_mergeProcessCount[Cam_Num] == LVApp.Instance().m_Config.Image_Merge_Number[Cam_Num])
                             {
-                                DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                                ++_processCount[Cam_Num];
+                                //DebugLogger.Instance().LogRecord($"CAM3 M PROC Start: {_processCount[Cam_Num].ToString()}");
+                                DebugLogger.Instance().LogRecord($"P M S C3: {_processCount[Cam_Num].ToString()}");
 
                                 LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                                 Run_SW[Cam_Num].Reset();
@@ -9297,7 +9392,9 @@ namespace LV_Inspection_System.GUI
                         }
                         else
                         {
-                            DebugLogger.Instance().LogRecord($"CAM{Cam_Num} PROC Start");
+                            ++_processCount[Cam_Num];
+                            //DebugLogger.Instance().LogRecord($"CAM3 PROC Start: {_processCount[Cam_Num].ToString()}");
+                            DebugLogger.Instance().LogRecord($"P S C3: {_processCount[Cam_Num].ToString()}");
 
                             LVApp.Instance().t_Util.CalculateFrameRate(Cam_Num);
                             //if (t_onecycle_check)
@@ -9552,13 +9649,12 @@ namespace LV_Inspection_System.GUI
                             {
                                 if (t_Judge)
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_OK";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_OK";
                                 }
                                 else
                                 {
-                                    filename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_NG";
+                                    filename = $"{DateTime.Now:yyyyMMdd HH_mm_ss_fff}_NG";
                                 }
-
                                 //filename = LVApp.Instance().m_Config.Result_Image_Save(Cam_Num, Capture_frame, false);
                             }
                             else
@@ -9590,20 +9686,21 @@ namespace LV_Inspection_System.GUI
                         //    Thread.Sleep(50 - (int)Run_SW[Cam_Num].ElapsedMilliseconds);
                         //}
                         Run_SW[Cam_Num].Stop();
-
-                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = "FPS : " + LVApp.Instance().t_Util.m_FPS[Cam_Num].ToString("0.0") + "/" + LVApp.Instance().t_Util.m_FPS[Cam_Num + 4].ToString("0.0");
-                        LVApp.Instance().m_Config.m_TT[Cam_Num] = "T/T : " + Run_SW[Cam_Num].ElapsedMilliseconds.ToString() + "ms";
+                        LVApp.Instance().m_Config.m_FPS[Cam_Num] = $"FPS : {LVApp.Instance().t_Util.m_FPS[Cam_Num]:0.0}/{LVApp.Instance().t_Util.m_FPS[Cam_Num + 4]:0.0}";
+                        LVApp.Instance().m_Config.m_TT[Cam_Num] = $"T/T : {Run_SW[Cam_Num].ElapsedMilliseconds.ToString()}ms";
 
                         //lock (Capture_framebuffer[Cam_Num])
                         //if (Capture_framebuffer[Cam_Num].Count > 0)
                         //{
                         //    Capture_framebuffer[Cam_Num].Clear();
                         //}
-                        Capture_frame.Dispose();
+                        //Capture_frame?.Dispose();
+                        processImage_3.Enqueue(Capture_frame);  // 250314 - LHJ Dispose에서 가끔 지연되는 경우가 있어, 별도 쓰레드에서 처리함
                         LVApp.Instance().m_Config.m_Cam_Inspection_Check[Cam_Num] = false;
                         //t_onecycle_check = false;
                         m_Job_Mode3 = 0;
-                        DebugLogger.Instance().LogRecord($"CAM3 PROC End - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        //DebugLogger.Instance().LogRecord($"CAM3 PROC End: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
+                        DebugLogger.Instance().LogRecord($"P E C3: {_processCount[Cam_Num].ToString()} - {LVApp.Instance().m_Config.m_TT[Cam_Num]}");
                     }
 
                     if (!m_Threads_Check[Cam_Num])
@@ -9629,8 +9726,8 @@ namespace LV_Inspection_System.GUI
                 //{
                 //    Capture_framebuffer[Cam_Num].Clear();
                 //}
+                DebugLogger.Instance().LogRecord($"CAM3 Proc Thread Error");
             }
-
         }
 
         public void ResultProc3()
@@ -13765,6 +13862,10 @@ namespace LV_Inspection_System.GUI
             }
         }
 
+        /// <summary>
+        /// 장비설정 매뉴 접근 관리
+        /// </summary>
+        bool isAccessible_EquipSetting = false;
         private void neoTabWindow_MAIN_SelectedIndexChanging(object sender, NeoTabControlLibrary.SelectedIndexChangingEventArgs e)
         {
             if (!m_Start_Button_Check)
@@ -13796,6 +13897,56 @@ namespace LV_Inspection_System.GUI
                     return;
                 }
             }
+            #region 250220 LHJ - 검사 중 장비 설정 금지
+            if (e.TabPageIndex == 3)
+            {
+                if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+                {
+                    //if (m_Language == 0)
+                    //{
+                    //    add_Log("검사 중에는 장비설정을 할 수 없습니다!");
+                    //}
+                    //else
+                    //{
+                    //    add_Log("Can't setup during inspection!");
+                    //}
+                    e.Cancel = true;
+                    return;
+                }
+                else if (!isAccessible_EquipSetting)
+                {
+                    if (m_Language == 0)
+                    {
+                        string input = Interaction.InputBox("매뉴에 접근하기 위해 비밀번호를 입력하세요", "비밀번호", "");
+                        if (input == "7748" || input == "9542")
+                        {
+                            isAccessible_EquipSetting = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show("잘못된 비밀번호 입니다");
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        string input = Interaction.InputBox("Input Password to access", "Password", "");
+                        if (input == "7748" || input == "9542")
+                        {
+                            isAccessible_EquipSetting = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Password Error");
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            #endregion
+
             if (LVApp.Instance().m_Config.Disable_Menu && LVApp.Instance().m_Config.m_Check_Inspection_Mode)
             {
                 if (m_Language == 0)
@@ -13973,5 +14124,88 @@ namespace LV_Inspection_System.GUI
                 MoveWindow(flash.MainWindowHandle, locationOnForm.X, locationOnForm.Y, 180, splitContainer17.Panel1.Height, true);
             }
         }
+
+        #region 250314 LHJ - ThreadProc에서 사용한 이미지를 Dispose하는 와중에 간혹 처리가 지연되는 경우가 발생하여 아래와 같이 조치함. (큰 이미지에 대해 별도 쓰레드에서 Dispose하도록 함)
+        private ConcurrentQueue<Bitmap> processImage_0 = new ConcurrentQueue<Bitmap>();
+        private ConcurrentQueue<Bitmap> processImage_1 = new ConcurrentQueue<Bitmap>();
+        private ConcurrentQueue<Bitmap> processImage_2 = new ConcurrentQueue<Bitmap>();
+        private ConcurrentQueue<Bitmap> processImage_3 = new ConcurrentQueue<Bitmap>();
+
+        private void DisposeImage_0()
+        {
+            try
+            {
+                while (m_Threads_Check[0])
+                {
+                    if (processImage_0.TryDequeue(out Bitmap result))
+                    {
+                        result.Dispose();
+                    }
+                    Thread.Sleep(40);
+                }
+            }
+            catch
+            {
+                DebugLogger.Instance().LogRecord("Image Dispose Thread 0 Error");
+            }
+        }
+
+        private void DisposeImage_1()
+        {
+            try
+            {
+                while (m_Threads_Check[1])
+                {
+                    if (processImage_1.TryDequeue(out Bitmap result))
+                    {
+                        result.Dispose();
+                    }
+                    Thread.Sleep(40);
+                }
+            }
+            catch
+            {
+                DebugLogger.Instance().LogRecord("Image Dispose Thread 1 Error");
+            }
+        }
+
+        private void DisposeImage_2()
+        {
+            try
+            {
+                while (m_Threads_Check[2])
+                {
+                    if (processImage_2.TryDequeue(out Bitmap result))
+                    {
+                        result.Dispose();
+                    }
+                    Thread.Sleep(40);
+                }
+            }
+            catch
+            {
+                DebugLogger.Instance().LogRecord("Image Dispose Thread 2 Error");
+            }
+        }
+
+        private void DisposeImage_3()
+        {
+            try
+            {
+                while (m_Threads_Check[3])
+                {
+                    if (processImage_3.TryDequeue(out Bitmap result))
+                    {
+                        result.Dispose();
+                    }
+                    Thread.Sleep(40);
+                }
+            }
+            catch
+            {
+                DebugLogger.Instance().LogRecord("Image Dispose Thread 3 Error");
+            }
+        }
+        #endregion
     }
 }

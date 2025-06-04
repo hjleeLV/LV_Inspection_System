@@ -26,6 +26,12 @@ namespace LV_Inspection_System
             }
             Log_file_Name = CreateTimeStampFileName("");
             SetLogFile($"{LVApp.Instance().excute_path}\\Logs\\{CurTime:yyyy}\\{CurTime:yyyy-MM}\\{Log_file_Name}");
+
+            logQueue = new System.Collections.Concurrent.ConcurrentQueue<string>();
+            flag_LogThread = true;
+            logThread = new System.Threading.Thread(WriteLog);
+            logThread.IsBackground = true;
+            logThread.Start();
         }
 
         //public List<string> GetLog()
@@ -38,6 +44,16 @@ namespace LV_Inspection_System
         /// </summary>
         ~DebugLogger()
         {
+            flag_LogThread = false;
+            logThread.Join(100);
+            if (logThread.IsAlive)
+            {
+                logThread.Interrupt();
+            }
+            while (logQueue.Count > 0)
+            {
+                logQueue.TryDequeue(out string str);
+            }
             CloseLogFile();
             _instance = null;
         }
@@ -70,8 +86,9 @@ namespace LV_Inspection_System
                     SetLogFile($"{LVApp.Instance().excute_path}\\Logs\\{CurTime:yyyy}\\{CurTime:yyyy-MM}\\{Log_file_Name}");
                 }
 
-                MsgOut = CurTime.ToString("HH:mm:ss.fff") + "> " + OutStr;
-                base.LogRecord(MsgOut);
+                MsgOut = $"{CurTime:HH:mm:ss.fff}> {OutStr}";
+                logQueue.Enqueue(MsgOut);
+                //base.LogRecord(MsgOut);
                 //m_logs.Add(MsgOut);
             }
             catch (Exception ex)
@@ -103,5 +120,21 @@ namespace LV_Inspection_System
             LogRecord("Err :" + ex.StackTrace);
         }
 
+        #region 250228 LHJ - Log 개선 : 동일한 로그가 여러 줄에 쓰여지거나, 로그 일부가 쓰여지지 않는 현상 보완
+        private System.Collections.Concurrent.ConcurrentQueue<string> logQueue;
+        System.Threading.Thread logThread;
+        bool flag_LogThread = false;
+        private void WriteLog()
+        {
+            while (flag_LogThread)
+            {
+                if (logQueue.TryDequeue(out string msg))
+                {
+                    base.LogRecord(msg);
+                }
+                System.Threading.Thread.Sleep(5);
+            }
+        }
+        #endregion
     }
 }

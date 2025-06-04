@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using OfficeOpenXml;
 using System.Threading;
+using ctrBaslerCam;
+using OpenCvSharp;
 
 namespace LV_Inspection_System.GUI.Control
 {
@@ -514,6 +516,7 @@ namespace LV_Inspection_System.GUI.Control
         public void toolStripButtonStop_Click(object sender, EventArgs e)
         {
             int cam_num = Convert.ToInt32(textBox_Camera_Name.Text.Substring(3, 1)) % 4;
+            DebugLogger.Instance().LogRecord($"CAM{cam_num.ToString()} Stop Button Click!");
             if (LVApp.Instance().m_Config.m_Cam_Kind[cam_num] == 4)
             {
                 if (cam_num == 0)
@@ -762,15 +765,28 @@ namespace LV_Inspection_System.GUI.Control
             }
             else
             {
+                // Basler
                 if (m_Camera_Name.Substring(3, 1) == "0" || m_Camera_Name.Substring(3, 1) == "4")
                 {
                     if (LVApp.Instance().m_mainform.ctrCam1.m_imageProvider.IsOpen)
                     {
                         LVApp.Instance().m_Config.m_Cam_Continuous_Mode[1] = false;
                         LVApp.Instance().m_mainform.ctrCam1.Close();
+                        #region 250221 영상 획득이 되지 않는 건 디버깅용
+                        LVApp.Instance().m_mainform.ctrCam1.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam1.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam1.GrabErrorEvent -= GrabErrorEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam1.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                        #endregion
                         if (LVApp.Instance().m_mainform.ctrCam1.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM1.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam1.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam1.m_imageProvider.IsOpen, false);
                     }
@@ -781,9 +797,21 @@ namespace LV_Inspection_System.GUI.Control
                     {
                         LVApp.Instance().m_Config.m_Cam_Continuous_Mode[2] = false;
                         LVApp.Instance().m_mainform.ctrCam2.Close();
+                        #region 250221 영상 획득이 되지 않는 건 디버깅용
+                        LVApp.Instance().m_mainform.ctrCam2.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam2.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam2.GrabErrorEvent -= GrabErrorEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam2.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                        #endregion
                         if (LVApp.Instance().m_mainform.ctrCam2.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM2.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam2.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam2.m_imageProvider.IsOpen, false);
                     }
@@ -794,9 +822,21 @@ namespace LV_Inspection_System.GUI.Control
                     {
                         LVApp.Instance().m_Config.m_Cam_Continuous_Mode[3] = false;
                         LVApp.Instance().m_mainform.ctrCam3.Close();
+                        #region 250221 영상 획득이 되지 않는 건 디버깅용
+                        LVApp.Instance().m_mainform.ctrCam3.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam3.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam3.GrabErrorEvent -= GrabErrorEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam3.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                        #endregion
                         if (LVApp.Instance().m_mainform.ctrCam3.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM3.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam3.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam3.m_imageProvider.IsOpen, false);
                     }
@@ -807,9 +847,21 @@ namespace LV_Inspection_System.GUI.Control
                     {
                         LVApp.Instance().m_Config.m_Cam_Continuous_Mode[4] = false;
                         LVApp.Instance().m_mainform.ctrCam4.Close();
+                        #region 250221 영상 획득이 되지 않는 건 디버깅용
+                        LVApp.Instance().m_mainform.ctrCam4.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam4.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam4.GrabErrorEvent -= GrabErrorEventCallBack;
+                        LVApp.Instance().m_mainform.ctrCam4.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                        #endregion
                         if (LVApp.Instance().m_mainform.ctrCam4.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM4.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam4.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam4.m_imageProvider.IsOpen, false);
                     }
@@ -859,6 +911,7 @@ namespace LV_Inspection_System.GUI.Control
             }
             else
             {
+                // Basler
                 if (m_Camera_Name.Substring(3, 1) == "0" || m_Camera_Name.Substring(3, 1) == "4")
                 {
                     if (LVApp.Instance().m_mainform.ctrCam1.m_imageProvider.IsOpen)
@@ -866,6 +919,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam1.Close())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM1.On = false;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam1.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.GrabErrorEvent -= GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam1.m_imageProvider.IsOpen, true);
                     }
@@ -877,6 +936,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam2.Close())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM2.On = false;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam2.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.GrabErrorEvent -= GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam2.m_imageProvider.IsOpen, true);
                     }
@@ -888,6 +953,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam3.Close())
                         {
                             // LVApp.Instance().m_Ctr_Auto.ledBulb_CAM3.On = false;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam3.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.GrabErrorEvent -= GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam3.m_imageProvider.IsOpen, true);
                     }
@@ -899,6 +970,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam4.Close())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM4.On = false;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam4.GrabbingStartedEvent -= OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.GrabbingStoppedEvent -= OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.GrabErrorEvent -= GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.DeviceRemovedEvent -= DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam4.m_imageProvider.IsOpen, true);
                     }
@@ -985,6 +1062,7 @@ namespace LV_Inspection_System.GUI.Control
             }
             else
             {
+                // Basler
                 if (m_Camera_Name.Substring(3, 1) == "0" || m_Camera_Name.Substring(3, 1) == "4")
                 {
                     if (comboBox_CO_CAM.SelectedIndex != 0 && comboBox_CO_CAM.SelectedIndex != 1)
@@ -996,6 +1074,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam1.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM1.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam1.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam1.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam1.m_imageProvider.IsOpen, false);
                     }
@@ -1011,6 +1095,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam2.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM2.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam2.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam2.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam2.m_imageProvider.IsOpen, false);
                     }
@@ -1026,6 +1116,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam3.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM3.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam3.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam3.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam3.m_imageProvider.IsOpen, false);
                     }
@@ -1041,6 +1137,12 @@ namespace LV_Inspection_System.GUI.Control
                         if (LVApp.Instance().m_mainform.ctrCam4.Open())
                         {
                             //LVApp.Instance().m_Ctr_Auto.ledBulb_CAM4.On = true;
+                            #region 250221 영상 획득이 되지 않는 건 디버깅용
+                            LVApp.Instance().m_mainform.ctrCam4.GrabbingStartedEvent += OnGrabbingStartedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.GrabbingStoppedEvent += OnGrabbingStoppedEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.GrabErrorEvent += GrabErrorEventCallBack;
+                            LVApp.Instance().m_mainform.ctrCam4.DeviceRemovedEvent += DeviceRemoveEventCallBack;
+                            #endregion
                         }
                         EnableButtons(LVApp.Instance().m_mainform.ctrCam4.m_imageProvider.IsOpen, false);
                     }
@@ -2032,5 +2134,57 @@ namespace LV_Inspection_System.GUI.Control
                 LVApp.Instance().m_Config.Image_Merge_Number[cam_num] = _v;
             }
         }
+
+        #region 250220 LHJ 영상 획득이 중지되는 건 디버깅용 - Basler 카메라 Only
+        private void OnGrabbingStartedEventCallBack()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new ctrCam.GrabbingStartedEventHandler(OnGrabbingStartedEventCallBack));
+                return;
+            }
+            DebugLogger.Instance().LogRecord($"(dll)AREA B {m_Camera_Name} Grab Thread Start");
+        }
+
+        private void OnGrabbingStoppedEventCallBack()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new ctrCam.GrabbingStoppedEventHandler(OnGrabbingStoppedEventCallBack));
+                return;
+            }
+            DebugLogger.Instance().LogRecord($"(dll)AREA B {m_Camera_Name} Grab Thread Stop");
+        }
+
+        private void GrabErrorEventCallBack(Exception grabException, string additionalErrorMessage)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new ctrCam.GrabErrorEventHandler(GrabErrorEventCallBack), grabException, additionalErrorMessage);
+                return;
+            }
+            DebugLogger.Instance().LogRecord($"(dll)AREA B {m_Camera_Name} Grab Thread Error - {additionalErrorMessage}, {grabException.Message}, {grabException.StackTrace}");
+        }
+
+        private void DeviceRemoveEventCallBack()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new ctrCam.DeviceRemovedEventHandler(DeviceRemoveEventCallBack));
+                return;
+            }
+            DebugLogger.Instance().LogRecord($"(dll)AREA B {m_Camera_Name} Device Removed Error");
+            LVApp.Instance().m_mainform.Camera_Connection_check_flag = false;
+            if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
+            {
+                LVApp.Instance().m_mainform.button_INSPECTION_Click(null, null);
+                MessageBox.Show("Inspection Stop - Camera Connection Lost. Restart Program!", $"{m_Camera_Name} Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("Camera Connection Lost - Restart Program!", $"{m_Camera_Name} Connection Lost", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        #endregion
     }
 }

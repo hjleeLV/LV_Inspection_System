@@ -151,10 +151,23 @@ namespace LV_Inspection_System.UTIL
 
         public bool m_Auto_Mode = false;
 
-
+        /// <summary>
+        /// 이미지 Merge 여부 - 사용자 설정
+        /// </summary>
         public bool[] Image_Merge_Check = new bool[4] { false, false, false, false } ;
+        /// <summary>
+        /// 이미지를 Merge할 갯수 - 사용자 설정
+        /// </summary>
         public int[] Image_Merge_Number = new int[4] { 70, 70, 70, 70 };
+        /// <summary>
+        /// (이미지 Merge 기능에서) 한 제품에 대해 카메라가 획득한 영상의 수 <br>
+        /// -1 : GrabComplete에서 한 이미지가 완성될 만큼의 개별 이미지를 획득하였음
+        /// 0 : ThreadProc가 알고리즘에 이미지를 전달하였음
+        /// </summary>
         public int[] Image_Merge_Idx = new int[4] { 0, 0, 0, 0 };
+        /// <summary>
+        /// 이미지 Merge 버퍼(개별 프레임을 모아서 합칠 버퍼)
+        /// </summary>
         public Bitmap[] Image_Merge_BMP = new Bitmap[4];
 
         public struct GraphData
@@ -4209,7 +4222,7 @@ namespace LV_Inspection_System.UTIL
 
                                 for (int i = 0; i < ds_DATA_0.Tables[0].Rows.Count; i++)
                                 {
-                                    if (ds_DATA_0.Tables[0].Rows[i][2].ToString() == "" || ds_DATA_0.Tables[0].Rows[i][0].ToString().Contains("alse"))
+                                    if (ds_DATA_0.Tables[0].Rows[i][2].ToString() == "" || ds_DATA_0.Tables[0].Rows[i][0].ToString().Contains("alse")) 
                                     {
                                         continue;
                                     }
