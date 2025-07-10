@@ -3215,7 +3215,7 @@ namespace LV_Inspection_System.GUI
         }
 
         private Stopwatch[] Interval_SW = new Stopwatch[4];
-        private readonly int[] _interval = { 200, 200, 200, 200 };
+
         /// <summary>
         /// (Merge 기능 사용 중일 때) 카메라에서 영상 획득하는 간격을 확인하고, 간격이 충분히 벌어졌으면 새로운 제품이라고 간주함
         /// </summary>
@@ -3285,7 +3285,7 @@ namespace LV_Inspection_System.GUI
                                     return;
                                 }
 
-                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > LVApp.Instance().m_Config._image_Merge_Interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
                                 {
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
@@ -3303,8 +3303,8 @@ namespace LV_Inspection_System.GUI
                                 else if (LVApp.Instance().m_Config.Image_Merge_Idx[Cam_Num] == 0)
                                 {
                                     // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지
-                                    // Case 1) 이번 제품 이미지가 들어오는 도중에, 이전 이미지 알고리즘이 처리 완료 됨
-                                    // Case 2) 이번 제품에 대해 영상을 충분히 획득하였으며, 알고리즘까지 호출이 되었는데도 계속 이미지가 들어오는 경우
+                                    // Case 1) 이번 제품 이미지가 들어오는 도중에, 이전 이미지(제품) 알고리즘이 처리 완료 됨 - 이번 제품은 스킵함
+                                    // Case 2) 이번 제품에 대해 영상을 충분히 획득하였으며, 알고리즘까지 호출이 되었는데도 계속 이미지가 들어오는 경우 - 무시해도 되는 이미지
 
                                     // LHJ - 240808 Interval 위주로 제품을 구분
                                     Interval_SW[Cam_Num].Reset(); Interval_SW[Cam_Num].Start();
@@ -3594,7 +3594,7 @@ namespace LV_Inspection_System.GUI
                                     return;
                                 }
 
-                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > LVApp.Instance().m_Config._image_Merge_Interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
                                 {
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
@@ -3909,7 +3909,7 @@ namespace LV_Inspection_System.GUI
                                     return;
                                 }
 
-                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > LVApp.Instance().m_Config._image_Merge_Interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
                                 {
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
@@ -4225,7 +4225,7 @@ namespace LV_Inspection_System.GUI
                                     return;
                                 }
 
-                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > _interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
+                                if (Interval_SW[Cam_Num].ElapsedMilliseconds > LVApp.Instance().m_Config._image_Merge_Interval[Cam_Num] || Interval_SW[Cam_Num].ElapsedMilliseconds <= 0)
                                 {
                                     // Interval이 길거나 0이면 (첫 제품 또는) 다음 제품으로 간주
                                     _is_NewFrame[Cam_Num] = true;
@@ -7254,7 +7254,7 @@ namespace LV_Inspection_System.GUI
                     threads[i].Abort();
                     threads[i] = null;
                 }
-                if (imageDispose_Thread[i] !=null && imageDispose_Thread[i].IsAlive)
+                if (imageDispose_Thread[i] != null && imageDispose_Thread[i].IsAlive)
                 {
                     imageDispose_Thread[i].Abort();
                     imageDispose_Thread[i] = null;
@@ -7473,6 +7473,7 @@ namespace LV_Inspection_System.GUI
                                     if (_mergeProcessCount[Cam_Num] != 0)
                                     {
                                         // Interval 이 긴데도 Image_Merge Index가 남아 있으면, 이전 제품 이미지가 완전히 Merge 되지 않았다는 의미
+                                        // 이전 제품은 처리하지 못하였고, 다음 제품을 처리하도록 카운트를 초기화 함
                                         //DebugLogger.Instance().LogRecord($"Cam{Cam_Num} Miss! - Previous: {_mergeProcessCount[Cam_Num]}");
                                         _mergeProcessCount[Cam_Num] = 0;
                                     }
@@ -7482,6 +7483,7 @@ namespace LV_Inspection_System.GUI
                                     // 연속 그랩 중인데도, 알고리즘 처리 후 첫 이미지 인 경우
                                     // 연속 그랩 중 & (이전 이미지에 대해) 알고리즘 처리 완료
                                     // 이전 제품에 대해 Merge를 다 한 후(알고리즘 동작 완료 플래그<0>)에서도 연속 그랩 중인 경우 리턴
+                                    // 여분의, 남은 이미지라는 의미
                                     return;
                                 }
 

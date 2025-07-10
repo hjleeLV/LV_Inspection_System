@@ -85,8 +85,10 @@
             this.GeniCam_sliderOffsetX = new LV_Inspection_System.GUI.Control.GeniCam_SliderUserControl();
             this.GeniCam_sliderOffsetY = new LV_Inspection_System.GUI.Control.GeniCam_SliderUserControl();
             this.checkBox_Merge = new System.Windows.Forms.CheckBox();
-            this.textBox_Merge = new System.Windows.Forms.TextBox();
+            this.textBox_MergeCount = new System.Windows.Forms.TextBox();
             this.button_Merge_Apply = new System.Windows.Forms.Button();
+            this.label_Merge_Interval = new System.Windows.Forms.Label();
+            this.textBox_MergeInterval = new System.Windows.Forms.TextBox();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -117,7 +119,7 @@
             this.toolStripButtonImageSave});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(37, 705);
+            this.toolStrip.Size = new System.Drawing.Size(37, 725);
             this.toolStrip.TabIndex = 29;
             this.toolStrip.Text = "toolStrip";
             // 
@@ -450,9 +452,9 @@
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBox1.ForeColor = System.Drawing.Color.HotPink;
-            this.richTextBox1.Location = new System.Drawing.Point(50, 658);
+            this.richTextBox1.Location = new System.Drawing.Point(50, 693);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(271, 47);
+            this.richTextBox1.Size = new System.Drawing.Size(271, 32);
             this.richTextBox1.TabIndex = 50;
             this.richTextBox1.Text = "";
             // 
@@ -735,21 +737,22 @@
             this.checkBox_Merge.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.checkBox_Merge.Location = new System.Drawing.Point(50, 630);
             this.checkBox_Merge.Name = "checkBox_Merge";
-            this.checkBox_Merge.Size = new System.Drawing.Size(106, 19);
+            this.checkBox_Merge.Size = new System.Drawing.Size(90, 19);
             this.checkBox_Merge.TabIndex = 63;
-            this.checkBox_Merge.Text = "Image Merge";
+            this.checkBox_Merge.Text = "이미지 병합";
+            this.checkBox_Merge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_Merge.UseVisualStyleBackColor = true;
             this.checkBox_Merge.CheckedChanged += new System.EventHandler(this.checkBox_Merge_CheckedChanged);
             // 
-            // textBox_Merge
+            // textBox_MergeCount
             // 
-            this.textBox_Merge.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_Merge.Location = new System.Drawing.Point(157, 627);
-            this.textBox_Merge.Name = "textBox_Merge";
-            this.textBox_Merge.Size = new System.Drawing.Size(97, 25);
-            this.textBox_Merge.TabIndex = 64;
-            this.textBox_Merge.Text = "70";
-            this.textBox_Merge.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_MergeCount.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_MergeCount.Location = new System.Drawing.Point(157, 627);
+            this.textBox_MergeCount.Name = "textBox_MergeCount";
+            this.textBox_MergeCount.Size = new System.Drawing.Size(97, 25);
+            this.textBox_MergeCount.TabIndex = 64;
+            this.textBox_MergeCount.Text = "70";
+            this.textBox_MergeCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // button_Merge_Apply
             // 
@@ -758,11 +761,32 @@
             this.button_Merge_Apply.Image = global::LV_Inspection_System.Properties.Resources.Button_BG;
             this.button_Merge_Apply.Location = new System.Drawing.Point(261, 625);
             this.button_Merge_Apply.Name = "button_Merge_Apply";
-            this.button_Merge_Apply.Size = new System.Drawing.Size(60, 28);
+            this.button_Merge_Apply.Size = new System.Drawing.Size(60, 62);
             this.button_Merge_Apply.TabIndex = 65;
             this.button_Merge_Apply.Text = "적용";
             this.button_Merge_Apply.UseVisualStyleBackColor = true;
             this.button_Merge_Apply.Click += new System.EventHandler(this.button_Merge_Apply_Click);
+            // 
+            // label_Merge_Interval
+            // 
+            this.label_Merge_Interval.AutoSize = true;
+            this.label_Merge_Interval.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_Merge_Interval.Location = new System.Drawing.Point(47, 663);
+            this.label_Merge_Interval.Name = "label_Merge_Interval";
+            this.label_Merge_Interval.Size = new System.Drawing.Size(101, 17);
+            this.label_Merge_Interval.TabIndex = 58;
+            this.label_Merge_Interval.Text = "시간 간격(ms) :";
+            this.label_Merge_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox_MergeInterval
+            // 
+            this.textBox_MergeInterval.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_MergeInterval.Location = new System.Drawing.Point(157, 659);
+            this.textBox_MergeInterval.Name = "textBox_MergeInterval";
+            this.textBox_MergeInterval.Size = new System.Drawing.Size(97, 25);
+            this.textBox_MergeInterval.TabIndex = 64;
+            this.textBox_MergeInterval.Text = "200";
+            this.textBox_MergeInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Ctr_Camera_Setting
             // 
@@ -770,11 +794,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.button_Merge_Apply);
-            this.Controls.Add(this.textBox_Merge);
+            this.Controls.Add(this.textBox_MergeInterval);
+            this.Controls.Add(this.textBox_MergeCount);
             this.Controls.Add(this.checkBox_Merge);
             this.Controls.Add(this.comboBoxPixelFormat);
             this.Controls.Add(this.button_Change_COCAM);
             this.Controls.Add(this.comboBox_CO_CAM);
+            this.Controls.Add(this.label_Merge_Interval);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.button_CAMKIND_Apply);
             this.Controls.Add(this.comboBox_CAMKIND);
@@ -819,7 +845,7 @@
             this.Controls.Add(this.GeniCam_sliderGain);
             this.Controls.Add(this.ctr_MIL_LINK1);
             this.Name = "Ctr_Camera_Setting";
-            this.Size = new System.Drawing.Size(339, 705);
+            this.Size = new System.Drawing.Size(339, 725);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -886,7 +912,9 @@
         public GeniCam_SliderUserControl GeniCam_sliderHeight;
         public GeniCam_SliderUserControl GeniCam_sliderWidth;
         private System.Windows.Forms.CheckBox checkBox_Merge;
-        private System.Windows.Forms.TextBox textBox_Merge;
+        private System.Windows.Forms.TextBox textBox_MergeCount;
         private System.Windows.Forms.Button button_Merge_Apply;
+        private System.Windows.Forms.Label label_Merge_Interval;
+        private System.Windows.Forms.TextBox textBox_MergeInterval;
     }
 }

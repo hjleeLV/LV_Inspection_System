@@ -68,6 +68,8 @@ namespace LV_Inspection_System.GUI.Control
                     toolStripButton_LOAD.ToolTipText = "불러오기";
                     toolStripButtonImageSave.ToolTipText = "이미지 저장";
 
+                    checkBox_Merge.Text = "이미지 병합";
+                    label_Merge_Interval.Text = "시간 간격(ms) :";
                     button_Merge_Apply.Text = "적용";
                 }
                 else if (value == 1 && m_Language != value)
@@ -101,6 +103,9 @@ namespace LV_Inspection_System.GUI.Control
                     toolStripButton_SAVE.ToolTipText = "Save";
                     toolStripButton_LOAD.ToolTipText = "Load";
                     toolStripButtonImageSave.ToolTipText = "Image save";
+
+                    checkBox_Merge.Text = "Image Merge";
+                    label_Merge_Interval.Text = "Interval(ms) :";
                     button_Merge_Apply.Text = "Apply";
                 }
                 else if (value == 2 && m_Language != value)
@@ -134,6 +139,9 @@ namespace LV_Inspection_System.GUI.Control
                     toolStripButton_SAVE.ToolTipText = "救";
                     toolStripButton_LOAD.ToolTipText = "负荷";
                     toolStripButtonImageSave.ToolTipText = "图像保存";
+
+                    checkBox_Merge.Text = "图像合并";
+                    label_Merge_Interval.Text = "时间间隔(ms) :";
                     button_Merge_Apply.Text = "应用";
                 }
                 m_Language = value;
@@ -1319,8 +1327,10 @@ namespace LV_Inspection_System.GUI.Control
                         worksheet.Cells[11 + 10 * m_Cam_num, 10].Value = comboBoxPixelFormat.comboBox.SelectedIndex;
                     }
                     worksheet.Cells[11 + 10 * m_Cam_num, 11].Value = checkBox_Merge.Checked == false ? "0" : "1";
-                    worksheet.Cells[11 + 10 * m_Cam_num, 12].Value = textBox_Merge.Text;
-
+                    worksheet.Cells[11 + 10 * m_Cam_num, 12].Value = textBox_MergeCount.Text;
+                    #region 250702 LHJ, Interval을 입력받도록 변경함
+                    worksheet.Cells[11 + 10 * m_Cam_num, 13].Value = textBox_MergeInterval.Text;
+                    #endregion
                     package.Save();
                     Add_Message(m_Camera_Name + " Setting Saved.");
                     DebugLogger.Instance().LogRecord(m_Camera_Name + " saved.");
@@ -1740,11 +1750,11 @@ namespace LV_Inspection_System.GUI.Control
                     if (worksheet.Cells[11 + 10 * m_Cam_num, 11].Value != null && worksheet.Cells[11 + 10 * m_Cam_num, 12].Value != null)
                     {
                         checkBox_Merge.Checked = worksheet.Cells[11 + 10 * m_Cam_num, 11].Value.ToString() == "0" ? false : true;
-                        textBox_Merge.Text = worksheet.Cells[11 + 10 * m_Cam_num, 12].Value.ToString();
+                        textBox_MergeCount.Text = worksheet.Cells[11 + 10 * m_Cam_num, 12].Value.ToString();
 
                         LVApp.Instance().m_Config.Image_Merge_Check[m_Cam_num] = checkBox_Merge.Checked;
                         int _v = 0;
-                        int.TryParse(textBox_Merge.Text, out _v);
+                        int.TryParse(textBox_MergeCount.Text, out _v);
                         if (_v > 0)
                         {
                             LVApp.Instance().m_Config.Image_Merge_Number[m_Cam_num] = _v;
@@ -1753,8 +1763,26 @@ namespace LV_Inspection_System.GUI.Control
                     else
                     {
                         LVApp.Instance().m_Config.Image_Merge_Check[m_Cam_num] = checkBox_Merge.Checked = false;
-                        LVApp.Instance().m_Config.Image_Merge_Number[m_Cam_num] = 0; textBox_Merge.Text = "0";
+                        LVApp.Instance().m_Config.Image_Merge_Number[m_Cam_num] = 0; textBox_MergeCount.Text = "0";
                     }
+
+                    #region 250702 LHJ, Interval을 입력받도록 변경함
+                    if (worksheet.Cells[11 + 10 * m_Cam_num, 13].Value != null)
+                    {
+                        textBox_MergeInterval.Text = worksheet.Cells[11 + 10 * m_Cam_num, 13].Value.ToString();
+
+                        int.TryParse(textBox_MergeInterval.Text, out int _v);
+                        if (_v > 0)
+                        {
+                            LVApp.Instance().m_Config._image_Merge_Interval[m_Cam_num] = _v;
+                        }
+                    }
+                    else
+                    {
+                        textBox_MergeInterval.Text = "200";
+                        LVApp.Instance().m_Config._image_Merge_Interval[m_Cam_num] = 200;
+                    }
+                    #endregion
 
                     Add_Message(m_Camera_Name + " Setting Loaded");
                     DebugLogger.Instance().LogRecord(m_Camera_Name + " Setting loaded.");
@@ -2128,11 +2156,18 @@ namespace LV_Inspection_System.GUI.Control
             int cam_num = Convert.ToInt32(textBox_Camera_Name.Text.Substring(3, 1)) % 4;
             LVApp.Instance().m_Config.Image_Merge_Check[cam_num] = checkBox_Merge.Checked;
             int _v = 0;
-            int.TryParse(textBox_Merge.Text, out _v);
+            int.TryParse(textBox_MergeCount.Text, out _v);
             if (_v > 0)
             {
                 LVApp.Instance().m_Config.Image_Merge_Number[cam_num] = _v;
             }
+            #region 250702 LHJ, Interval을 입력받도록 변경함
+            int.TryParse(textBox_MergeInterval.Text, out _v);
+            if (_v >0)
+            {
+                LVApp.Instance().m_Config._image_Merge_Interval[cam_num] = _v;
+            }
+            #endregion
         }
 
         #region 250220 LHJ 영상 획득이 중지되는 건 디버깅용 - Basler 카메라 Only

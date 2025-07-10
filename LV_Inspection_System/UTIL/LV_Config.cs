@@ -160,8 +160,13 @@ namespace LV_Inspection_System.UTIL
         /// </summary>
         public int[] Image_Merge_Number = new int[4] { 70, 70, 70, 70 };
         /// <summary>
-        /// (이미지 Merge 기능에서) 한 제품에 대해 카메라가 획득한 영상의 수 <br>
-        /// -1 : GrabComplete에서 한 이미지가 완성될 만큼의 개별 이미지를 획득하였음
+        /// 250702 LHJ 이미지를 Merge 할 때, 제품을 구분할 시간 간격(ms)을 입력받을 수 있도록 변경함<br/>
+        /// 영상 획득 시간 간격이 _interval 이내면, 동일한 제품에 대해 연속적으로 이미지 획득 중이라고 간주하고, 해당 간격보다 벌어지면 다음 제품으로 간주함
+        /// </summary>
+        public int[] _image_Merge_Interval = { 200, 200, 200, 200 };
+        /// <summary>
+        /// (이미지 Merge 기능에서) 한 제품에 대해 카메라가 획득한 영상의 수<br/>
+        /// -1 : GrabComplete에서 한 이미지가 완성될 만큼의 개별 이미지를 획득하였음<br/>
         /// 0 : ThreadProc가 알고리즘에 이미지를 전달하였음
         /// </summary>
         public int[] Image_Merge_Idx = new int[4] { 0, 0, 0, 0 };
@@ -6520,6 +6525,10 @@ namespace LV_Inspection_System.UTIL
             }
         }
 
+        #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+        public int _camIndex_Top = 0;
+        public int _camIndex_Bottom = 1;
+        #endregion
         public int Judge_DataSet(int Cam_num)
         {
             int m_Ret = 40;
@@ -6698,22 +6707,24 @@ namespace LV_Inspection_System.UTIL
 
                         if (i == 1)
                         {
-                            if (Cam_num == 1 && !LVApp.Instance().m_mainform.ctr_PLC1.CAM1_Updated)
+                            #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+                            if (Cam_num == _camIndex_Top && !LVApp.Instance().m_mainform.ctr_PLC1.CAM_Top_Updated)
                             {
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM1_ROI2_Value = m_val * 1000;
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM1_ROI2_Min = m_min * 1000;
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM1_ROI2_Max = m_max * 1000;
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM1_Updated = true;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Top_ROI2_Value = m_val * 1000;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Top_ROI2_Min = m_min * 1000;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Top_ROI2_Max = m_max * 1000;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Top_Updated = true;
                                 LVApp.Instance().m_mainform.ctr_PLC1.Send_Data_MC();
                             }
-                            if (Cam_num == 2 && !LVApp.Instance().m_mainform.ctr_PLC1.CAM2_Updated)
+                            if (Cam_num == _camIndex_Bottom && !LVApp.Instance().m_mainform.ctr_PLC1.CAM_Bottom_Updated)
                             {
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM2_ROI2_Value = m_val * 1000;
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM2_ROI2_Min = m_min * 1000;
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM2_ROI2_Max = m_max * 1000;
-                                LVApp.Instance().m_mainform.ctr_PLC1.CAM2_Updated = true;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Bottom_ROI2_Value = m_val * 1000;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Bottom_ROI2_Min = m_min * 1000;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Bottom_ROI2_Max = m_max * 1000;
+                                LVApp.Instance().m_mainform.ctr_PLC1.CAM_Bottom_Updated = true;
                                 LVApp.Instance().m_mainform.ctr_PLC1.Send_Data_MC();
                             }
+                            #endregion
                         }
                         if (m_judge_method == "Min.")
                         {

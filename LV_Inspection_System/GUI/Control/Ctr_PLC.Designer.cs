@@ -43,6 +43,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.txt1 = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox_MC = new System.Windows.Forms.CheckBox();
             this.label38 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
             this.cbReceiveFormat = new System.Windows.Forms.ComboBox();
@@ -87,6 +88,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txt2 = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
+            this.groupBox_TubeInnerDiameter = new System.Windows.Forms.GroupBox();
+            this.textBox_InnerDiameter_Cam_Bottom = new System.Windows.Forms.TextBox();
+            this.textBox_InnerDiameter_Cam_Top = new System.Windows.Forms.TextBox();
+            this.label_InnerDiameter_Cam_Bottom = new System.Windows.Forms.Label();
+            this.label_InnerDiameter_Cam_Top = new System.Windows.Forms.Label();
             this.textBox_MinTime = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
             this.button_LOG_CLEAR = new System.Windows.Forms.Button();
@@ -117,7 +123,6 @@
             this.label19 = new System.Windows.Forms.Label();
             this.textBox_Delay0 = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.checkBox_MC = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -126,6 +131,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox_D.SuspendLayout();
+            this.groupBox_TubeInnerDiameter.SuspendLayout();
             this.SuspendLayout();
             // 
             // serialPort1
@@ -162,6 +168,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox_TubeInnerDiameter);
             this.splitContainer1.Panel2.Controls.Add(this.textBox_MinTime);
             this.splitContainer1.Panel2.Controls.Add(this.label26);
             this.splitContainer1.Panel2.Controls.Add(this.button_LOG_CLEAR);
@@ -353,6 +360,17 @@
             this.groupBox2.TabIndex = 67;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "통신 설정";
+            // 
+            // checkBox_MC
+            // 
+            this.checkBox_MC.AutoSize = true;
+            this.checkBox_MC.Location = new System.Drawing.Point(19, 254);
+            this.checkBox_MC.Name = "checkBox_MC";
+            this.checkBox_MC.Size = new System.Drawing.Size(152, 19);
+            this.checkBox_MC.TabIndex = 72;
+            this.checkBox_MC.Text = "Data Send through MC";
+            this.checkBox_MC.UseVisualStyleBackColor = true;
+            this.checkBox_MC.CheckedChanged += new System.EventHandler(this.checkBox_MC_CheckedChanged);
             // 
             // label38
             // 
@@ -862,6 +880,53 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
+            // groupBox_TubeInnerDiameter
+            // 
+            this.groupBox_TubeInnerDiameter.Controls.Add(this.textBox_InnerDiameter_Cam_Bottom);
+            this.groupBox_TubeInnerDiameter.Controls.Add(this.textBox_InnerDiameter_Cam_Top);
+            this.groupBox_TubeInnerDiameter.Controls.Add(this.label_InnerDiameter_Cam_Bottom);
+            this.groupBox_TubeInnerDiameter.Controls.Add(this.label_InnerDiameter_Cam_Top);
+            this.groupBox_TubeInnerDiameter.Location = new System.Drawing.Point(4, 3);
+            this.groupBox_TubeInnerDiameter.Name = "groupBox_TubeInnerDiameter";
+            this.groupBox_TubeInnerDiameter.Size = new System.Drawing.Size(290, 96);
+            this.groupBox_TubeInnerDiameter.TabIndex = 81;
+            this.groupBox_TubeInnerDiameter.TabStop = false;
+            this.groupBox_TubeInnerDiameter.Text = "카메라 번호 설정(튜브 내경 전송용)";
+            // 
+            // textBox_InnerDiameter_Cam_Bottom
+            // 
+            this.textBox_InnerDiameter_Cam_Bottom.Location = new System.Drawing.Point(89, 59);
+            this.textBox_InnerDiameter_Cam_Bottom.Name = "textBox_InnerDiameter_Cam_Bottom";
+            this.textBox_InnerDiameter_Cam_Bottom.Size = new System.Drawing.Size(45, 23);
+            this.textBox_InnerDiameter_Cam_Bottom.TabIndex = 3;
+            this.textBox_InnerDiameter_Cam_Bottom.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_InnerDiameter_Cam_Top
+            // 
+            this.textBox_InnerDiameter_Cam_Top.Location = new System.Drawing.Point(89, 27);
+            this.textBox_InnerDiameter_Cam_Top.Name = "textBox_InnerDiameter_Cam_Top";
+            this.textBox_InnerDiameter_Cam_Top.Size = new System.Drawing.Size(45, 23);
+            this.textBox_InnerDiameter_Cam_Top.TabIndex = 2;
+            this.textBox_InnerDiameter_Cam_Top.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label_InnerDiameter_Cam_Bottom
+            // 
+            this.label_InnerDiameter_Cam_Bottom.AutoSize = true;
+            this.label_InnerDiameter_Cam_Bottom.Location = new System.Drawing.Point(12, 62);
+            this.label_InnerDiameter_Cam_Bottom.Name = "label_InnerDiameter_Cam_Bottom";
+            this.label_InnerDiameter_Cam_Bottom.Size = new System.Drawing.Size(71, 15);
+            this.label_InnerDiameter_Cam_Bottom.TabIndex = 1;
+            this.label_InnerDiameter_Cam_Bottom.Text = "하부 카메라";
+            // 
+            // label_InnerDiameter_Cam_Top
+            // 
+            this.label_InnerDiameter_Cam_Top.AutoSize = true;
+            this.label_InnerDiameter_Cam_Top.Location = new System.Drawing.Point(12, 32);
+            this.label_InnerDiameter_Cam_Top.Name = "label_InnerDiameter_Cam_Top";
+            this.label_InnerDiameter_Cam_Top.Size = new System.Drawing.Size(71, 15);
+            this.label_InnerDiameter_Cam_Top.TabIndex = 0;
+            this.label_InnerDiameter_Cam_Top.Text = "상부 카메라";
+            // 
             // textBox_MinTime
             // 
             this.textBox_MinTime.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
@@ -1175,17 +1240,6 @@
             this.label18.TabIndex = 59;
             this.label18.Text = "CAM0 Trigger Delay";
             // 
-            // checkBox_MC
-            // 
-            this.checkBox_MC.AutoSize = true;
-            this.checkBox_MC.Location = new System.Drawing.Point(19, 254);
-            this.checkBox_MC.Name = "checkBox_MC";
-            this.checkBox_MC.Size = new System.Drawing.Size(152, 19);
-            this.checkBox_MC.TabIndex = 72;
-            this.checkBox_MC.Text = "Data Send through MC";
-            this.checkBox_MC.UseVisualStyleBackColor = true;
-            this.checkBox_MC.CheckedChanged += new System.EventHandler(this.checkBox_MC_CheckedChanged);
-            // 
             // Ctr_PLC
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -1208,6 +1262,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox_D.ResumeLayout(false);
             this.groupBox_D.PerformLayout();
+            this.groupBox_TubeInnerDiameter.ResumeLayout(false);
+            this.groupBox_TubeInnerDiameter.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1302,5 +1358,10 @@
         private System.Windows.Forms.TextBox textBox_MinTime;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.CheckBox checkBox_MC;
+        private System.Windows.Forms.GroupBox groupBox_TubeInnerDiameter;
+        private System.Windows.Forms.Label label_InnerDiameter_Cam_Bottom;
+        private System.Windows.Forms.Label label_InnerDiameter_Cam_Top;
+        private System.Windows.Forms.TextBox textBox_InnerDiameter_Cam_Bottom;
+        private System.Windows.Forms.TextBox textBox_InnerDiameter_Cam_Top;
     }
 }

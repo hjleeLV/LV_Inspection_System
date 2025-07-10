@@ -133,6 +133,11 @@ namespace LV_Inspection_System.GUI.Control
                     label22.Text = "카메라 재시작 카운트";
                     label24.Text = "카메라 미처리일때 지연시간";
                     label25.Text = "Tx가 없을때 리셋 시간(sec)";
+                    #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+                    groupBox_TubeInnerDiameter.Text = "카메라 번호 설정(튜브 내경 전송용)";
+                    label_InnerDiameter_Cam_Top.Text = "상부 카메라";
+                    label_InnerDiameter_Cam_Bottom.Text = "하부 카메라";
+                    #endregion
                 }
                 else if (value == 1 && m_Language != value)
                 {// 영어
@@ -179,6 +184,11 @@ namespace LV_Inspection_System.GUI.Control
                     label22.Text = "Camera Refresh Count";
                     label24.Text = "Delay when CAM missed(ms)";
                     label25.Text = "Reset duration when no Tx(sec)";
+                    #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+                    groupBox_TubeInnerDiameter.Text = "Set Camera ID(Inner Diameter Measurement)";
+                    label_InnerDiameter_Cam_Top.Text = "Top Camera";
+                    label_InnerDiameter_Cam_Bottom.Text = "Bottom Camera";
+                    #endregion
                 }
                 else if (value == 2 && m_Language != value)
                 {// 중국어
@@ -225,6 +235,11 @@ namespace LV_Inspection_System.GUI.Control
                     //label22.Text = "Camera Refresh Count";
                     label24.Text = "相机未错过延迟(ms)";
                     //label25.Text = "Reset duration when no Tx(sec)";
+                    #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+                    groupBox_TubeInnerDiameter.Text = "Set Camera ID(Inner Diameter Measurement)";
+                    label_InnerDiameter_Cam_Top.Text = "Top Camera";
+                    label_InnerDiameter_Cam_Bottom.Text = "Bottom Camera";
+                    #endregion
                 }
                 m_Language = value;
             }
@@ -1512,6 +1527,28 @@ namespace LV_Inspection_System.GUI.Control
                         checkBox_MC.Checked = false;
                         is_Open_MC_Client = checkBox_MC.Checked;
                     }
+                    #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+                    if (worksheet.Cells[16, 2].Value != null)
+                    {
+                        textBox_InnerDiameter_Cam_Top.Text = worksheet.Cells[16, 2].Value.ToString();
+                    }
+                    else
+                    {
+                        textBox_InnerDiameter_Cam_Top.Text = "0";
+                    }
+
+                    if (worksheet.Cells[16, 3].Value !=null)
+                    {
+                        textBox_InnerDiameter_Cam_Bottom.Text = worksheet.Cells[16, 3].Value.ToString();
+                    }
+                    else
+                    {
+                        textBox_InnerDiameter_Cam_Bottom.Text = "1";
+                    }
+
+                    int.TryParse(textBox_InnerDiameter_Cam_Top.Text, out LVApp.Instance().m_Config._camIndex_Top);
+                    int.TryParse(textBox_InnerDiameter_Cam_Bottom.Text, out LVApp.Instance().m_Config._camIndex_Bottom);
+                    #endregion
                 }
             }
             finally
@@ -1623,6 +1660,41 @@ namespace LV_Inspection_System.GUI.Control
                     worksheet.Cells[15, 4].Value = textBox_MinTime.Text;
 
                     worksheet.Cells[15, 5].Value = checkBox_MC.Checked == false ? 0 : 1;
+
+                    #region 250630 LHJ, 상부 또는 하부 내경 값을 전송할 카메라 번호를 설정할 수 있도록 개선
+                    if (int.TryParse(textBox_InnerDiameter_Cam_Top.Text, out int val_Top))
+                    {
+                        worksheet.Cells[16, 2].Value = val_Top;
+                        LVApp.Instance().m_Config._camIndex_Top = val_Top;
+                    }
+                    else
+                    {
+                        if (m_SetLanguage == 0)
+                        {
+                            MessageBox.Show("상부 카메라 번호가 잘못 설정되었습니다.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid Top Camera ID");
+                        }
+                    }
+                    if (int.TryParse(textBox_InnerDiameter_Cam_Bottom.Text, out int val_Bottom))
+                    {
+                        worksheet.Cells[16, 3].Value = val_Bottom;
+                        LVApp.Instance().m_Config._camIndex_Bottom = val_Bottom;
+                    }
+                    else
+                    {
+                        if (m_SetLanguage == 0)
+                        {
+                            MessageBox.Show("하부 카메라 번호가 잘못 설정되었습니다.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid Bottom Camera ID");
+                        }
+                    }
+                    #endregion
 
                     int.TryParse(textBox_DELAYCAMMISS.Text, out m_DELAYCAMMISS);
                     float.TryParse(textBox_RESETDURATION.Text, out m_RESETDURATION);
@@ -2793,6 +2865,8 @@ namespace LV_Inspection_System.GUI.Control
                 label22.Visible =
                 textBox_CAMREFCNT.Visible =
             true;
+
+            groupBox_TubeInnerDiameter.Visible = false;
             if (m_Protocal == (int)PROTOCAL.ModbbusTCP || m_Protocal == (int)PROTOCAL.XGTTCP)
             {
                 label37.Visible = true;
@@ -2863,6 +2937,7 @@ namespace LV_Inspection_System.GUI.Control
                 label22.Visible =
                 textBox_CAMREFCNT.Visible =
                 false;
+                groupBox_TubeInnerDiameter.Visible = true;
             }
             else
             {
@@ -4003,21 +4078,21 @@ namespace LV_Inspection_System.GUI.Control
         }
 
         public bool is_Open_MC_Client = false;
-        public double CAM2_ROI2_Value;
-        public double CAM2_ROI2_Max;
-        public double CAM2_ROI2_Min;
-        public double CAM1_ROI2_Value;
-        public double CAM1_ROI2_Max;
-        public double CAM1_ROI2_Min;
-        public bool CAM2_Updated = false;
-        public bool CAM1_Updated = false;
+        public double CAM_Bottom_ROI2_Value;
+        public double CAM_Bottom_ROI2_Max;
+        public double CAM_Bottom_ROI2_Min;
+        public double CAM_Top_ROI2_Value;
+        public double CAM_Top_ROI2_Max;
+        public double CAM_Top_ROI2_Min;
+        public bool CAM_Bottom_Updated = false;
+        public bool CAM_Top_Updated = false;
 
         private bool Send_Data_MC_check = false;
         public void Send_Data_MC()
         {
             if (LVApp.Instance().m_mainform.Simulation_mode)
             {
-                CAM2_Updated = CAM1_Updated = false;
+                CAM_Bottom_Updated = CAM_Top_Updated = false;
                 return;
             }
             try
@@ -4026,10 +4101,10 @@ namespace LV_Inspection_System.GUI.Control
                 {
                     return;
                 }
-                if (CAM2_Updated && CAM1_Updated)
+                if (CAM_Bottom_Updated && CAM_Top_Updated)
                 {
                     Send_Data_MC_check = true;
-                    CAM2_Updated = CAM1_Updated = false;
+                    CAM_Bottom_Updated = CAM_Top_Updated = false;
 
                     if (!McProtocolApp.Connected)
                     {
@@ -4046,28 +4121,28 @@ namespace LV_Inspection_System.GUI.Control
                         int t_idx = 0;
                         string nAddress = "D4500";
 
-                        int[] t_nData = Convert_Data(CAM1_ROI2_Value);
+                        int[] t_nData = Convert_Data(CAM_Top_ROI2_Value);
                         nData[t_idx * 2] = t_nData[0]; nData[t_idx * 2 + 1] = t_nData[1]; t_idx++;
 
-                        t_nData = Convert_Data(CAM1_ROI2_Max);
+                        t_nData = Convert_Data(CAM_Top_ROI2_Max);
                         nData[t_idx * 2] = t_nData[0]; nData[t_idx * 2 + 1] = t_nData[1]; t_idx++;
 
-                        t_nData = Convert_Data(CAM1_ROI2_Min);
+                        t_nData = Convert_Data(CAM_Top_ROI2_Min);
                         nData[t_idx * 2] = t_nData[0]; nData[t_idx * 2 + 1] = t_nData[1]; t_idx++;
 
-                        t_nData = Convert_Data(CAM2_ROI2_Value);
+                        t_nData = Convert_Data(CAM_Bottom_ROI2_Value);
                         nData[t_idx * 2] = t_nData[0]; nData[t_idx * 2 + 1] = t_nData[1]; t_idx++;
 
-                        t_nData = Convert_Data(CAM2_ROI2_Max);
+                        t_nData = Convert_Data(CAM_Bottom_ROI2_Max);
                         nData[t_idx * 2] = t_nData[0]; nData[t_idx * 2 + 1] = t_nData[1]; t_idx++;
 
-                        t_nData = Convert_Data(CAM2_ROI2_Min);
+                        t_nData = Convert_Data(CAM_Bottom_ROI2_Min);
                         nData[t_idx * 2] = t_nData[0]; nData[t_idx * 2 + 1] = t_nData[1]; t_idx++;
 
                         nData[t_idx * 2] = 1;
 
                         McProtocolApp.WriteDeviceBlock(nAddress, m_size, nData);
-                        add_Log("Data Tx complited. D4500 [CAM1:" + ((int)CAM1_ROI2_Value).ToString() + "," + ((int)CAM1_ROI2_Max).ToString() + "," + ((int)CAM1_ROI2_Min).ToString() + ", CAM2: " + ((int)CAM2_ROI2_Value).ToString() + ", " + ((int)CAM2_ROI2_Max).ToString() + ", " + ((int)CAM2_ROI2_Min).ToString() + "]");
+                        add_Log("Data Tx complited. D4500 [CAM1:" + ((int)CAM_Top_ROI2_Value).ToString() + "," + ((int)CAM_Top_ROI2_Max).ToString() + "," + ((int)CAM_Top_ROI2_Min).ToString() + ", CAM2: " + ((int)CAM_Bottom_ROI2_Value).ToString() + ", " + ((int)CAM_Bottom_ROI2_Max).ToString() + ", " + ((int)CAM_Bottom_ROI2_Min).ToString() + "]");
                     }
                     //Task<int> McTask = McProtocolApp.Open();
 
