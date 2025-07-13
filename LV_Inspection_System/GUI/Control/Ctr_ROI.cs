@@ -5380,12 +5380,30 @@ namespace LV_Inspection_System.GUI.Control
                 dataGridView1.Rows[23].Cells[1].Value = "10";
                 dataGridView1.Rows[24].Cells[1].Value = "0";
             }
+            else if (tstr == "SSF Masked")
+            {
+                dataGridView1.Rows[10].Cells[1].Value = "0";  // Diameter
+                dataGridView1.Rows[11].Cells[1].Value = "100";  // thickness
+                dataGridView1.Rows[12].Cells[1].Value = "1";  // Diameter
+                dataGridView1.Rows[13].Cells[1].Value = "0";  // thickness
+                dataGridView1.Rows[14].Cells[1].Value = "0";    // Start Angle
+                dataGridView1.Rows[15].Cells[1].Value = "360";    // End Angle
+                dataGridView1.Rows[16].Cells[1].Value = "5";    // D Filter X
+                dataGridView1.Rows[17].Cells[1].Value = "5";    // D Filter Y
+                dataGridView1.Rows[18].Cells[1].Value = "45";   // B Filter X
+                dataGridView1.Rows[19].Cells[1].Value = "45";   // B Filter Y
+                dataGridView1.Rows[20].Cells[1].Value = "30";   // GD Dark
+                dataGridView1.Rows[21].Cells[1].Value = "30";   // GD Bright
+                dataGridView1.Rows[22].Cells[1].Value = "10";    // Size Dark
+                dataGridView1.Rows[23].Cells[1].Value = "10";    // Size Bright
+                dataGridView1.Rows[24].Cells[1].Value = "0";    // OutPut
+            }
             else if (tstr == "사각 영역의 밝기" || tstr == "Brightness of rectangle ROI")
             {
                 dataGridView1.Rows[10].Cells[1].Value = "0";
                 dataGridView1.Rows[11].Cells[1].Value = "100";
                 dataGridView1.Rows[12].Cells[1].Value = "0";
-				dataGridView1.Rows[13].Cells[1].Value = "0";
+                dataGridView1.Rows[13].Cells[1].Value = "0";
                 dataGridView1.Rows[14].Cells[1].Value = "0";
                 dataGridView1.Rows[15].Cells[1].Value = "0";
                 dataGridView1.Rows[16].Cells[1].Value = "0";
@@ -6106,6 +6124,15 @@ namespace LV_Inspection_System.GUI.Control
                             }
                             if (LVApp.Instance().m_Config.m_ROI_ALG_Check[17, Cam_Num])
                             {
+                                t_exist_str = "SSF Masked";
+                                dgvCmbCell8.Items.Add(t_exist_str);//6
+                                if (tstr == t_exist_str)
+                                {
+                                    t_exist_check = true;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.m_ROI_ALG_Check[18, Cam_Num])
+                            {
                                 if (main_str.Contains("모델 사용"))
                                 {
                                     t_exist_str = "일치율(%)";
@@ -6139,7 +6166,7 @@ namespace LV_Inspection_System.GUI.Control
                                 && !tstr.Contains("진원도(%)") && !tstr.Contains("유사도(%)") && !tstr.Contains("나사산 피치")
                                 && !tstr.Contains("두 영역 중심간 거리") && !tstr.Contains("나사산 크기")
                                 && !tstr.Contains("원형 영역의 색상 BLOB")
-                                && !tstr.Contains("면취 측정") && !tstr.Contains("AI 검사") && !tstr.Contains("SSF")
+                                && !tstr.Contains("면취 측정") && !tstr.Contains("AI 검사") && !tstr.Contains("SSF") && !tstr.Contains("SSF Masked")
                                 && !tstr.Contains("내외경 중심 차이") && !tstr.Contains("일치율(%)") && tstr.Length != 0)
                             {
                                 tstr = "가로 길이";
@@ -6434,6 +6461,15 @@ namespace LV_Inspection_System.GUI.Control
                             }
                             if (LVApp.Instance().m_Config.m_ROI_ALG_Check[17, Cam_Num])
                             {
+                                t_exist_str = "SSF Masked";
+                                dgvCmbCell8.Items.Add(t_exist_str);//6
+                                if (tstr == t_exist_str)
+                                {
+                                    t_exist_check = true;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.m_ROI_ALG_Check[18, Cam_Num])
+                            {
                                 if (main_str.Contains("모델 사용"))
                                 {
                                     t_exist_str = "일치율(%)";
@@ -6456,7 +6492,7 @@ namespace LV_Inspection_System.GUI.Control
                                 && !tstr.Contains("몸통 두께") && !tstr.Contains("몸통 휨")
                                 && !tstr.Contains("사각 영역의 밝기") && !tstr.Contains("사각 영역의 BLOB")
                                 && tstr.Length != 0 && !tstr.Contains("하부 형상") && !tstr.Contains("두 영역 중심간 거리")
-                                && !tstr.Contains("면취 측정") && !tstr.Contains("AI 검사") && !tstr.Contains("SSF")
+                                && !tstr.Contains("면취 측정") && !tstr.Contains("AI 검사") && !tstr.Contains("SSF") && !tstr.Contains("SSF Masked")
                                 && !tstr.Contains("일치율(%)") && tstr.Length != 0)
                             {
                                 tstr = "가로 길이";
@@ -7303,6 +7339,110 @@ namespace LV_Inspection_System.GUI.Control
                             dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "예비변수";
                         }
                     }
+                    else if (tstr == "SSF Masked")
+                    {
+                        int t_Start_Idx = 12;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "영역1 지름(mm)"; t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "영역1 두께(mm)"; t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "시작각(Angle)";
+                        if (Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < -360 || Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 360)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "종료각(Angle)";
+                        if (Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < -360 || Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 360)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 360;
+                        }
+                        t_Start_Idx++;
+
+                        // 알고리즘 설정칸의 한계로, Lifting은 제외
+
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Defect SSF X";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Defect SSF Y";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Base SSF X";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Base SSF Y";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "GD Dark";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "GD Bright";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Size Dark";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Size Bright";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Output(0:Count,1:Size,2:Size_LV,3:Long,4:Short,5:Area,6:Omit,7:AI(지정 번호),8:AI(지정 번호 외),9:AI(모두),10:AI 결과 가져오기";   // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: 2~5까지 추가하고 기존 항목을 뒤로 미룸
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 10)   // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: > 6 -> >10
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 10;    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: = 6 -> = 10
+                        }
+                        t_Start_Idx++;
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) >= 7 && Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) <= 10)    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: >= 3 <=6 -> >=7 <=10
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "AI 클래스 번호";
+                            if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                            {
+                                dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                            }
+                            if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 41)
+                            {
+                                dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 40;
+                            }
+
+                            //if (LVApp.Instance().m_mainform.m_ImProClr_Class.Get_AI_Model_Loaded(Cam_Num, listBox1_SelectedIndex))
+                            //{
+                            //    dataGridView1.Rows[t_Start_Idx].Cells[1].Value = "1";
+                            //}
+                            //else
+                            //{
+                            //    dataGridView1.Rows[t_Start_Idx].Cells[1].Value = "0";
+                            //}
+                        }
+                        else
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "예비변수";
+                        }
+                    }
                     if (comboBox_TABLETYPE.SelectedIndex == 5)
                     {
                         if (listBox1.SelectedIndex == 0)
@@ -8024,6 +8164,15 @@ namespace LV_Inspection_System.GUI.Control
                             }
                             if (LVApp.Instance().m_Config.m_ROI_ALG_Check[17, Cam_Num])
                             {
+                                t_exist_str = "SSF Masked";
+                                dgvCmbCell8.Items.Add(t_exist_str);//6
+                                if (tstr == t_exist_str)
+                                {
+                                    t_exist_check = true;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.m_ROI_ALG_Check[18, Cam_Num])
+                            {
                                 if (main_str.Contains("Model find"))
                                 {
                                     t_exist_str = "Match rate(%)";
@@ -8055,7 +8204,7 @@ namespace LV_Inspection_System.GUI.Control
                                 && !tstr.Contains("BLOB in circle ROI")
                                 && !tstr.Contains("Circularity(%)") && !tstr.Contains("Pitch of thread") && !tstr.Contains("Distance between two area")
                                 && !tstr.Contains("Size of thread") && !tstr.Contains("Color BLOB in circle ROI") && !tstr.Contains("Match rate(%)")
-                                && !tstr.Contains("Bevelling Measurement") && !tstr.Contains("AI Inspection") && !tstr.Contains("SSF")
+                                && !tstr.Contains("Bevelling Measurement") && !tstr.Contains("AI Inspection") && !tstr.Contains("SSF") && !tstr.Contains("SSF Masked")
                                 && !tstr.Contains("Center difference between Inner and outter circle") && tstr.Length != 0)
                             {
                                 tstr = "Hor. length";
@@ -8353,8 +8502,16 @@ namespace LV_Inspection_System.GUI.Control
                                     t_exist_check = true;
                                 }
                             }
-
                             if (LVApp.Instance().m_Config.m_ROI_ALG_Check[17, Cam_Num])
+                            {
+                                t_exist_str = "SSF Masked";
+                                dgvCmbCell8.Items.Add(t_exist_str);//6
+                                if (tstr == t_exist_str)
+                                {
+                                    t_exist_check = true;
+                                }
+                            }
+                            if (LVApp.Instance().m_Config.m_ROI_ALG_Check[18, Cam_Num])
                             {
                                 if (main_str.Contains("Model find"))
                                 {
@@ -8378,7 +8535,7 @@ namespace LV_Inspection_System.GUI.Control
                                 && !tstr.Contains("Thickness of body(mm)") && !tstr.Contains("Bending of body(mm)")
                                 && !tstr.Contains("Brightness of rectangle ROI") && !tstr.Contains("BLOB in rectangle ROI")
                                 && !tstr.Contains("Shape of bottom") && !tstr.Contains("Distance between two area") && !tstr.Contains("Match rate(%)")
-                                && !tstr.Contains("Bevelling Measurement") && !tstr.Contains("AI Inspection") && !tstr.Contains("SSF")
+                                && !tstr.Contains("Bevelling Measurement") && !tstr.Contains("AI Inspection") && !tstr.Contains("SSF") && !tstr.Contains("SSF Masked")
                                 && tstr.Length != 0)
                             {
                                 tstr = "Hor. length";
@@ -9224,7 +9381,110 @@ namespace LV_Inspection_System.GUI.Control
                             dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Preliminary";
                         }
                     }
+                    else if (tstr == "SSF Masked")
+                    {
+                        int t_Start_Idx = 12;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Diameter of #1 circle(mm)"; t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Thickness of #1 circle(mm)"; t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Start(Angle)";
+                        if (Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < -360 || Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 360)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "End(Angle)";
+                        if (Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < -360 || Convert.ToInt32(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 360)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 360;
+                        }
+                        t_Start_Idx++;
 
+                        // 알고리즘 설정칸의 한계로, Lifting은 제외
+
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Defect SSF X";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Defect SSF Y";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Base SSF X";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Base SSF Y";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 1)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 1;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "GD Dark";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "GD Bright";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Size Dark";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Size Bright";
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        t_Start_Idx++;
+                        dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "Output(0:Count,1:Size,2:Size_LV,3:Long,4:Short,5:Area,6:Omit,7:AI(지정 번호),8:AI(지정 번호 외),9:AI(모두),10:AI 결과 가져오기";   // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: 2~5까지 추가하고 기존 항목을 뒤로 미룸
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                        }
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 10)   // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: > 6 -> >10
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 10;    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: = 6 -> = 10
+                        }
+                        t_Start_Idx++;
+                        if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) >= 7 && Convert.ToDouble(dataGridView1.Rows[t_Start_Idx - 1].Cells[1].Value.ToString()) <= 10)    // LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: >= 3 <=6 -> >=7 <=10
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "AI 클래스 번호";
+                            if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) < 0)
+                            {
+                                dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 0;
+                            }
+                            if (Convert.ToDouble(dataGridView1.Rows[t_Start_Idx].Cells[1].Value.ToString()) > 41)
+                            {
+                                dataGridView1.Rows[t_Start_Idx].Cells[1].Value = 40;
+                            }
+
+                            //if (LVApp.Instance().m_mainform.m_ImProClr_Class.Get_AI_Model_Loaded(Cam_Num, listBox1_SelectedIndex))
+                            //{
+                            //    dataGridView1.Rows[t_Start_Idx].Cells[1].Value = "1";
+                            //}
+                            //else
+                            //{
+                            //    dataGridView1.Rows[t_Start_Idx].Cells[1].Value = "0";
+                            //}
+                        }
+                        else
+                        {
+                            dataGridView1.Rows[t_Start_Idx].Cells[0].Value = "예비변수";
+                        }
+                    }
                     if (comboBox_TABLETYPE.SelectedIndex == 5)
                     {
                         if (listBox1.SelectedIndex == 0)

@@ -1448,7 +1448,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 		//msg.Format(L"CAM%1d_Gray_Img.jpg",Cam_num);
 		//imwrite(W2A(msg),Gray_Img[Cam_num]);
 		// 변수 설정
-		vector<vector<Point> > contours;
+		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
 		Mat Out_binary;
 		Mat Out_binary_Tmp;
@@ -1457,7 +1457,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 		{
 			if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num != s && s > 0)
 			{
-				if (BOLT_Param[Cam_num].nSSFOutput[s] == 6 && ((BOLT_Param[Cam_num].nCamPosition == 0 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB) || (BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::SSF_S)))	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2 -> == 6
+				if (
+					BOLT_Param[Cam_num].nSSFOutput[s] == 6
+						&&
+						((BOLT_Param[Cam_num].nCamPosition == 0 && (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB || BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_MASKED_TB))
+						 ||
+						 (BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_S::SSF_S)
+						)
+					)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2 -> == 6
 				{
 				}
 				else
@@ -1820,8 +1827,11 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 			// Threshold 0:이하, 1:이상, 2:사이, 3:Less than Auto, 4:More than Auto, 5:Edge, 6:ROI#01 결과 사용
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			if ((BOLT_Param[Cam_num].nCamPosition == 0 && BOLT_Param[Cam_num].nMethod_Direc[s] != ALGORITHM_TB::SSF_TB) || (BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] != ALGORITHM_S::SSF_S)) // SSF
-			{
+			if ((BOLT_Param[Cam_num].nCamPosition == 0 && !(BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB || BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_MASKED_TB))
+				||
+				(BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] != ALGORITHM_S::SSF_S)
+				)
+			{// SSF, SSF Masked 가 아니면, Threshold 이미지를 만든다.
 				if (BOLT_Param[Cam_num].nBlurFilterCNT[s] > 0)
 				{
 					Mat CP_Gray_Img_tmp = CP_Gray_Img.clone();
@@ -2203,9 +2213,11 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 			{
 				if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::ROI_TYPE) //ROI 기준 측정
 				{
-					if ((BOLT_Param[Cam_num].nCamPosition == 0 && BOLT_Param[Cam_num].nMethod_Direc[s] != ALGORITHM_TB::SSF_TB)
+					if ((BOLT_Param[Cam_num].nCamPosition == 0 && 
+							!(BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_TB || BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_MASKED_TB))
 						 || (BOLT_Param[Cam_num].nCamPosition == 1 && BOLT_Param[Cam_num].nMethod_Direc[s] != ALGORITHM_S::SSF_S)) // SSF
 					{
+						// SSF, SSF MASKED가 아닐때
 						BOLT_Param[Cam_num].Thres_Obj_Img = Out_binary.clone();
 						BOLT_Param[Cam_num].Gray_Obj_Img = Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]).clone();
 					}
@@ -16124,6 +16136,612 @@ if (Result_Debugging)
 						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width/2 - 5,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2), FONT_HERSHEY_SIMPLEX, fontScale*((double)Gray_Img[Cam_num].rows/480), CV_RGB(0,255,0), 1 + (double)Gray_Img[Cam_num].rows/960, 8);
 					}
 				}
+				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_MASKED_TB)
+				{
+					USES_CONVERSION;
+					if (BOLT_Param[Cam_num].nSSFOutput[s] == 10)
+					{
+						dist_vec.push_back(BOLT_Param[Cam_num].nSSFResult[BOLT_Param[Cam_num].nSSFAIClass[s]]);
+					}
+					else
+					{
+						// Lifting 안함
+
+						if (BOLT_Param[Cam_num].nSSFDefectFilterX[s] > 512)
+						{
+							BOLT_Param[Cam_num].nSSFDefectFilterX[s] = 511;
+						}
+						if (BOLT_Param[Cam_num].nSSFDefectFilterY[s] > 512)
+						{
+							BOLT_Param[Cam_num].nSSFDefectFilterY[s] = 511;
+						}
+						if (BOLT_Param[Cam_num].nSSFBaseFilterX[s] > 1024)
+						{
+							BOLT_Param[Cam_num].nSSFBaseFilterX[s] = 1023;
+						}
+						if (BOLT_Param[Cam_num].nSSFBaseFilterY[s] > 1024)
+						{
+							BOLT_Param[Cam_num].nSSFBaseFilterY[s] = 1023;
+						}
+
+						// 도넛 영역 마스킹 이미지 생성
+						Point2f P_Center;
+						P_Center.x = BOLT_Param[Cam_num].Offset_Object_Postion.x + BOLT_Param[Cam_num].Object_Postion.x - BOLT_Param[Cam_num].nRect[s].x;
+						P_Center.y = BOLT_Param[Cam_num].Offset_Object_Postion.y + BOLT_Param[Cam_num].Object_Postion.y - BOLT_Param[Cam_num].nRect[s].y;
+
+						double t_Circle1_mindist = (double)BOLT_Param[Cam_num].nCircle1Radius[s] - (double)(BOLT_Param[Cam_num].nCircle1Thickness[s]) / 2;
+						double t_Circle1_maxdist = (double)BOLT_Param[Cam_num].nCircle1Radius[s] + (double)(BOLT_Param[Cam_num].nCircle1Thickness[s]) / 2;
+
+						Mat Mask_Value255 = Mat::zeros(CP_Gray_Img.size(), CV_8UC1);
+						Mat Mask_Value1 = Mat(CP_Gray_Img.size(), CV_8UC1);
+
+
+						if (BOLT_Param[Cam_num].nCircle1Thickness[s] > 0 && BOLT_Param[Cam_num].nCircle1Radius[s] >= 0)
+						{
+							ellipse(Mask_Value255, P_Center, Size(t_Circle1_maxdist, t_Circle1_maxdist), 0, BOLT_Param[Cam_num].nCircleStartAngle[s], BOLT_Param[Cam_num].nCircleEndAngle[s], Scalar(255, 255, 255), CV_FILLED, 8, 0);
+							ellipse(Mask_Value255, P_Center, Size(t_Circle1_mindist, t_Circle1_mindist), 0, 0, 360, Scalar(0, 0, 0), CV_FILLED, 8, 0);
+						}
+						else if (BOLT_Param[Cam_num].nCircle1Thickness[s] == 0 && BOLT_Param[Cam_num].nCircle1Radius[s] > 0)
+						{
+							ellipse(Mask_Value255, P_Center, Size(BOLT_Param[Cam_num].nCircle1Radius[s], BOLT_Param[Cam_num].nCircle1Radius[s]), 0, BOLT_Param[Cam_num].nCircleStartAngle[s], BOLT_Param[Cam_num].nCircleEndAngle[s], Scalar(255, 255, 255), CV_FILLED, 8, 0);
+						}
+
+						// 결과 이미지에 마스킹 영역 표기
+						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+						{
+							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, 2, CV_RGB(255, 100, 0), 2);
+							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle1Radius[s], CV_RGB(0, 0, 255), 2);
+							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle1Radius[s] - BOLT_Param[Cam_num].nCircle1Thickness[s] / 2, CV_RGB(255, 100, 0), 2);
+							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle1Radius[s] + BOLT_Param[Cam_num].nCircle1Thickness[s] / 2, CV_RGB(255, 100, 0), 2);
+						}
+
+
+						cv::threshold(Mask_Value255, Mask_Value1, 128, 1, cv::ThresholdTypes::THRESH_BINARY);
+
+						cv::Mat lut(1, 256, CV_8UC1);
+						lut.setTo(0);
+						lut.at<uchar>(255) = 1;  // 255 값만 1로 매핑
+						cv::LUT(Mask_Value255, lut, Mask_Value1);
+
+						cv:Mat src_Masked;
+						cv::bitwise_and(CP_Gray_Img, Mask_Value255, src_Masked);
+
+						src_Masked.convertTo(src_Masked, CV_32SC1);
+						Mask_Value1.convertTo(Mask_Value1, CV_32SC1);
+
+						Mat Out_binary;
+						Mat Mask_Value1_Defect_Blur;
+						Mat Mask_Value1_Base_Blur;
+						if (BOLT_Param[Cam_num].nSSFDefectFilterX[s] == 1 && BOLT_Param[Cam_num].nSSFDefectFilterY[s] == 1)
+						{
+							Mask_Value1_Defect_Blur = src_Masked.clone();
+						}
+						else
+						{
+							cv::boxFilter(src_Masked, Out_binary, -1, cv::Size(BOLT_Param[Cam_num].nSSFDefectFilterX[s], BOLT_Param[Cam_num].nSSFDefectFilterY[s]), cv::Point(-1, -1), false);
+							cv::boxFilter(Mask_Value1, Mask_Value1_Defect_Blur, -1, cv::Size(BOLT_Param[Cam_num].nSSFDefectFilterX[s], BOLT_Param[Cam_num].nSSFDefectFilterY[s]), cv::Point(-1, -1), false);
+							cv::divide(Out_binary, Mask_Value1_Defect_Blur, Mask_Value1_Defect_Blur);
+						}
+
+						if (BOLT_Param[Cam_num].nSSFBaseFilterX[s] == 1 && BOLT_Param[Cam_num].nSSFBaseFilterY[s] == 1)
+						{
+							Mask_Value1_Base_Blur = src_Masked.clone();
+						}
+						else
+						{
+							cv::boxFilter(src_Masked, Out_binary, -1, cv::Size(BOLT_Param[Cam_num].nSSFBaseFilterX[s], BOLT_Param[Cam_num].nSSFBaseFilterY[s]), cv::Point(-1, -1), false);
+							cv::boxFilter(Mask_Value1, Mask_Value1_Base_Blur, -1, cv::Size(BOLT_Param[Cam_num].nSSFBaseFilterX[s], BOLT_Param[Cam_num].nSSFBaseFilterY[s]), cv::Point(-1, -1), false);
+							cv::divide(Out_binary, Mask_Value1_Base_Blur, Mask_Value1_Base_Blur);
+						}
+
+						Mask_Value1_Defect_Blur.convertTo(Mask_Value1_Defect_Blur, CV_8UC1);
+						Mask_Value1_Base_Blur.convertTo(Mask_Value1_Base_Blur, CV_8UC1);
+
+						cv::addWeighted(Mask_Value1_Defect_Blur, 1, Mask_Value1_Base_Blur, -1, 128, Mask_Value1_Base_Blur);	// Process 이미지
+
+						// 임계화 처리
+						if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_INV) // V1이하
+						{
+							threshold(Mask_Value1_Base_Blur, Out_binary, BOLT_Param[Cam_num].nThres_V1[s], 255, CV_THRESH_BINARY_INV);
+						}
+						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY) // V2이상
+						{
+							threshold(Mask_Value1_Base_Blur, Out_binary, BOLT_Param[Cam_num].nThres_V2[s], 255, CV_THRESH_BINARY);
+						}
+						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_BETWEEN) // V1~V2사이
+						{
+							inRange(Mask_Value1_Base_Blur, Scalar(BOLT_Param[Cam_num].nThres_V1[s]), Scalar(BOLT_Param[Cam_num].nThres_V2[s]), Out_binary);
+						}
+						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_BETWEENOUT) // V1이하V2이상
+						{
+							//Mat White_Out_binary = Mat::ones(CP_Gray_Img.rows, CP_Gray_Img.cols, CV_8U) * 255;
+							inRange(Mask_Value1_Base_Blur, Scalar(BOLT_Param[Cam_num].nThres_V1[s]), Scalar(BOLT_Param[Cam_num].nThres_V2[s]), Out_binary);
+							//subtract(White_Out_binary, Lifting_Out_binary, Lifting_Out_binary);
+							cv::bitwise_not(Out_binary, Out_binary);
+						}
+						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_INV_OTSU) // Less than Auto
+						{
+							threshold(Mask_Value1_Base_Blur, Out_binary, BOLT_Param[Cam_num].nThres_V2[s], 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
+						}
+						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_OTSU) // More than Auto
+						{
+							threshold(Mask_Value1_Base_Blur, Out_binary, BOLT_Param[Cam_num].nThres_V2[s], 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+						}
+						cv::bitwise_and(Out_binary, Mask_Value255, Out_binary);		// mark 이미지에 마스킹
+
+						// 임계화 처리 끝
+
+						// Omit 예외 처리
+						if (BOLT_Param[Cam_num].nSSFOutput[s] != 6)		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
+						{
+							//imwrite("00.bmp", BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]));
+							//imwrite("01.bmp", Out_binary);
+							subtract(Out_binary, BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), Out_binary);
+							//imwrite("02.bmp", Out_binary);
+							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+							{
+								findContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]).clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+								if (contours.size() > 0)
+								{
+									for (int k = 0; k < contours.size(); k++)
+									{
+										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255, 255, 0), 1, 8, hierarchy);
+									}
+								}
+							}
+						}
+
+						// Feature 계산
+						BLOB_Features t_BLOB;
+						int numOfLables = 0;
+						vector<vector<Point> > SSF_contours;
+						vector<Vec4i> SSF_hierarchy;
+
+						// 240711 - LHJ 30000개 제한이었던 것을 MAX_CONTOUR에 종속되도록 변경
+						//int BLOB_Max_CNT = 30000;
+						int BLOB_Max_CNT = MAX_CONTOUR * 3;
+
+						BOLT_Param[Cam_num].vecSSF_BLOB.clear();
+						//BOLT_Param[Cam_num].vecSSF_BLOB.assign(BLOB_Max_CNT, t_BLOB);
+						findContours(Out_binary.clone(), SSF_contours, SSF_hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+
+						numOfLables = SSF_contours.size();
+						if (numOfLables > BLOB_Max_CNT)
+						{
+							numOfLables = BLOB_Max_CNT;
+						}
+
+						// GD 주변 평균 계산하기위해 불량을 1번 팽창한 이진화 이미지
+						dilate(Out_binary, Mask_Value1_Defect_Blur, element, Point(-1, -1), 1);
+						int t_enlarge = 5; // GD MBR 확장 pixel 수
+						//#pragma omp parallel for
+						for (int j = 0; j < numOfLables; j++)
+						{
+							BOLT_Param[Cam_num].vecSSF_BLOB.push_back(t_BLOB);
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No = j + 1;// Contour 번호
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR = boundingRect(Mat(SSF_contours[j])); // MBR
+							// GD계산
+							Rect t_MBR = BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR;
+							t_MBR.x -= t_enlarge; t_MBR.y -= t_enlarge; t_MBR.width += 2 * t_enlarge; t_MBR.height += 2 * t_enlarge;
+							if (t_MBR.x < 0)
+							{
+								t_MBR.x = 0;
+							}
+							if (t_MBR.y < 0)
+							{
+								t_MBR.y = 0;
+							}
+							if (t_MBR.x + t_MBR.width > Out_binary.cols)
+							{
+								t_MBR.width = Out_binary.cols - t_MBR.x - 1;
+							}
+							if (t_MBR.width <= 0)
+							{
+								t_MBR.x = Out_binary.cols - 3;
+								t_MBR.width = 1;
+							}
+							if (t_MBR.y + t_MBR.height > Out_binary.rows)
+							{
+								t_MBR.height = Out_binary.rows - t_MBR.y - 1;
+							}
+							if (t_MBR.height <= 0)
+							{
+								t_MBR.y = Out_binary.rows - 3;
+								t_MBR.height = 1;
+							}
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].GD = (mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR))[0] - mean(CP_Gray_Img(t_MBR), 255 - Mask_Value1_Defect_Blur(t_MBR))[0]);
+
+							// 장, 단축, 크기 계산
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect = minAreaRect(SSF_contours[j]);
+							Point2f rect_points[4];
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect.points(rect_points);
+							float t_length_0to1 = sqrtf((rect_points[0].x - rect_points[1].x) * (rect_points[0].x - rect_points[1].x) * BOLT_Param[Cam_num].nResolution[0] * BOLT_Param[Cam_num].nResolution[0]
+								+ (rect_points[0].y - rect_points[1].y) * (rect_points[0].y - rect_points[1].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
+							float t_length_1to2 = sqrtf((rect_points[1].x - rect_points[2].x) * (rect_points[1].x - rect_points[2].x) * BOLT_Param[Cam_num].nResolution[0] * BOLT_Param[Cam_num].nResolution[0]
+								+ (rect_points[1].y - rect_points[2].y) * (rect_points[1].y - rect_points[2].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length = max(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length = min(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size = BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length;
+						}
+						// Feature 계산 끝
+
+						// 필터링 처리
+						if (BOLT_Param[Cam_num].vecSSF_BLOB.size() > 0)
+						{
+							for (int j = BOLT_Param[Cam_num].vecSSF_BLOB.size() - 1; j >= 0; j--)
+							{
+								if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
+								{ // Dark 불량
+									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Size <= BOLT_Param[Cam_num].nSSFSizeDark[s]
+										|| abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD) <= BOLT_Param[Cam_num].nSSFGDDark[s])
+									{
+										BOLT_Param[Cam_num].vecSSF_BLOB.erase(BOLT_Param[Cam_num].vecSSF_BLOB.begin() + j);
+									}
+								}
+								else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
+								{ // Bright 불량
+									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Size <= BOLT_Param[Cam_num].nSSFSizeBright[s]
+										|| abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD) <= BOLT_Param[Cam_num].nSSFGDBright[s])
+									{
+										BOLT_Param[Cam_num].vecSSF_BLOB.erase(BOLT_Param[Cam_num].vecSSF_BLOB.begin() + j);
+									}
+								}
+								else
+								{ // 불량 아님
+									BOLT_Param[Cam_num].vecSSF_BLOB.erase(BOLT_Param[Cam_num].vecSSF_BLOB.begin() + j);
+								}
+							}
+						}
+						// 필터링 처리 끝
+
+						// 결과값 출력
+						double t_Count = (double)BOLT_Param[Cam_num].vecSSF_BLOB.size();
+						if (BOLT_Param[Cam_num].nSSFOutput[s] == 0)
+						{ // 불량 검출 수
+							dist_vec.push_back(t_Count);
+						}
+						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2에서 == 6으로 변경
+						{ // 예외 처리용
+							dist_vec.push_back(0);
+							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+							{
+								msg.Format(L"OMIT");
+								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+							}
+
+							// 위에서 부터 검색해서 SSF Masked이고 Omit이 없으면 초기화함.
+
+							bool t_SSF_Omit_Exist_check = false;
+							bool t_SSF_NonOmit_check = false;
+							for (int ss = 1; ss < 41; ss++)
+							{
+								if (BOLT_Param[Cam_num].nSSFOutput[ss] == 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_MASKED_TB)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 2-> == 6
+								{
+									t_SSF_Omit_Exist_check = true;
+								}
+
+								if (ss == s - 1 && t_SSF_Omit_Exist_check)
+								{// 그전까지 Omit은 초기화 함.
+									if (BOLT_Param[Cam_num].nSSFOutput[s - 1] != 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_MASKED_TB)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
+									{
+										BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
+										//AfxMessageBox(L"Omit Initialized");
+									}
+									break;
+								}
+							}
+
+							if (BOLT_Param[Cam_num].vecSSF_BLOB.size() > 0)
+							{
+								for (int j = BOLT_Param[Cam_num].vecSSF_BLOB.size() - 1; j >= 0; j--)
+								{
+									Rect t_Mask_ROI = BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR;
+									t_Mask_ROI.x = 0; t_Mask_ROI.width = Gray_Img[Cam_num].cols;
+									rectangle(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), t_Mask_ROI, CV_RGB(255, 255, 255), CV_FILLED);
+									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+									{
+										t_Mask_ROI.y += BOLT_Param[Cam_num].nRect[s].y;
+										rectangle(Dst_Img[Cam_num], t_Mask_ROI, CV_RGB(255, 255, 0), 2);
+									}
+									//drawContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 255, 255), CV_FILLED, 8, SSF_hierarchy);
+								}
+								//imwrite("00_0.bmp", BOLT_Param[Cam_num].nSSFOmitImage);
+							}
+						}
+						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 7 || BOLT_Param[Cam_num].nSSFOutput[s] == 8 || BOLT_Param[Cam_num].nSSFOutput[s] == 9)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3, == 4, == 5 -> 7, 8, 9 로 변경
+						{ // AI 검사
+							cv::Scalar t_Scalar_rand[1000];	// 스택에 용량을 많이 차지하는 것 같아, 아래와 같이 수정함
+							//std::unique_ptr < cv::Scalar[] > t_Scalar_rand = std::unique_ptr<cv::Scalar[]>(new cv::Scalar[1000]);
+							for (int j = 0; j < 1000; j++)
+							{
+								t_Scalar_rand[j] = cv::Scalar(
+									(double)std::rand() / RAND_MAX * 255,
+									(double)std::rand() / RAND_MAX * 255,
+									(double)std::rand() / RAND_MAX * 255
+								);
+							}
+
+							//dist_vec.push_back(t_Count);
+							int t_Class_CNT[41] = { 0, };
+							if (BOLT_Param[Cam_num].vecSSF_BLOB.size() > 0)
+							{
+								//#pragma omp parallel for
+								for (int j = BOLT_Param[Cam_num].vecSSF_BLOB.size() - 1; j >= 0; j--)
+								{
+									Rect t_Mask_ROI = BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR;
+
+									t_Mask_ROI.x = (int)BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect.center.x - 50 + BOLT_Param[Cam_num].nRect[s].x;
+									t_Mask_ROI.y = (int)BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect.center.y - 50 + BOLT_Param[Cam_num].nRect[s].y;
+									t_Mask_ROI.width = 100;
+									t_Mask_ROI.height = 100;
+
+									if (t_Mask_ROI.x < 0)
+									{
+										t_Mask_ROI.x = 0;
+									}
+									if (t_Mask_ROI.y < 0)
+									{
+										t_Mask_ROI.y = 0;
+									}
+									if (t_Mask_ROI.x + t_Mask_ROI.width >= Src_Img[Cam_num].cols)
+									{
+										t_Mask_ROI.x = Src_Img[Cam_num].cols - 101;
+									}
+									if (t_Mask_ROI.y + t_Mask_ROI.height >= Src_Img[Cam_num].rows)
+									{
+										t_Mask_ROI.y = Src_Img[Cam_num].rows - 101;
+									}
+									BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR = t_Mask_ROI;
+
+									int v_ID = -1; float v_Confidence = 0.0f;
+									BOLT_Param[Cam_num].vecSSF_BLOB[j].AI_Result = AI_Inspect(Src_Img[Cam_num](t_Mask_ROI), Cam_num, s, v_ID, v_Confidence);
+									if (model_save_flag)
+									{
+										CString str_Result;
+										str_Result.Format(L"%s\\CAM%d_Class%02d_%04d.png", model_save, Cam_num, v_ID, j);
+										imwrite(W2A(str_Result), Src_Img[Cam_num](t_Mask_ROI));
+									}
+									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].AI_Result.GetLength() > 0)
+									{
+										BOLT_Param[Cam_num].vecSSF_BLOB[j].Class = v_ID;
+										BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence = v_Confidence;
+										t_Class_CNT[v_ID]++;
+									}
+									else
+									{
+										BOLT_Param[Cam_num].vecSSF_BLOB[j].Class = -1;
+										BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence = 0;
+									}
+
+									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+									{
+										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class < 0)
+										{
+											rectangle(Dst_Img[Cam_num], t_Mask_ROI, CV_RGB(255, 0, 0), 2);
+										}
+										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class >= 0)
+										{
+											rectangle(Dst_Img[Cam_num], t_Mask_ROI, t_Scalar_rand[s * 40 + BOLT_Param[Cam_num].vecSSF_BLOB[j].Class], 2);
+										}
+									}
+									if (m_Text_View[Cam_num] && !ROI_Mode)
+									{
+										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class < 0)
+										{
+											rectangle(Dst_Img[Cam_num], t_Mask_ROI, CV_RGB(255, 0, 0), 2);
+										}
+										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class >= 0)
+										{
+											rectangle(Dst_Img[Cam_num], t_Mask_ROI, t_Scalar_rand[s * 40 + BOLT_Param[Cam_num].vecSSF_BLOB[j].Class], 2);
+										}
+									}
+									//drawContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 255, 255), CV_FILLED, 8, SSF_hierarchy);
+								}
+								if (model_save_flag)
+								{
+									model_save_flag = false;
+								}
+								//imwrite("00_0.bmp", BOLT_Param[Cam_num].nSSFOmitImage);
+							}
+
+							for (int j = 0; j < 41; j++)
+							{
+								BOLT_Param[Cam_num].nSSFResult[j] = (double)t_Class_CNT[j];
+							}
+
+							if (BOLT_Param[Cam_num].nSSFOutput[s] == 7)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3 -> 7
+							{
+								if (BOLT_Param[Cam_num].nSSFAIClass[s] >= 0 && BOLT_Param[Cam_num].nSSFAIClass[s] < 41)
+								{
+									dist_vec.push_back((double)t_Class_CNT[BOLT_Param[Cam_num].nSSFAIClass[s]]);
+								}
+							}
+							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 8)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 4 -> 8
+							{
+								double total_cnt = 0;
+								for (int j = 0; j < 41; j++)
+								{
+									total_cnt += (double)t_Class_CNT[j];
+								}
+								if (BOLT_Param[Cam_num].nSSFAIClass[s] >= 0 && BOLT_Param[Cam_num].nSSFAIClass[s] < 41)
+								{
+									dist_vec.push_back(total_cnt - (double)t_Class_CNT[BOLT_Param[Cam_num].nSSFAIClass[s]]);
+								}
+							}
+							else
+							{
+								if (BOLT_Param[Cam_num].nSSFAIClass[s] >= 0 && BOLT_Param[Cam_num].nSSFAIClass[s] < 41)
+								{
+									dist_vec.push_back((double)t_Class_CNT[BOLT_Param[Cam_num].nSSFAIClass[s]]);
+								}
+							}
+						}
+
+						if (BOLT_Param[Cam_num].nSSFOutput[s] < 7)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: < 3 -> < 7로 변경
+						{
+							// 여기에 그림 그리고, 저장하고 불량 정보 보낼것
+							if (BOLT_Param[Cam_num].vecSSF_BLOB.size() > 0)
+							{
+								for (int j = BOLT_Param[Cam_num].vecSSF_BLOB.size() - 1; j >= 0; j--)
+								{
+									if (BOLT_Param[Cam_num].nSSFOutput[s] == 1)
+									{ // 불량 크기
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+									}
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - Start
+									// 2: Size_LV, 3: Long, 4: Short, 5: Area
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+										msg.Format(L"S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+									}
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+										msg.Format(L"Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+									}
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+										msg.Format(L"Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+									}
+									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 5)
+									{
+										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+										msg.Format(L"Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+									}
+									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - End
+									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
+									{ // Dark 불량
+										if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
+										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
+											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
+											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
+											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
+											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											/*msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);*/
+										}
+									}
+									else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
+									{ // Bright 불량
+										if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nSSFOutput[s] != 6)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
+										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
+											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
+											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+										{
+											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
+											{
+												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											}
+
+											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
+											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+									}
+								}
+							}
+						}
+						else
+						{//AI
+							// 여기에 그림 그리고, 저장하고 불량 정보 보낼것
+							if (BOLT_Param[Cam_num].vecSSF_BLOB.size() > 0)
+							{
+								for (int j = BOLT_Param[Cam_num].vecSSF_BLOB.size() - 1; j >= 0; j--)
+								{
+									if (BOLT_Param[Cam_num].nSSFOutput[s] == 7 && BOLT_Param[Cam_num].vecSSF_BLOB[j].Class != BOLT_Param[Cam_num].nSSFAIClass[s])	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3 -> 7
+									{
+										continue;
+									}
+									if (BOLT_Param[Cam_num].nSSFOutput[s] == 8 && BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == BOLT_Param[Cam_num].nSSFAIClass[s])	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 4 -> 8
+									{
+										continue;
+									}
+									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class < 0)
+									{
+										continue;
+									}
+									if (m_Text_View[Cam_num] && !ROI_Mode)
+									{
+										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
+										msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == 0)
+										{
+											msg.Format(L"AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+										else
+										{
+											msg.Format(L"AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+									}
+									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
+									{
+										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
+										msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == 0)
+										{
+											msg.Format(L"AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+										else
+										{
+											msg.Format(L"AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 			else
 			{// SIDE /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28362,7 +28980,6 @@ void CImPro_Library::AKAZE_Homography(Mat img_object, Mat img_scene, Mat warp_ds
 	//}
 	//imwrite("02.bmp",diff_img);
 }
-
 
 void CImPro_Library::J_TemplateMatch(Mat graySourceImage, Mat grayTemplateImage, int Cam_num){
 

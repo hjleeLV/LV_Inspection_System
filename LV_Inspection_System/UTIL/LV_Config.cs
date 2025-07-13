@@ -46,8 +46,8 @@ namespace LV_Inspection_System.UTIL
         public bool m_Data_Log_Use_Check = true;                            // Data 저장 유무
         public int m_Data_Log_Date = 30;                                    // Data 저장 일수(Day)
         public int m_Log_Save_Num = 30;                                   // 검사 결과 저장 개수
-        public string m_Log_Save_Folder = "";                               // 검사 결과 저장 폴더
-        public string m_Log_Save_Folder2 = "";                               // 검사 결과 저장 폴더
+        public string m_Log_Save_Folder = "";                               // 검사 결과 저장 폴더 - 검사기 로컬
+        public string m_Log_Save_Folder2 = "";                               // 검사 결과 저장 폴더 - (MES 등 고객사) 원격 서버
         public string m_Data_Save_Folder = "";                               // 검사 결과 저장 폴더
         private DataTable[] destinationTable = new DataTable[5];
 
@@ -9018,6 +9018,10 @@ namespace LV_Inspection_System.UTIL
                             {
                                 CAM_P8 = 20;
                             }
+                            else if (str[8] == "SSF Masked")
+                            {
+                                CAM_P8 = 21;
+                            }
                         }
                         else // 측면일때
                         {
@@ -9141,9 +9145,9 @@ namespace LV_Inspection_System.UTIL
                         double CAM_P24 = 0; double.TryParse(str[24], out CAM_P24);
                         double CAM_P25 = 0; double.TryParse(str[25], out CAM_P25);
 
-                        if (m_Camera_Position[nCam] == 0 && CAM_P8 == 20) // 상부, 하부일때
+                        if (m_Camera_Position[nCam] == 0 && (CAM_P8 == 20 || CAM_P8 == 21)) // 상부, 하부일때
                         {
-                            if (CAM_P24 >= 3 && CAM_P24 <= 5)
+                            if (CAM_P24 >= 3 && CAM_P24 <= 5)   // (LHJ)번호 안 맞는거 같음
                             { // AI 검사
                                 string t_Model_Path = LVApp.Instance().excute_path + "\\Models\\" + LVApp.Instance().m_Config.m_Model_Name + "\\AI_Model\\" + "CAM" + nCam.ToString() + "_ROI" + t_idx.ToString("00") + "_Model.pb";
                                 if (File.Exists(t_Model_Path))

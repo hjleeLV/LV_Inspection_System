@@ -691,6 +691,32 @@ void ClassClr::Set_Image_3(cli::array<System::Byte>^ Src, long size_x, long size
 					m_ImPro->BOLT_Param[Cam_Num].nSSFOutput[ROI_Num] = P24;
 					m_ImPro->BOLT_Param[Cam_Num].nSSFAIClass[ROI_Num] = (int)P25;
 				}
+				if (P8 == 21)
+				{// SSF Masked
+					m_ImPro->BOLT_Param[Cam_Num].nCircle1Radius[ROI_Num] = (int)(0.5 * P12 / m_ImPro->BOLT_Param[Cam_Num].nResolution[0]);
+					m_ImPro->BOLT_Param[Cam_Num].nCircle1Thickness[ROI_Num] = (int)(P13 / m_ImPro->BOLT_Param[Cam_Num].nResolution[0]);
+					if (m_ImPro->BOLT_Param[Cam_Num].nCircle1Radius[ROI_Num] - m_ImPro->BOLT_Param[Cam_Num].nCircle1Thickness[ROI_Num] / 2 < 0)
+					{
+						m_ImPro->BOLT_Param[Cam_Num].nCircle1Thickness[ROI_Num] = 2 * m_ImPro->BOLT_Param[Cam_Num].nCircle1Radius[ROI_Num];
+					}
+
+					m_ImPro->BOLT_Param[Cam_Num].nCircle2Radius[ROI_Num] = 0;// ¾È¾¸
+					m_ImPro->BOLT_Param[Cam_Num].nCircle2Thickness[ROI_Num] = 0;// ¾È¾¸
+
+					m_ImPro->BOLT_Param[Cam_Num].nCircleStartAngle[ROI_Num] = P14;
+					m_ImPro->BOLT_Param[Cam_Num].nCircleEndAngle[ROI_Num] = P15;
+
+					m_ImPro->BOLT_Param[Cam_Num].nSSFDefectFilterX[ROI_Num] = (int)P16;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFDefectFilterY[ROI_Num] = (int)P17;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFBaseFilterX[ROI_Num] = (int)P18;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFBaseFilterY[ROI_Num] = (int)P19;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFGDDark[ROI_Num] = P20;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFGDBright[ROI_Num] = P21;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFSizeDark[ROI_Num] = P22;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFSizeBright[ROI_Num] = P23;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFOutput[ROI_Num] = P24;
+					m_ImPro->BOLT_Param[Cam_Num].nSSFAIClass[ROI_Num] = (int)P25;
+				}
 			}
 		}
 		else if (m_ImPro->BOLT_Param[Cam_Num].nCamPosition == 1)

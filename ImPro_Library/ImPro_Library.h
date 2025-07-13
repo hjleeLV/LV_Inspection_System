@@ -73,7 +73,7 @@ enum ALGORITHM_TB
 	BRIGHTNESSDIFF_AREA_TB,				//5:Difference of Brightness
 	AREA_BLOB_TB,						//6:BLOB Size
 	COUNT_BLOB_TB,						//7:BLOB Count
-	CIRCLE_BLOB_SIZE_TB,				//8:Edge Crack
+	CIRCLE_BLOB_SIZE_TB,				//8:Edge Crack 원형 영역의 Blob
 	CIRCLE_BLOB_COUNT_TB,				//9:BLOB COUNT
 	CIRCULARITY_TB,						//10:Circularity
 	PITCH_COIN_TB,						//11:Pitch of Screw Thread
@@ -85,7 +85,8 @@ enum ALGORITHM_TB
 	MATCH_RATE_TB,						//17:Match rate
 	BEVELLING_MEASUREMENT_TB,			//18:Bevelling Measurement
 	AI_INSPECTION_TB,					//19:AI Inspection
-	SSF_TB,								//20:SSF	
+	SSF_TB,								//20:SSF
+	SSF_MASKED_TB						//21:SSF_Masked
 };
 
 enum ALGORITHM_S
@@ -422,6 +423,7 @@ public:
 		float nSSFGDBright[41];
 		float nSSFSizeDark[41];
 		float nSSFSizeBright[41];
+
 		//float nSSFAreaDark[41];
 		//float nSSFAreaBright[41];
 		Mat nMaskImage[41];					// MASK 영역 버퍼

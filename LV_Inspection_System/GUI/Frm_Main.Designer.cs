@@ -2737,6 +2737,7 @@
             this.ctr_Log1.Name = "ctr_Log1";
             this.ctr_Log1.Size = new System.Drawing.Size(478, 624);
             this.ctr_Log1.TabIndex = 0;
+            this.ctr_Log1.Dock = System.Windows.Forms.DockStyle.Fill;
             // 
             // ctr_LogView1
             // 

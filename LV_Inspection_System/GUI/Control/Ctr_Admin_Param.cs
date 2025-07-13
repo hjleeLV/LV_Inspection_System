@@ -698,6 +698,25 @@ namespace LV_Inspection_System.GUI.Control
                         }
 
                         i++;
+                        if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+                        {//한국어
+                            t_str = "SSF Masked";
+                        }
+                        else
+                        {
+                            t_str = "SSF Masked";
+                        }
+                        checkedListBox1.Items.Add(t_str);
+                        if (LVApp.Instance().m_Config.m_ROI_ALG_Check[i, 0])
+                        {
+                            checkedListBox1.SetItemCheckState(i, CheckState.Checked);
+                        }
+                        else
+                        {
+                            checkedListBox1.SetItemCheckState(i, CheckState.Unchecked);
+                        }
+
+                        i++;
                         string main_str = "";
                         main_str = LVApp.Instance().m_Config.ds_DATA_0.Tables[2].Rows[0][1].ToString();
 
@@ -1371,6 +1390,25 @@ namespace LV_Inspection_System.GUI.Control
                         else
                         {
                             t_str = "SSF";
+                        }
+                        checkedListBox2.Items.Add(t_str);
+                        if (LVApp.Instance().m_Config.m_ROI_ALG_Check[i, 1])
+                        {
+                            checkedListBox2.SetItemCheckState(i, CheckState.Checked);
+                        }
+                        else
+                        {
+                            checkedListBox2.SetItemCheckState(i, CheckState.Unchecked);
+                        }
+
+                        i++;
+                        if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+                        {//한국어
+                            t_str = "SSF Masked";
+                        }
+                        else
+                        {
+                            t_str = "SSF Masked";
                         }
                         checkedListBox2.Items.Add(t_str);
                         if (LVApp.Instance().m_Config.m_ROI_ALG_Check[i, 1])
@@ -2068,6 +2106,25 @@ namespace LV_Inspection_System.GUI.Control
                         }
 
                         i++;
+                        if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+                        {//한국어
+                            t_str = "SSF Masked";
+                        }
+                        else
+                        {
+                            t_str = "SSF Masked";
+                        }
+                        checkedListBox3.Items.Add(t_str);
+                        if (LVApp.Instance().m_Config.m_ROI_ALG_Check[i, 2])
+                        {
+                            checkedListBox3.SetItemCheckState(i, CheckState.Checked);
+                        }
+                        else
+                        {
+                            checkedListBox3.SetItemCheckState(i, CheckState.Unchecked);
+                        }
+
+                        i++;
                         string main_str = "";
                         main_str = LVApp.Instance().m_Config.ds_DATA_2.Tables[2].Rows[0][1].ToString();
 
@@ -2742,6 +2799,25 @@ namespace LV_Inspection_System.GUI.Control
                         else
                         {
                             t_str = "SSF";
+                        }
+                        checkedListBox4.Items.Add(t_str);
+                        if (LVApp.Instance().m_Config.m_ROI_ALG_Check[i, 3])
+                        {
+                            checkedListBox4.SetItemCheckState(i, CheckState.Checked);
+                        }
+                        else
+                        {
+                            checkedListBox4.SetItemCheckState(i, CheckState.Unchecked);
+                        }
+
+                        i++;
+                        if (LVApp.Instance().m_Config.m_SetLanguage == 0)
+                        {//한국어
+                            t_str = "SSF Masked";
+                        }
+                        else
+                        {
+                            t_str = "SSF Masked";
                         }
                         checkedListBox4.Items.Add(t_str);
                         if (LVApp.Instance().m_Config.m_ROI_ALG_Check[i, 3])
