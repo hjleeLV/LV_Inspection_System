@@ -1174,9 +1174,9 @@ namespace LV_Inspection_System.GUI.Control
             {
                 Bitmap m_bmp = t_bmp.Clone() as Bitmap;
                 String m_AI_folder = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                 {
-                    m_AI_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                    m_AI_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                 }
                 if (LVApp.Instance().m_Config.AI_Image_Save)
                 {

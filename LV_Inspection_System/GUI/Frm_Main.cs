@@ -471,13 +471,13 @@ namespace LV_Inspection_System.GUI
                 textBox_LOT.Text = Properties.Settings.Default.Lot_No;
 
                 bool t_space_check = true;
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                 {
                     t_space_check = Check_HD_available(LVApp.Instance().excute_path);
                 }
                 else
                 {
-                    t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                    t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                 }
                 if (t_space_check)
                 {
@@ -1012,13 +1012,13 @@ namespace LV_Inspection_System.GUI
                         LVApp.Instance().SAVE_IMAGE_List[2].Clear();
                         LVApp.Instance().SAVE_IMAGE_List[3].Clear();
                         bool t_space_check = true;
-                        if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                         {
                             t_space_check = Check_HD_available(LVApp.Instance().excute_path);
                         }
                         else
                         {
-                            t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                            t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                         }
                         if (!t_space_check)
                         {
@@ -1129,13 +1129,13 @@ namespace LV_Inspection_System.GUI
                     if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                     {
                         bool t_space_check = true;
-                        if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                         {
                             t_space_check = Check_HD_available(LVApp.Instance().excute_path);
                         }
                         else
                         {
-                            t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                            t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                         }
 
                         if (!m_ImageSavethread_Check)
@@ -1162,9 +1162,9 @@ namespace LV_Inspection_System.GUI
                         if (t_space_check)
                         {
                             String m_Log_folder = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                            if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                            if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                             {
-                                m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                                m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                             }
 
                             DirectoryInfo dir = new DirectoryInfo(m_Log_folder);
@@ -1183,9 +1183,9 @@ namespace LV_Inspection_System.GUI
                                     {
 
                                         String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + i.ToString() + ".csv"; //파일경로
-                                        if (LVApp.Instance().m_Config.m_Log_Save_Folder != "")
+                                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local != "")
                                         {
-                                            m_Log_File_Name = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + i.ToString() + ".csv"; //파일경로
+                                            m_Log_File_Name = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + i.ToString() + ".csv"; //파일경로
                                         }
 
                                         FileInfo templateFile = new FileInfo(m_Log_File_Name);
@@ -1430,7 +1430,8 @@ namespace LV_Inspection_System.GUI
                         {
                             lock (LVApp.Instance().SAVE_IMAGE_List[s])
                             {
-                                Save_Image_List(s);
+                                //Save_Image_List(s);
+                                Save_Image_List_Bestech_L(s);   // 250715 LHJ - 베스텍L : 서버에 이미지 저장 방식 변경건 대응
                                 LVApp.Instance().SAVE_IMAGE_List[s].RemoveAt(0);
                             }
                             Thread.Sleep(1);
@@ -1450,6 +1451,10 @@ namespace LV_Inspection_System.GUI
         }
 
         delegate void MyDelegate();      //델리게이트 선언(크로스 쓰레드 해결하기 위한 용도)
+        /// <summary>
+        /// 250714 - 기존 함수. 베스텍 L 프로젝트에서, Server 이미지 저장 방식 변경요청 발생
+        /// </summary>
+        /// <param name="Cam_num"></param>
         private void Save_Image_List(int Cam_num)
         {
             try
@@ -1484,227 +1489,228 @@ namespace LV_Inspection_System.GUI
                     //}
                     //lock (LVApp.Instance().SAVE_IMAGE_List[Cam_num])
                     {
-                        if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 0 && (LVApp.Instance().m_Config.m_Cam_Log_Method == 0 || LVApp.Instance().m_Config.m_Cam_Log_Method >= 2)) // OK 저장
+                        if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 0 && (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 0 || LVApp.Instance().m_Config.m_Cam_Log_Method_Local >= 2)) // OK 저장
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Format == 0)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 0)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 1)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 1)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 2)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 2)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 3)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 3)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\OK\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
                         }
-                        else if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 1 && (LVApp.Instance().m_Config.m_Cam_Log_Method == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method == 2)) // NG 저장
+                        else if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 1 && (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 2)) // NG 저장
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Format == 0)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 0)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 1)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 1)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 2)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 2)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 3)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 3)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NG\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
                         }
-                        else if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 2 && (LVApp.Instance().m_Config.m_Cam_Log_Method == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method == 2)) // No Object 저장
+                        else if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 2 && (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 2)) // No Object 저장
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Format == 0)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 0)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".bmp";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 1)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 1)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".jpg";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 2)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 2)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
-                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format == 3)
+                            else if (LVApp.Instance().m_Config.m_Cam_Log_Format_Local == 3)
                             {
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                                 {
                                     string filename = LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                                 else
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
-                                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 != "")
+                                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
                                 {
-                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
+                                    string filename = LVApp.Instance().m_Config.m_Log_Save_Folder_Server + "\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + fn + "\\CAM" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "\\NO Object\\#" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString() + "_" + LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename + ".png";
                                     LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
                                 }
                             }
@@ -1758,6 +1764,107 @@ namespace LV_Inspection_System.GUI
                 //m_ImageSavethread_Check = true;
                 //ImageSavethread.IsBackground = true;
                 //ImageSavethread.Start();
+            }
+        }
+
+        /// <summary>
+        /// 250714 - 베스텍 L프로젝트 : Save_Image_List(...)를 대체함
+        /// </summary>
+        /// <param name="Cam_num"></param>
+        private void Save_Image_List_Bestech_L(int Cam_num)
+        {
+            try
+            {
+                DateTime dt = DateTime.Now;
+                string fn = $"{dt.Year:0000}_{dt.Month:00}_{dt.Day:00}";
+
+                if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 0) // OK
+                {
+                    // 로컬
+                    if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 0 || LVApp.Instance().m_Config.m_Cam_Log_Method_Local >= 2)
+                    {
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local != "")
+                        {
+                            string fileName = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Local}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}\\{fn}\\CAM{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}\\OK\\#{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}_{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename}.{LVApp.Instance().m_Config.ImageExtension_Local}";
+                            LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Local);
+                        }
+                        //else  // 경로가 설정되어 있지 않으면 저장안함
+                        //{
+                        //    string fileName = $"{LVApp.Instance().excute_path}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}\\{fn}\\CAM{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}\\OK\\#{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}_{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename}.{LVApp.Instance().m_Config.ImageExtension_Local}";
+                        //    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Local);
+                        //}
+                    }
+
+                    // 서버
+                    if (LVApp.Instance().m_Config.m_Cam_Log_Method_Server == 0 || LVApp.Instance().m_Config.m_Cam_Log_Method_Server >= 2)
+                    {
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
+                        {
+                            string fileName = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Server}\\{LVApp.Instance().m_Config.m_ServerImageFileName_Prefix1}_{LVApp.Instance().m_Config.m_ServerImageFileName_Prefix2}_{dt:yyyyMMddHHmmssfff}_{LVApp.Instance().m_Config.m_ServerImageFileName_Suffix}.{LVApp.Instance().m_Config.ImageExtension_Server}";
+                            LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Server);
+                        }
+                    }
+                }
+                else if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 1) // NG
+                {
+                    // 로컬
+                    if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 2)
+                    {
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local != "")
+                        {
+                            string fileName = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Local}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}\\{fn}\\CAM{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}\\NG\\#{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}_{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename}.{LVApp.Instance().m_Config.ImageExtension_Local}";
+                            LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Local);
+                        }
+                        //else  // 경로가 설정되어 있지 않으면 저장안함
+                        //{
+                        //    string fileName = $"{LVApp.Instance().excute_path}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}\\{fn}\\CAM{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}\\NG\\#{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}_{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename}.{LVApp.Instance().m_Config.ImageExtension_Local}";
+                        //    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Local);
+                        //}
+                    }
+
+                    // 서버
+                    if (LVApp.Instance().m_Config.m_Cam_Log_Method_Server == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method_Server == 2)
+                    {
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
+                        {
+                            string fileName = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Server}\\{LVApp.Instance().m_Config.m_ServerImageFileName_Prefix1}_{LVApp.Instance().m_Config.m_ServerImageFileName_Prefix2}_{dt:yyyyMMddHHmmssfff}_{LVApp.Instance().m_Config.m_ServerImageFileName_Suffix}.{LVApp.Instance().m_Config.ImageExtension_Server}";
+                            LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Server);
+                        }
+                    }
+                }
+                else if (LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._OK_NG_NONE_Flag == 2)    // No Object
+                {
+                    // 로컬
+                    if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 2)
+                    {
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local != "")
+                        {
+                            string fileName = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Local}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}\\{fn}\\CAM{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}\\No Object\\#{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}_{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename}.{LVApp.Instance().m_Config.ImageExtension_Local}";
+                            LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Local);
+                        }
+                        //else  // 경로가 설정되어 있지 않으면 저장안함
+                        //{
+                        //    string fileName = $"{LVApp.Instance().excute_path}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}\\{fn}\\CAM{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}\\No Object\\#{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Cam_num.ToString()}_{LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Filename}.{LVApp.Instance().m_Config.ImageExtension_Local}";
+                        //    LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Local);
+                        //}
+                    }
+
+                    // 서버
+                    if (LVApp.Instance().m_Config.m_Cam_Log_Method_Server == 1 || LVApp.Instance().m_Config.m_Cam_Log_Method_Server == 2)
+                    {
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server != "")
+                        {
+                            string fileName = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Server}\\{LVApp.Instance().m_Config.m_ServerImageFileName_Prefix1}_{LVApp.Instance().m_Config.m_ServerImageFileName_Prefix2}_{dt:yyyyMMddHHmmssfff}_{LVApp.Instance().m_Config.m_ServerImageFileName_Suffix}.{LVApp.Instance().m_Config.ImageExtension_Server}";
+                            LVApp.Instance().SAVE_IMAGE_List[Cam_num][0]._Image.Save(fileName, LVApp.Instance().m_Config.ImageFormat_Server);
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                add_Log("Image save error! 저장중지");
+                DebugLogger.Instance().LogRecord($"{e.Message}, {e.StackTrace}");
+                m_ImageSavethread_Check = false;
             }
         }
 
@@ -5807,7 +5914,7 @@ namespace LV_Inspection_System.GUI
         public void button_INSPECTION_Click(object sender, EventArgs e)
         {
             isAccessible_EquipSetting = false;
-            if (!LVApp.Instance().m_Config.m_Check_Inspection_Mode && !Camera_Connection_check_flag)
+            if (!LVApp.Instance().m_Config.m_Check_Inspection_Mode && !Camera_Connection_check_flag && !Simulation_mode)
             {
                 if (LVApp.Instance().m_Config.m_SetLanguage == 0)
                 {
@@ -6039,13 +6146,13 @@ namespace LV_Inspection_System.GUI
                 if (!m_ImageSavethread_Check)
                 {
                     bool t_space_check = true;
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                     {
                         t_space_check = Check_HD_available(LVApp.Instance().excute_path);
                     }
                     else
                     {
-                        t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                        t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                     }
                     if (t_space_check)
                     {
@@ -6596,13 +6703,13 @@ namespace LV_Inspection_System.GUI
                 if (LVApp.Instance().m_Config.m_Check_Inspection_Mode)
                 {
                     bool t_space_check = true;
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                     {
                         t_space_check = Check_HD_available(LVApp.Instance().excute_path);
                     }
                     else
                     {
-                        t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                        t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                     }
 
                     if (!m_ImageSavethread_Check)
@@ -6629,9 +6736,9 @@ namespace LV_Inspection_System.GUI
                     if (t_space_check)
                     {
                         String m_Log_folder = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                        if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                        if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                         {
-                            m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                            m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                         }
 
                         DirectoryInfo dir = new DirectoryInfo(m_Log_folder);
@@ -6649,9 +6756,9 @@ namespace LV_Inspection_System.GUI
                                 if (!LVApp.Instance().m_Config.ctr_Camera_Setting_Force_USE[i])
                                 {
                                     String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + i.ToString() + ".csv"; //파일경로
-                                    if (LVApp.Instance().m_Config.m_Log_Save_Folder != "")
+                                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local != "")
                                     {
-                                        m_Log_File_Name = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + i.ToString() + ".csv"; //파일경로
+                                        m_Log_File_Name = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + i.ToString() + ".csv"; //파일경로
                                     }
 
                                     FileInfo templateFile = new FileInfo(m_Log_File_Name);
@@ -7648,7 +7755,7 @@ namespace LV_Inspection_System.GUI
                         }
                         else // 검사하면 아래로
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 Bitmap img = (Bitmap)Capture_frame.Clone();
                                 //Bitmap NewImg = new Bitmap(img);
@@ -7785,7 +7892,7 @@ namespace LV_Inspection_System.GUI
                             }
                             Add_PLC_Tx_Message(Cam_Num, Judge);
                             String filename = string.Empty;
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 if (t_Judge)
                                 {
@@ -8265,7 +8372,7 @@ namespace LV_Inspection_System.GUI
                         }
                         else // 검사하면 아래로
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 Bitmap img = (Bitmap)Capture_frame.Clone();
                                 // Bitmap NewImg = new Bitmap(img);
@@ -8396,7 +8503,7 @@ namespace LV_Inspection_System.GUI
                             }
                             Add_PLC_Tx_Message(Cam_Num, Judge);
                             String filename = string.Empty;
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 if (t_Judge)
                                 {
@@ -8890,7 +8997,7 @@ namespace LV_Inspection_System.GUI
                         }
                         else // 검사하면 아래로
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 Bitmap img = (Bitmap)Capture_frame.Clone();
                                 //Bitmap NewImg = new Bitmap(img);
@@ -9020,7 +9127,7 @@ namespace LV_Inspection_System.GUI
                             }
                             Add_PLC_Tx_Message(Cam_Num, Judge);
                             String filename = string.Empty;
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 if (t_Judge)
                                 {
@@ -9514,7 +9621,7 @@ namespace LV_Inspection_System.GUI
                         }
                         else // 검사하면 아래로
                         {
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 Bitmap img = (Bitmap)Capture_frame.Clone();
                                 //Bitmap NewImg = new Bitmap(img);
@@ -9647,7 +9754,7 @@ namespace LV_Inspection_System.GUI
 
                             Add_PLC_Tx_Message(Cam_Num, Judge);
                             String filename = string.Empty;
-                            if (LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                            if (LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                             {
                                 if (t_Judge)
                                 {

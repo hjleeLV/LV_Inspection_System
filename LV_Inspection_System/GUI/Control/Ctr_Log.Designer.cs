@@ -31,11 +31,27 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ctr_Log));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button_OPEN = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.button_SaveImageFolder_Server_Open = new System.Windows.Forms.Button();
+            this.button_SaveImageFolder_Server_Setting = new System.Windows.Forms.Button();
+            this.textBox_ImageFileName_Server_Suffix = new System.Windows.Forms.TextBox();
+            this.textBox_ImageFileName_Server_Prefix2 = new System.Windows.Forms.TextBox();
+            this.textBox_ImageFileName_Server_Prefix1 = new System.Windows.Forms.TextBox();
+            this.textBox_SaveImageFolder_Server = new System.Windows.Forms.TextBox();
+            this.label_ImageFileNameSetting_Server_Example = new System.Windows.Forms.Label();
+            this.label_ImageFileName_Server_Suffix = new System.Windows.Forms.Label();
+            this.label_ImageFileName_Server_Prefix2 = new System.Windows.Forms.Label();
+            this.label_ImageFileName_Server_Prefix1 = new System.Windows.Forms.Label();
+            this.label_ImageFileNameSetting_Server = new System.Windows.Forms.Label();
+            this.label_SaveImageSetting_Server = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.button_SaveDataAndImageFolder_Local_Open = new System.Windows.Forms.Button();
             this.checkBox_AISAVE = new System.Windows.Forms.CheckBox();
-            this.button_Folder_setting = new System.Windows.Forms.Button();
-            this.textBox_Folder = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.button_SaveDataAndImageFolder_Local_Setting = new System.Windows.Forms.Button();
+            this.textBox_SaveDataAndImageFolder_Local = new System.Windows.Forms.TextBox();
+            this.label_SaveImageSetting_Local = new System.Windows.Forms.Label();
+            this.label_SaveImageFolder_Local = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.checkBox_CAM7 = new System.Windows.Forms.CheckBox();
             this.checkBox_CAM2 = new System.Windows.Forms.CheckBox();
@@ -48,10 +64,14 @@
             this.checkBox_CAM3 = new System.Windows.Forms.CheckBox();
             this.checkBox_CAM0 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox_SAVEMETHOD = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.comboBox_SAVEFORMAT = new System.Windows.Forms.ComboBox();
+            this.comboBox_SAVEMETHOD_Server = new System.Windows.Forms.ComboBox();
+            this.comboBox_SAVEMETHOD_Local = new System.Windows.Forms.ComboBox();
+            this.label_SaveImageOption_Server = new System.Windows.Forms.Label();
+            this.label_SaveImageFormat_Server = new System.Windows.Forms.Label();
+            this.label_SaveImageFormat_Local = new System.Windows.Forms.Label();
+            this.label_SaveImageOption_Local = new System.Windows.Forms.Label();
+            this.comboBox_SAVEFORMAT_Server = new System.Windows.Forms.ComboBox();
+            this.comboBox_SAVEFORMAT_Local = new System.Windows.Forms.ComboBox();
             this.button_DELETE = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button_Data_Folder_setting = new System.Windows.Forms.Button();
@@ -80,10 +100,6 @@
             this.button_LOGFOLDERDELETE = new System.Windows.Forms.Button();
             this.button_LOGSAVE = new System.Windows.Forms.Button();
             this.button_LOGLOAD = new System.Windows.Forms.Button();
-            this.button_Folder_setting2 = new System.Windows.Forms.Button();
-            this.textBox_Folder2 = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.button_OPEN2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -108,21 +124,33 @@
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel2.Controls.Add(this.button_LOGSAVE);
             this.splitContainer1.Panel2.Controls.Add(this.button_LOGLOAD);
-            this.splitContainer1.Size = new System.Drawing.Size(494, 541);
+            this.splitContainer1.Size = new System.Drawing.Size(494, 802);
             this.splitContainer1.SplitterDistance = 237;
             this.splitContainer1.TabIndex = 0;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button_OPEN2);
-            this.groupBox1.Controls.Add(this.button_Folder_setting2);
-            this.groupBox1.Controls.Add(this.textBox_Folder2);
+            this.groupBox1.Controls.Add(this.label19);
+            this.groupBox1.Controls.Add(this.label18);
+            this.groupBox1.Controls.Add(this.button_SaveImageFolder_Server_Open);
+            this.groupBox1.Controls.Add(this.button_SaveImageFolder_Server_Setting);
+            this.groupBox1.Controls.Add(this.textBox_ImageFileName_Server_Suffix);
+            this.groupBox1.Controls.Add(this.textBox_ImageFileName_Server_Prefix2);
+            this.groupBox1.Controls.Add(this.textBox_ImageFileName_Server_Prefix1);
+            this.groupBox1.Controls.Add(this.textBox_SaveImageFolder_Server);
+            this.groupBox1.Controls.Add(this.label_ImageFileNameSetting_Server_Example);
+            this.groupBox1.Controls.Add(this.label_ImageFileName_Server_Suffix);
+            this.groupBox1.Controls.Add(this.label_ImageFileName_Server_Prefix2);
+            this.groupBox1.Controls.Add(this.label_ImageFileName_Server_Prefix1);
+            this.groupBox1.Controls.Add(this.label_ImageFileNameSetting_Server);
+            this.groupBox1.Controls.Add(this.label_SaveImageSetting_Server);
             this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Controls.Add(this.button_OPEN);
+            this.groupBox1.Controls.Add(this.button_SaveDataAndImageFolder_Local_Open);
             this.groupBox1.Controls.Add(this.checkBox_AISAVE);
-            this.groupBox1.Controls.Add(this.button_Folder_setting);
-            this.groupBox1.Controls.Add(this.textBox_Folder);
-            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.button_SaveDataAndImageFolder_Local_Setting);
+            this.groupBox1.Controls.Add(this.textBox_SaveDataAndImageFolder_Local);
+            this.groupBox1.Controls.Add(this.label_SaveImageSetting_Local);
+            this.groupBox1.Controls.Add(this.label_SaveImageFolder_Local);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.checkBox_CAM7);
             this.groupBox1.Controls.Add(this.checkBox_CAM2);
@@ -135,31 +163,187 @@
             this.groupBox1.Controls.Add(this.checkBox_CAM3);
             this.groupBox1.Controls.Add(this.checkBox_CAM0);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.comboBox_SAVEMETHOD);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.comboBox_SAVEFORMAT);
+            this.groupBox1.Controls.Add(this.comboBox_SAVEMETHOD_Server);
+            this.groupBox1.Controls.Add(this.comboBox_SAVEMETHOD_Local);
+            this.groupBox1.Controls.Add(this.label_SaveImageOption_Server);
+            this.groupBox1.Controls.Add(this.label_SaveImageFormat_Server);
+            this.groupBox1.Controls.Add(this.label_SaveImageFormat_Local);
+            this.groupBox1.Controls.Add(this.label_SaveImageOption_Local);
+            this.groupBox1.Controls.Add(this.comboBox_SAVEFORMAT_Server);
+            this.groupBox1.Controls.Add(this.comboBox_SAVEFORMAT_Local);
             this.groupBox1.Controls.Add(this.button_DELETE);
             this.groupBox1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox1.Location = new System.Drawing.Point(7, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(218, 514);
+            this.groupBox1.Size = new System.Drawing.Size(218, 732);
             this.groupBox1.TabIndex = 47;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "이미지 저장관련[Image Logging]";
             // 
-            // button_OPEN
+            // label19
             // 
-            this.button_OPEN.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_OPEN.BackgroundImage")));
-            this.button_OPEN.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button_OPEN.ForeColor = System.Drawing.Color.White;
-            this.button_OPEN.Location = new System.Drawing.Point(110, 298);
-            this.button_OPEN.Name = "button_OPEN";
-            this.button_OPEN.Size = new System.Drawing.Size(93, 37);
-            this.button_OPEN.TabIndex = 37;
-            this.button_OPEN.Text = "폴더 열기";
-            this.button_OPEN.UseVisualStyleBackColor = true;
-            this.button_OPEN.Click += new System.EventHandler(this.button_OPEN_Click);
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(7, 385);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(202, 15);
+            this.label19.TabIndex = 62;
+            this.label19.Text = "---------------------------------------";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 171);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(202, 15);
+            this.label18.TabIndex = 61;
+            this.label18.Text = "---------------------------------------";
+            // 
+            // button_SaveImageFolder_Server_Open
+            // 
+            this.button_SaveImageFolder_Server_Open.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_SaveImageFolder_Server_Open.BackgroundImage")));
+            this.button_SaveImageFolder_Server_Open.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_SaveImageFolder_Server_Open.ForeColor = System.Drawing.Color.White;
+            this.button_SaveImageFolder_Server_Open.Location = new System.Drawing.Point(110, 543);
+            this.button_SaveImageFolder_Server_Open.Name = "button_SaveImageFolder_Server_Open";
+            this.button_SaveImageFolder_Server_Open.Size = new System.Drawing.Size(93, 37);
+            this.button_SaveImageFolder_Server_Open.TabIndex = 60;
+            this.button_SaveImageFolder_Server_Open.Text = "폴더 열기";
+            this.button_SaveImageFolder_Server_Open.UseVisualStyleBackColor = true;
+            this.button_SaveImageFolder_Server_Open.Click += new System.EventHandler(this.button_SaveImageFolder_Server_Open_Click);
+            // 
+            // button_SaveImageFolder_Server_Setting
+            // 
+            this.button_SaveImageFolder_Server_Setting.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_SaveImageFolder_Server_Setting.BackgroundImage")));
+            this.button_SaveImageFolder_Server_Setting.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_SaveImageFolder_Server_Setting.ForeColor = System.Drawing.Color.White;
+            this.button_SaveImageFolder_Server_Setting.Location = new System.Drawing.Point(16, 543);
+            this.button_SaveImageFolder_Server_Setting.Name = "button_SaveImageFolder_Server_Setting";
+            this.button_SaveImageFolder_Server_Setting.Size = new System.Drawing.Size(93, 37);
+            this.button_SaveImageFolder_Server_Setting.TabIndex = 59;
+            this.button_SaveImageFolder_Server_Setting.Text = "폴더 설정";
+            this.button_SaveImageFolder_Server_Setting.UseVisualStyleBackColor = true;
+            this.button_SaveImageFolder_Server_Setting.Click += new System.EventHandler(this.button_SaveImageFolder_Server_Setting_Click);
+            // 
+            // textBox_ImageFileName_Server_Suffix
+            // 
+            this.textBox_ImageFileName_Server_Suffix.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_ImageFileName_Server_Suffix.Location = new System.Drawing.Point(51, 671);
+            this.textBox_ImageFileName_Server_Suffix.Name = "textBox_ImageFileName_Server_Suffix";
+            this.textBox_ImageFileName_Server_Suffix.Size = new System.Drawing.Size(158, 20);
+            this.textBox_ImageFileName_Server_Suffix.TabIndex = 58;
+            this.textBox_ImageFileName_Server_Suffix.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_ImageFileName_Server_Prefix2
+            // 
+            this.textBox_ImageFileName_Server_Prefix2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_ImageFileName_Server_Prefix2.Location = new System.Drawing.Point(51, 643);
+            this.textBox_ImageFileName_Server_Prefix2.Name = "textBox_ImageFileName_Server_Prefix2";
+            this.textBox_ImageFileName_Server_Prefix2.Size = new System.Drawing.Size(158, 20);
+            this.textBox_ImageFileName_Server_Prefix2.TabIndex = 58;
+            this.textBox_ImageFileName_Server_Prefix2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_ImageFileName_Server_Prefix1
+            // 
+            this.textBox_ImageFileName_Server_Prefix1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_ImageFileName_Server_Prefix1.Location = new System.Drawing.Point(51, 615);
+            this.textBox_ImageFileName_Server_Prefix1.Name = "textBox_ImageFileName_Server_Prefix1";
+            this.textBox_ImageFileName_Server_Prefix1.Size = new System.Drawing.Size(158, 20);
+            this.textBox_ImageFileName_Server_Prefix1.TabIndex = 58;
+            this.textBox_ImageFileName_Server_Prefix1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox_SaveImageFolder_Server
+            // 
+            this.textBox_SaveImageFolder_Server.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_SaveImageFolder_Server.Location = new System.Drawing.Point(17, 520);
+            this.textBox_SaveImageFolder_Server.Name = "textBox_SaveImageFolder_Server";
+            this.textBox_SaveImageFolder_Server.Size = new System.Drawing.Size(186, 20);
+            this.textBox_SaveImageFolder_Server.TabIndex = 58;
+            // 
+            // label_ImageFileNameSetting_Server_Example
+            // 
+            this.label_ImageFileNameSetting_Server_Example.AutoSize = true;
+            this.label_ImageFileNameSetting_Server_Example.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_ImageFileNameSetting_Server_Example.Location = new System.Drawing.Point(11, 704);
+            this.label_ImageFileNameSetting_Server_Example.Name = "label_ImageFileNameSetting_Server_Example";
+            this.label_ImageFileNameSetting_Server_Example.Size = new System.Drawing.Size(205, 15);
+            this.label_ImageFileNameSetting_Server_Example.TabIndex = 57;
+            this.label_ImageFileNameSetting_Server_Example.Text = "①_②_년월일시분초밀리초_③.확장자";
+            // 
+            // label_ImageFileName_Server_Suffix
+            // 
+            this.label_ImageFileName_Server_Suffix.AutoSize = true;
+            this.label_ImageFileName_Server_Suffix.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_ImageFileName_Server_Suffix.Location = new System.Drawing.Point(23, 672);
+            this.label_ImageFileName_Server_Suffix.Name = "label_ImageFileName_Server_Suffix";
+            this.label_ImageFileName_Server_Suffix.Size = new System.Drawing.Size(26, 15);
+            this.label_ImageFileName_Server_Suffix.TabIndex = 57;
+            this.label_ImageFileName_Server_Suffix.Text = "③ :";
+            this.label_ImageFileName_Server_Suffix.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_ImageFileName_Server_Prefix2
+            // 
+            this.label_ImageFileName_Server_Prefix2.AutoSize = true;
+            this.label_ImageFileName_Server_Prefix2.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_ImageFileName_Server_Prefix2.Location = new System.Drawing.Point(23, 645);
+            this.label_ImageFileName_Server_Prefix2.Name = "label_ImageFileName_Server_Prefix2";
+            this.label_ImageFileName_Server_Prefix2.Size = new System.Drawing.Size(26, 15);
+            this.label_ImageFileName_Server_Prefix2.TabIndex = 57;
+            this.label_ImageFileName_Server_Prefix2.Text = "② :";
+            this.label_ImageFileName_Server_Prefix2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_ImageFileName_Server_Prefix1
+            // 
+            this.label_ImageFileName_Server_Prefix1.AutoSize = true;
+            this.label_ImageFileName_Server_Prefix1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_ImageFileName_Server_Prefix1.Location = new System.Drawing.Point(23, 618);
+            this.label_ImageFileName_Server_Prefix1.Name = "label_ImageFileName_Server_Prefix1";
+            this.label_ImageFileName_Server_Prefix1.Size = new System.Drawing.Size(26, 15);
+            this.label_ImageFileName_Server_Prefix1.TabIndex = 57;
+            this.label_ImageFileName_Server_Prefix1.Text = "① :";
+            this.label_ImageFileName_Server_Prefix1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_ImageFileNameSetting_Server
+            // 
+            this.label_ImageFileNameSetting_Server.AutoSize = true;
+            this.label_ImageFileNameSetting_Server.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_ImageFileNameSetting_Server.Location = new System.Drawing.Point(15, 595);
+            this.label_ImageFileNameSetting_Server.Name = "label_ImageFileNameSetting_Server";
+            this.label_ImageFileNameSetting_Server.Size = new System.Drawing.Size(71, 15);
+            this.label_ImageFileNameSetting_Server.TabIndex = 57;
+            this.label_ImageFileNameSetting_Server.Text = "파일명 세팅";
+            // 
+            // label_SaveImageSetting_Server
+            // 
+            this.label_SaveImageSetting_Server.AutoSize = true;
+            this.label_SaveImageSetting_Server.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageSetting_Server.Location = new System.Drawing.Point(13, 408);
+            this.label_SaveImageSetting_Server.Name = "label_SaveImageSetting_Server";
+            this.label_SaveImageSetting_Server.Size = new System.Drawing.Size(59, 15);
+            this.label_SaveImageSetting_Server.TabIndex = 57;
+            this.label_SaveImageSetting_Server.Text = "서버 설정";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label17.Location = new System.Drawing.Point(15, 501);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(127, 15);
+            this.label17.TabIndex = 57;
+            this.label17.Text = "서버 이미지 저장 폴더";
+            // 
+            // button_SaveDataAndImageFolder_Local_Open
+            // 
+            this.button_SaveDataAndImageFolder_Local_Open.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_SaveDataAndImageFolder_Local_Open.BackgroundImage")));
+            this.button_SaveDataAndImageFolder_Local_Open.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_SaveDataAndImageFolder_Local_Open.ForeColor = System.Drawing.Color.White;
+            this.button_SaveDataAndImageFolder_Local_Open.Location = new System.Drawing.Point(110, 331);
+            this.button_SaveDataAndImageFolder_Local_Open.Name = "button_SaveDataAndImageFolder_Local_Open";
+            this.button_SaveDataAndImageFolder_Local_Open.Size = new System.Drawing.Size(93, 37);
+            this.button_SaveDataAndImageFolder_Local_Open.TabIndex = 37;
+            this.button_SaveDataAndImageFolder_Local_Open.Text = "폴더 열기";
+            this.button_SaveDataAndImageFolder_Local_Open.UseVisualStyleBackColor = true;
+            this.button_SaveDataAndImageFolder_Local_Open.Click += new System.EventHandler(this.button_SaveDataAndImageFolder_Local_Open_Click);
             // 
             // checkBox_AISAVE
             // 
@@ -173,36 +357,46 @@
             this.checkBox_AISAVE.UseVisualStyleBackColor = true;
             this.checkBox_AISAVE.CheckedChanged += new System.EventHandler(this.checkBox_AISAVE_CheckedChanged);
             // 
-            // button_Folder_setting
+            // button_SaveDataAndImageFolder_Local_Setting
             // 
-            this.button_Folder_setting.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_Folder_setting.BackgroundImage")));
-            this.button_Folder_setting.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button_Folder_setting.ForeColor = System.Drawing.Color.White;
-            this.button_Folder_setting.Location = new System.Drawing.Point(16, 298);
-            this.button_Folder_setting.Name = "button_Folder_setting";
-            this.button_Folder_setting.Size = new System.Drawing.Size(93, 37);
-            this.button_Folder_setting.TabIndex = 49;
-            this.button_Folder_setting.Text = "폴더 설정";
-            this.button_Folder_setting.UseVisualStyleBackColor = true;
-            this.button_Folder_setting.Click += new System.EventHandler(this.button_Folder_setting_Click);
+            this.button_SaveDataAndImageFolder_Local_Setting.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_SaveDataAndImageFolder_Local_Setting.BackgroundImage")));
+            this.button_SaveDataAndImageFolder_Local_Setting.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button_SaveDataAndImageFolder_Local_Setting.ForeColor = System.Drawing.Color.White;
+            this.button_SaveDataAndImageFolder_Local_Setting.Location = new System.Drawing.Point(16, 331);
+            this.button_SaveDataAndImageFolder_Local_Setting.Name = "button_SaveDataAndImageFolder_Local_Setting";
+            this.button_SaveDataAndImageFolder_Local_Setting.Size = new System.Drawing.Size(93, 37);
+            this.button_SaveDataAndImageFolder_Local_Setting.TabIndex = 49;
+            this.button_SaveDataAndImageFolder_Local_Setting.Text = "폴더 설정";
+            this.button_SaveDataAndImageFolder_Local_Setting.UseVisualStyleBackColor = true;
+            this.button_SaveDataAndImageFolder_Local_Setting.Click += new System.EventHandler(this.button_SaveDataAndImageFolder_Local_Setting_Click);
             // 
-            // textBox_Folder
+            // textBox_SaveDataAndImageFolder_Local
             // 
-            this.textBox_Folder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_Folder.Location = new System.Drawing.Point(17, 275);
-            this.textBox_Folder.Name = "textBox_Folder";
-            this.textBox_Folder.Size = new System.Drawing.Size(186, 20);
-            this.textBox_Folder.TabIndex = 48;
+            this.textBox_SaveDataAndImageFolder_Local.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_SaveDataAndImageFolder_Local.Location = new System.Drawing.Point(17, 308);
+            this.textBox_SaveDataAndImageFolder_Local.Name = "textBox_SaveDataAndImageFolder_Local";
+            this.textBox_SaveDataAndImageFolder_Local.Size = new System.Drawing.Size(186, 20);
+            this.textBox_SaveDataAndImageFolder_Local.TabIndex = 48;
             // 
-            // label7
+            // label_SaveImageSetting_Local
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label7.Location = new System.Drawing.Point(15, 256);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(115, 15);
-            this.label7.TabIndex = 47;
-            this.label7.Text = "로컬 통합 저장 폴더";
+            this.label_SaveImageSetting_Local.AutoSize = true;
+            this.label_SaveImageSetting_Local.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageSetting_Local.Location = new System.Drawing.Point(13, 191);
+            this.label_SaveImageSetting_Local.Name = "label_SaveImageSetting_Local";
+            this.label_SaveImageSetting_Local.Size = new System.Drawing.Size(59, 15);
+            this.label_SaveImageSetting_Local.TabIndex = 47;
+            this.label_SaveImageSetting_Local.Text = "로컬 설정";
+            // 
+            // label_SaveImageFolder_Local
+            // 
+            this.label_SaveImageFolder_Local.AutoSize = true;
+            this.label_SaveImageFolder_Local.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageFolder_Local.Location = new System.Drawing.Point(15, 289);
+            this.label_SaveImageFolder_Local.Name = "label_SaveImageFolder_Local";
+            this.label_SaveImageFolder_Local.Size = new System.Drawing.Size(115, 15);
+            this.label_SaveImageFolder_Local.TabIndex = 47;
+            this.label_SaveImageFolder_Local.Text = "로컬 통합 저장 폴더";
             // 
             // label4
             // 
@@ -344,63 +538,114 @@
             this.label3.Text = "일";
             this.label3.Visible = false;
             // 
-            // comboBox_SAVEMETHOD
+            // comboBox_SAVEMETHOD_Server
             // 
-            this.comboBox_SAVEMETHOD.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.comboBox_SAVEMETHOD.FormattingEnabled = true;
-            this.comboBox_SAVEMETHOD.Items.AddRange(new object[] {
+            this.comboBox_SAVEMETHOD_Server.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.comboBox_SAVEMETHOD_Server.FormattingEnabled = true;
+            this.comboBox_SAVEMETHOD_Server.Items.AddRange(new object[] {
             "Only OK",
             "Only NG",
             "All",
             "BEFORE Inspection"});
-            this.comboBox_SAVEMETHOD.Location = new System.Drawing.Point(74, 182);
-            this.comboBox_SAVEMETHOD.Name = "comboBox_SAVEMETHOD";
-            this.comboBox_SAVEMETHOD.Size = new System.Drawing.Size(129, 23);
-            this.comboBox_SAVEMETHOD.TabIndex = 40;
-            this.comboBox_SAVEMETHOD.Text = "Only NG";
-            this.comboBox_SAVEMETHOD.SelectedIndexChanged += new System.EventHandler(this.comboBox_SAVEMETHOD_SelectedIndexChanged);
+            this.comboBox_SAVEMETHOD_Server.Location = new System.Drawing.Point(74, 429);
+            this.comboBox_SAVEMETHOD_Server.Name = "comboBox_SAVEMETHOD_Server";
+            this.comboBox_SAVEMETHOD_Server.Size = new System.Drawing.Size(129, 23);
+            this.comboBox_SAVEMETHOD_Server.TabIndex = 40;
+            this.comboBox_SAVEMETHOD_Server.Text = "Only NG";
+            this.comboBox_SAVEMETHOD_Server.SelectedIndexChanged += new System.EventHandler(this.comboBox_SAVEMETHOD_SelectedIndexChanged);
             // 
-            // label1
+            // comboBox_SAVEMETHOD_Local
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(14, 223);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 15);
-            this.label1.TabIndex = 33;
-            this.label1.Text = "파일포맷";
+            this.comboBox_SAVEMETHOD_Local.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.comboBox_SAVEMETHOD_Local.FormattingEnabled = true;
+            this.comboBox_SAVEMETHOD_Local.Items.AddRange(new object[] {
+            "Only OK",
+            "Only NG",
+            "All",
+            "BEFORE Inspection"});
+            this.comboBox_SAVEMETHOD_Local.Location = new System.Drawing.Point(74, 215);
+            this.comboBox_SAVEMETHOD_Local.Name = "comboBox_SAVEMETHOD_Local";
+            this.comboBox_SAVEMETHOD_Local.Size = new System.Drawing.Size(129, 23);
+            this.comboBox_SAVEMETHOD_Local.TabIndex = 40;
+            this.comboBox_SAVEMETHOD_Local.Text = "Only NG";
+            this.comboBox_SAVEMETHOD_Local.SelectedIndexChanged += new System.EventHandler(this.comboBox_SAVEMETHOD_SelectedIndexChanged);
             // 
-            // label11
+            // label_SaveImageOption_Server
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label11.Location = new System.Drawing.Point(14, 185);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(55, 15);
-            this.label11.TabIndex = 39;
-            this.label11.Text = "저장방법";
+            this.label_SaveImageOption_Server.AutoSize = true;
+            this.label_SaveImageOption_Server.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageOption_Server.Location = new System.Drawing.Point(15, 432);
+            this.label_SaveImageOption_Server.Name = "label_SaveImageOption_Server";
+            this.label_SaveImageOption_Server.Size = new System.Drawing.Size(55, 15);
+            this.label_SaveImageOption_Server.TabIndex = 39;
+            this.label_SaveImageOption_Server.Text = "저장방법";
             // 
-            // comboBox_SAVEFORMAT
+            // label_SaveImageFormat_Server
             // 
-            this.comboBox_SAVEFORMAT.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.comboBox_SAVEFORMAT.FormattingEnabled = true;
-            this.comboBox_SAVEFORMAT.Items.AddRange(new object[] {
+            this.label_SaveImageFormat_Server.AutoSize = true;
+            this.label_SaveImageFormat_Server.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageFormat_Server.Location = new System.Drawing.Point(15, 472);
+            this.label_SaveImageFormat_Server.Name = "label_SaveImageFormat_Server";
+            this.label_SaveImageFormat_Server.Size = new System.Drawing.Size(55, 15);
+            this.label_SaveImageFormat_Server.TabIndex = 33;
+            this.label_SaveImageFormat_Server.Text = "파일포맷";
+            // 
+            // label_SaveImageFormat_Local
+            // 
+            this.label_SaveImageFormat_Local.AutoSize = true;
+            this.label_SaveImageFormat_Local.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageFormat_Local.Location = new System.Drawing.Point(15, 256);
+            this.label_SaveImageFormat_Local.Name = "label_SaveImageFormat_Local";
+            this.label_SaveImageFormat_Local.Size = new System.Drawing.Size(55, 15);
+            this.label_SaveImageFormat_Local.TabIndex = 33;
+            this.label_SaveImageFormat_Local.Text = "파일포맷";
+            // 
+            // label_SaveImageOption_Local
+            // 
+            this.label_SaveImageOption_Local.AutoSize = true;
+            this.label_SaveImageOption_Local.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_SaveImageOption_Local.Location = new System.Drawing.Point(15, 218);
+            this.label_SaveImageOption_Local.Name = "label_SaveImageOption_Local";
+            this.label_SaveImageOption_Local.Size = new System.Drawing.Size(55, 15);
+            this.label_SaveImageOption_Local.TabIndex = 39;
+            this.label_SaveImageOption_Local.Text = "저장방법";
+            // 
+            // comboBox_SAVEFORMAT_Server
+            // 
+            this.comboBox_SAVEFORMAT_Server.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.comboBox_SAVEFORMAT_Server.FormattingEnabled = true;
+            this.comboBox_SAVEFORMAT_Server.Items.AddRange(new object[] {
             "bmp",
             "jpg",
             "png"});
-            this.comboBox_SAVEFORMAT.Location = new System.Drawing.Point(74, 220);
-            this.comboBox_SAVEFORMAT.Name = "comboBox_SAVEFORMAT";
-            this.comboBox_SAVEFORMAT.Size = new System.Drawing.Size(129, 23);
-            this.comboBox_SAVEFORMAT.TabIndex = 34;
-            this.comboBox_SAVEFORMAT.Text = "jpg";
-            this.comboBox_SAVEFORMAT.SelectedIndexChanged += new System.EventHandler(this.comboBox_SAVEFORMAT_SelectedIndexChanged);
+            this.comboBox_SAVEFORMAT_Server.Location = new System.Drawing.Point(74, 469);
+            this.comboBox_SAVEFORMAT_Server.Name = "comboBox_SAVEFORMAT_Server";
+            this.comboBox_SAVEFORMAT_Server.Size = new System.Drawing.Size(129, 23);
+            this.comboBox_SAVEFORMAT_Server.TabIndex = 34;
+            this.comboBox_SAVEFORMAT_Server.Text = "jpg";
+            this.comboBox_SAVEFORMAT_Server.SelectedIndexChanged += new System.EventHandler(this.comboBox_SAVEFORMAT_SelectedIndexChanged);
+            // 
+            // comboBox_SAVEFORMAT_Local
+            // 
+            this.comboBox_SAVEFORMAT_Local.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.comboBox_SAVEFORMAT_Local.FormattingEnabled = true;
+            this.comboBox_SAVEFORMAT_Local.Items.AddRange(new object[] {
+            "bmp",
+            "jpg",
+            "png"});
+            this.comboBox_SAVEFORMAT_Local.Location = new System.Drawing.Point(74, 253);
+            this.comboBox_SAVEFORMAT_Local.Name = "comboBox_SAVEFORMAT_Local";
+            this.comboBox_SAVEFORMAT_Local.Size = new System.Drawing.Size(129, 23);
+            this.comboBox_SAVEFORMAT_Local.TabIndex = 34;
+            this.comboBox_SAVEFORMAT_Local.Text = "jpg";
+            this.comboBox_SAVEFORMAT_Local.SelectedIndexChanged += new System.EventHandler(this.comboBox_SAVEFORMAT_SelectedIndexChanged);
             // 
             // button_DELETE
             // 
             this.button_DELETE.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_DELETE.BackgroundImage")));
             this.button_DELETE.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_DELETE.ForeColor = System.Drawing.Color.White;
-            this.button_DELETE.Location = new System.Drawing.Point(109, 299);
+            this.button_DELETE.Location = new System.Drawing.Point(109, 332);
             this.button_DELETE.Name = "button_DELETE";
             this.button_DELETE.Size = new System.Drawing.Size(94, 37);
             this.button_DELETE.TabIndex = 38;
@@ -731,57 +976,13 @@
             this.button_LOGLOAD.UseVisualStyleBackColor = true;
             this.button_LOGLOAD.Click += new System.EventHandler(this.button_LOGLOAD_Click);
             // 
-            // button_Folder_setting2
-            // 
-            this.button_Folder_setting2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_Folder_setting2.BackgroundImage")));
-            this.button_Folder_setting2.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button_Folder_setting2.ForeColor = System.Drawing.Color.White;
-            this.button_Folder_setting2.Location = new System.Drawing.Point(16, 389);
-            this.button_Folder_setting2.Name = "button_Folder_setting2";
-            this.button_Folder_setting2.Size = new System.Drawing.Size(93, 37);
-            this.button_Folder_setting2.TabIndex = 59;
-            this.button_Folder_setting2.Text = "폴더 설정";
-            this.button_Folder_setting2.UseVisualStyleBackColor = true;
-            this.button_Folder_setting2.Click += new System.EventHandler(this.button_Folder_setting2_Click);
-            // 
-            // textBox_Folder2
-            // 
-            this.textBox_Folder2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_Folder2.Location = new System.Drawing.Point(17, 366);
-            this.textBox_Folder2.Name = "textBox_Folder2";
-            this.textBox_Folder2.Size = new System.Drawing.Size(186, 20);
-            this.textBox_Folder2.TabIndex = 58;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label17.Location = new System.Drawing.Point(15, 347);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(127, 15);
-            this.label17.TabIndex = 57;
-            this.label17.Text = "서버 이미지 저장 폴더";
-            // 
-            // button_OPEN2
-            // 
-            this.button_OPEN2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button_OPEN2.BackgroundImage")));
-            this.button_OPEN2.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button_OPEN2.ForeColor = System.Drawing.Color.White;
-            this.button_OPEN2.Location = new System.Drawing.Point(110, 389);
-            this.button_OPEN2.Name = "button_OPEN2";
-            this.button_OPEN2.Size = new System.Drawing.Size(93, 37);
-            this.button_OPEN2.TabIndex = 60;
-            this.button_OPEN2.Text = "폴더 열기";
-            this.button_OPEN2.UseVisualStyleBackColor = true;
-            this.button_OPEN2.Click += new System.EventHandler(this.button_OPEN2_Click);
-            // 
             // Ctr_Log
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
             this.Name = "Ctr_Log";
-            this.Size = new System.Drawing.Size(494, 541);
+            this.Size = new System.Drawing.Size(494, 802);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -798,12 +999,12 @@
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label4;
-        public System.Windows.Forms.ComboBox comboBox_SAVEMETHOD;
-        private System.Windows.Forms.Label label11;
+        public System.Windows.Forms.ComboBox comboBox_SAVEMETHOD_Local;
+        private System.Windows.Forms.Label label_SaveImageOption_Local;
         private System.Windows.Forms.Button button_DELETE;
-        private System.Windows.Forms.Button button_OPEN;
-        private System.Windows.Forms.ComboBox comboBox_SAVEFORMAT;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button_SaveDataAndImageFolder_Local_Open;
+        private System.Windows.Forms.ComboBox comboBox_SAVEFORMAT_Local;
+        private System.Windows.Forms.Label label_SaveImageFormat_Local;
         private System.Windows.Forms.Label label3;
         public System.Windows.Forms.CheckBox checkBox_CAM0;
         private System.Windows.Forms.Label label2;
@@ -829,9 +1030,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox_LOGCOUNT;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button button_Folder_setting;
-        private System.Windows.Forms.TextBox textBox_Folder;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button_SaveDataAndImageFolder_Local_Setting;
+        private System.Windows.Forms.TextBox textBox_SaveDataAndImageFolder_Local;
+        private System.Windows.Forms.Label label_SaveImageFolder_Local;
         public System.Windows.Forms.CheckBox checkBox_Display;
         public System.Windows.Forms.CheckBox checkBox_Debugging;
         public System.Windows.Forms.CheckBox checkBox_TextView;
@@ -847,9 +1048,25 @@
         private System.Windows.Forms.TextBox textBox_Data_Folder;
         private System.Windows.Forms.Label label13;
         public System.Windows.Forms.CheckBox checkBox_AISAVE;
-        private System.Windows.Forms.Button button_OPEN2;
-        private System.Windows.Forms.Button button_Folder_setting2;
-        private System.Windows.Forms.TextBox textBox_Folder2;
+        private System.Windows.Forms.Button button_SaveImageFolder_Server_Open;
+        private System.Windows.Forms.Button button_SaveImageFolder_Server_Setting;
+        private System.Windows.Forms.TextBox textBox_SaveImageFolder_Server;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label_SaveImageSetting_Server;
+        private System.Windows.Forms.Label label_SaveImageSetting_Local;
+        public System.Windows.Forms.ComboBox comboBox_SAVEMETHOD_Server;
+        private System.Windows.Forms.Label label_SaveImageOption_Server;
+        private System.Windows.Forms.Label label_SaveImageFormat_Server;
+        private System.Windows.Forms.ComboBox comboBox_SAVEFORMAT_Server;
+        private System.Windows.Forms.Label label_ImageFileNameSetting_Server_Example;
+        private System.Windows.Forms.Label label_ImageFileName_Server_Suffix;
+        private System.Windows.Forms.Label label_ImageFileName_Server_Prefix2;
+        private System.Windows.Forms.Label label_ImageFileName_Server_Prefix1;
+        private System.Windows.Forms.Label label_ImageFileNameSetting_Server;
+        private System.Windows.Forms.TextBox textBox_ImageFileName_Server_Suffix;
+        private System.Windows.Forms.TextBox textBox_ImageFileName_Server_Prefix2;
+        private System.Windows.Forms.TextBox textBox_ImageFileName_Server_Prefix1;
     }
 }

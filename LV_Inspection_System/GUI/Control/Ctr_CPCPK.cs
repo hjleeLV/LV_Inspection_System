@@ -472,7 +472,7 @@ namespace LV_Inspection_System.GUI.Control
             }
             
             t_file = "";
-            if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+            if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
             {
                 OpenFileDialog openPanel = new OpenFileDialog();
                 openPanel.InitialDirectory = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name;
@@ -486,7 +486,7 @@ namespace LV_Inspection_System.GUI.Control
             else
             {
                 OpenFileDialog openPanel = new OpenFileDialog();
-                openPanel.InitialDirectory = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name;
+                openPanel.InitialDirectory = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name;
                 openPanel.FileName = "Total*";
                 openPanel.Filter = "All csv files|*.csv";
                 if (openPanel.ShowDialog() == DialogResult.OK)

@@ -545,13 +545,13 @@ namespace LV_Inspection_System.GUI.Control
                             LVApp.Instance().m_Config.m_Model_Name = cmbModels.Items[cmbModels.SelectedIndex].ToString();
                             LVApp.Instance().m_Ctr_Mysql.DB_Create();
                             bool t_space_check = true;
-                            if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                            if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                             {
                                 t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().excute_path);
                             }
                             else
                             {
-                                t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                                t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                             }
                             if (t_space_check)
                             {
@@ -689,13 +689,13 @@ namespace LV_Inspection_System.GUI.Control
                 {//  시작할때 로딩
                     LVApp.Instance().m_Config.m_Model_Name = cmbModels.Items[cmbModels.SelectedIndex].ToString();
                     bool t_space_check = true;
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                     {
                         t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().excute_path);
                     }
                     else
                     {
-                        t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                        t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                     }
                     if (t_space_check)
                     {

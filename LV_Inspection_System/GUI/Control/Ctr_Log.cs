@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
+using PylonC.NET;
 
 namespace LV_Inspection_System.GUI.Control
 {
@@ -31,14 +32,14 @@ namespace LV_Inspection_System.GUI.Control
                 {// 한국어
                     groupBox1.Text = "이미지 저장관련[Image Logging]";
                     label4.Text = "저장할 카메라 선택";
-                    label11.Text = "저장방법";
-                    label1.Text = "파일포맷";
-                    label7.Text = "로컬 통합 저장 폴더";
+                    label_SaveImageOption_Local.Text = "저장방법";
+                    label_SaveImageFormat_Local.Text = "파일포맷";
+                    label_SaveImageFolder_Local.Text = "로컬 통합 저장 폴더";
                     label17.Text = "서버 이미지 저장 폴더";
-                    button_Folder_setting.Text = "폴더 선택";
-                    button_OPEN.Text = "폴더 열기";
-                    button_Folder_setting2.Text = "폴더 선택";
-                    button_OPEN2.Text = "폴더 열기";
+                    button_SaveDataAndImageFolder_Local_Setting.Text = "폴더 선택";
+                    button_SaveDataAndImageFolder_Local_Open.Text = "폴더 열기";
+                    button_SaveImageFolder_Server_Setting.Text = "폴더 선택";
+                    button_SaveImageFolder_Server_Open.Text = "폴더 열기";
                     button_DELETE.Text = "폴더 삭제";
                     groupBox2.Text = "데이터 저장관련[Data Logging]";
                     label14.Text = "시스템 로그 및 데이터 로그";
@@ -59,19 +60,26 @@ namespace LV_Inspection_System.GUI.Control
                     label8.Text = "초 마다 저장";
                     label13.Text = "로컬 Data 저장 폴더";
                     button_Data_Folder_setting.Text = "폴더 선택";
+
+                    label_SaveImageSetting_Local.Text = "로컬 설정";
+                    label_SaveImageSetting_Server.Text = "서버 설정";
+                    label_SaveImageOption_Server.Text = "저장방법";
+                    label_SaveImageFormat_Server.Text = "파일포맷";
+                    label_ImageFileNameSetting_Server.Text = "파일명 세팅";
+                    label_ImageFileNameSetting_Server_Example.Text = "①_②_년월일시분초밀리초_③.확장자";
                 }
                 else if (value == 1 && m_Language != value)
                 {// 영어
                     groupBox1.Text = "Image Logging";
                     label4.Text = "Select camera for save";
-                    label11.Text = "Item";
-                    label1.Text = "Format";
-                    label7.Text = "Local Total Folder";
+                    label_SaveImageOption_Local.Text = "Item";
+                    label_SaveImageFormat_Local.Text = "Format";
+                    label_SaveImageFolder_Local.Text = "Local Total Folder";
                     label17.Text = "Server Image Folder";
-                    button_Folder_setting.Text = "Select Folder";
-                    button_OPEN.Text = "Folder Open";
-                    button_Folder_setting2.Text = "Select Folder";
-                    button_OPEN2.Text = "Folder Open";
+                    button_SaveDataAndImageFolder_Local_Setting.Text = "Select Folder";
+                    button_SaveDataAndImageFolder_Local_Open.Text = "Folder Open";
+                    button_SaveImageFolder_Server_Setting.Text = "Select Folder";
+                    button_SaveImageFolder_Server_Open.Text = "Folder Open";
                     button_DELETE.Text = "Folder Delete";
                     groupBox2.Text = "Data Logging";
                     label14.Text = "Log for System and Data";
@@ -92,19 +100,26 @@ namespace LV_Inspection_System.GUI.Control
                     label8.Text = "sec/update";
                     label13.Text = "Data Folder";
                     button_Data_Folder_setting.Text = "Select Folder";
+
+                    label_SaveImageSetting_Local.Text = "Local Setting";
+                    label_SaveImageSetting_Server.Text = "Server Setting";
+                    label_SaveImageOption_Server.Text = "Item";
+                    label_SaveImageFormat_Server.Text = "Format";
+                    label_ImageFileNameSetting_Server.Text = "Set File Name";
+                    label_ImageFileNameSetting_Server_Example.Text = "①_②_YYYYMMDDHHMMSSms_③";
                 }
                 else if (value == 2 && m_Language != value)
                 {// 중국어
                     groupBox1.Text = "图像日志记录";
                     label4.Text = "选择要保存的摄像机";
-                    label11.Text = "项目";
-                    label1.Text = "格式";
-                    label7.Text = "本地集成存储文件夹";
+                    label_SaveImageOption_Local.Text = "项目";
+                    label_SaveImageFormat_Local.Text = "格式";
+                    label_SaveImageFolder_Local.Text = "本地集成存储文件夹";
                     label17.Text = "服务器映像文件夹";
-                    button_Folder_setting.Text = "选择文件夹";
-                    button_OPEN.Text = "文件夹打开";
-                    button_Folder_setting2.Text = "选择文件夹";
-                    button_OPEN2.Text = "文件夹打开";
+                    button_SaveDataAndImageFolder_Local_Setting.Text = "选择文件夹";
+                    button_SaveDataAndImageFolder_Local_Open.Text = "文件夹打开";
+                    button_SaveImageFolder_Server_Setting.Text = "选择文件夹";
+                    button_SaveImageFolder_Server_Open.Text = "文件夹打开";
                     button_DELETE.Text = "文件夹删除";
                     groupBox2.Text = "数据日志记录";
                     label14.Text = "系统和数据的日志";
@@ -125,19 +140,26 @@ namespace LV_Inspection_System.GUI.Control
                     label8.Text = "秒/更新";
                     label13.Text = "本地数据存储文件夹";
                     button_Data_Folder_setting.Text = "选择文件夹";
+
+                    label_SaveImageSetting_Local.Text = "本地设置";
+                    label_SaveImageSetting_Server.Text = "服务器设置";
+                    label_SaveImageOption_Server.Text = "项目";
+                    label_SaveImageFormat_Server.Text = "格式";
+                    label_ImageFileNameSetting_Server.Text = "设置文件名";
+                    label_ImageFileNameSetting_Server_Example.Text = "①_②_年月日时分秒毫秒_③.扩展名";
                 }
                 m_Language = value;
             }
         }
 
-        private void button_OPEN_Click(object sender, EventArgs e)
+        private void button_SaveDataAndImageFolder_Local_Open_Click(object sender, EventArgs e)
         {
             try
             {
-                if (textBox_Folder.Text.Length > 1)
+                if (textBox_SaveDataAndImageFolder_Local.Text.Length > 1)
                 {
-                    LVApp.Instance().m_Config.m_Log_Save_Folder = textBox_Folder.Text;
-                    DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                    LVApp.Instance().m_Config.m_Log_Save_Folder_Local = textBox_SaveDataAndImageFolder_Local.Text;
+                    DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                     // 폴더가 존재하지 않으면
                     if (dir.Exists == false)
                     {
@@ -146,32 +168,35 @@ namespace LV_Inspection_System.GUI.Control
                     }
                 }
                 // Check the folder exists
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                 {
-                    if (Directory.Exists(LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name))
-                    {
-                        try
-                        {
-                            // Start a new process for explorer
-                            // in this location
-                            ProcessStartInfo l_psi = new ProcessStartInfo();
-                            l_psi.FileName = "explorer";
-                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
-                            l_psi.UseShellExecute = true;
+                    // 250718 - 경로 설정을 하지 않았으면 무시함
+                    //string dir = $"{LVApp.Instance().excute_path}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}";
+                    //if (Directory.Exists(dir))
+                    //{
+                    //    try
+                    //    {
+                    //        // Start a new process for explorer
+                    //        // in this location
+                    //        ProcessStartInfo l_psi = new ProcessStartInfo();
+                    //        l_psi.FileName = "explorer";
+                    //        l_psi.Arguments = string.Format("/root,{0}", dir);
+                    //        l_psi.UseShellExecute = true;
 
-                            Process l_newProcess = new Process();
-                            l_newProcess.StartInfo = l_psi;
-                            l_newProcess.Start();
-                        }
-                        catch (Exception exception)
-                        {
-                            throw new Exception("Error in 'LaunchFolderView'.", exception);
-                        }
-                    }
+                    //        Process l_newProcess = new Process();
+                    //        l_newProcess.StartInfo = l_psi;
+                    //        l_newProcess.Start();
+                    //    }
+                    //    catch (Exception exception)
+                    //    {
+                    //        throw new Exception("Error in 'LaunchFolderView'.", exception);
+                    //    }
+                    //}
                 }
                 else
                 {
-                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name))
+                    string dir = $"{LVApp.Instance().m_Config.m_Log_Save_Folder_Local}\\Images\\{LVApp.Instance().m_Config.m_Model_Name}";
+                    if (Directory.Exists(dir))
                     {
                         try
                         {
@@ -179,7 +204,7 @@ namespace LV_Inspection_System.GUI.Control
                             // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
-                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
+                            l_psi.Arguments = string.Format("/root,{0}", dir);
                             l_psi.UseShellExecute = true;
 
                             Process l_newProcess = new Process();
@@ -200,9 +225,9 @@ namespace LV_Inspection_System.GUI.Control
 
         private void button_DELETE_Click(object sender, EventArgs e)
         {
-            if (textBox_Folder.Text.Length > 1)
+            if (textBox_SaveDataAndImageFolder_Local.Text.Length > 1)
             {
-                LVApp.Instance().m_Config.m_Log_Save_Folder = textBox_Folder.Text;
+                LVApp.Instance().m_Config.m_Log_Save_Folder_Local = textBox_SaveDataAndImageFolder_Local.Text;
             }
             if (LVApp.Instance().m_Config.m_Model_Name == "")
             {
@@ -226,7 +251,7 @@ namespace LV_Inspection_System.GUI.Control
             {
                 try
                 {
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                     {
                         DirectoryInfo tempDirInfo = new DirectoryInfo(LVApp.Instance().excute_path + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
 
@@ -265,7 +290,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
                     else
                     {
-                        DirectoryInfo tempDirInfo = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
+                        DirectoryInfo tempDirInfo = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + LVApp.Instance().m_Config.m_Model_Name);
 
                         if (tempDirInfo.Exists == true)
                         {
@@ -384,7 +409,7 @@ namespace LV_Inspection_System.GUI.Control
         {
             if (LVApp.Instance().m_Config.m_Data_Save_Folder.Length <= 1)
             { // 서버에 저장 안할 때
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length <= 1)
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length <= 1)
                 { // 로그 폴더가 없을 때
                     if (Directory.Exists(LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name))
                     {
@@ -409,7 +434,7 @@ namespace LV_Inspection_System.GUI.Control
                 }
                 else
                 { // 로그 폴더가 있을 때
-                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name))
+                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name))
                     {
                         try
                         {
@@ -417,7 +442,7 @@ namespace LV_Inspection_System.GUI.Control
                             // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
-                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
+                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
                             l_psi.UseShellExecute = true;
 
                             Process l_newProcess = new Process();
@@ -454,7 +479,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
                 }
 
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length <= 1)
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length <= 1)
                 { // 로그 폴더가 없을 때
                     if (Directory.Exists(LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name))
                     {
@@ -479,7 +504,7 @@ namespace LV_Inspection_System.GUI.Control
                 }
                 else
                 { // 로그 폴더가 있을 때
-                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name))
+                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name))
                     {
                         try
                         {
@@ -487,7 +512,7 @@ namespace LV_Inspection_System.GUI.Control
                             // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
-                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
+                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
                             l_psi.UseShellExecute = true;
 
                             Process l_newProcess = new Process();
@@ -514,7 +539,7 @@ namespace LV_Inspection_System.GUI.Control
             {
                 try
                 {
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                     {
                         DirectoryInfo tempDirInfo = new DirectoryInfo(LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
 
@@ -536,7 +561,7 @@ namespace LV_Inspection_System.GUI.Control
                     }
                     else
                     {
-                        DirectoryInfo tempDirInfo = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
+                        DirectoryInfo tempDirInfo = new DirectoryInfo(LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name);
 
                         if (tempDirInfo.Exists == true)
                         {
@@ -627,9 +652,9 @@ namespace LV_Inspection_System.GUI.Control
                     checkBox_CAM5.Checked = worksheet.Cells[7, 2].Value.ToString() == "1" ? true : false;
                     checkBox_CAM6.Checked = worksheet.Cells[8, 2].Value.ToString() == "1" ? true : false;
                     checkBox_CAM7.Checked = worksheet.Cells[9, 2].Value.ToString() == "1" ? true : false;
-                    comboBox_SAVEMETHOD.SelectedIndex = comboBox_SAVEMETHOD.FindStringExact(worksheet.Cells[10, 2].Value.ToString());
+                    comboBox_SAVEMETHOD_Local.SelectedIndex = comboBox_SAVEMETHOD_Local.FindStringExact(worksheet.Cells[10, 2].Value.ToString());
                     textBox_SAVE_DATE.Text = worksheet.Cells[11, 2].Value.ToString();
-                    comboBox_SAVEFORMAT.SelectedIndex = comboBox_SAVEFORMAT.FindStringExact(worksheet.Cells[12, 2].Value.ToString());
+                    comboBox_SAVEFORMAT_Local.SelectedIndex = comboBox_SAVEFORMAT_Local.FindStringExact(worksheet.Cells[12, 2].Value.ToString());
                     checkBox_LOGUSE.Checked = worksheet.Cells[13, 2].Value.ToString() == "1" ? true : false;
                     textBox_LOGDAY.Text = worksheet.Cells[14, 2].Value.ToString();
                     if (worksheet.Cells[15, 2].Value != null)
@@ -642,21 +667,19 @@ namespace LV_Inspection_System.GUI.Control
                     }
                     if (worksheet.Cells[16, 2].Value != null)
                     {
-                        textBox_Folder.Text = worksheet.Cells[16, 2].Value.ToString();
-                        LVApp.Instance().m_Config.m_Log_Save_Folder = textBox_Folder.Text;
+                        textBox_SaveDataAndImageFolder_Local.Text = worksheet.Cells[16, 2].Value.ToString();
                     }
                     else
                     {
-                        textBox_Folder.Text = "";
+                        textBox_SaveDataAndImageFolder_Local.Text = "";
                     }
                     if (worksheet.Cells[22, 4].Value != null)
                     {
-                        textBox_Folder2.Text = worksheet.Cells[22, 4].Value.ToString();
-                        LVApp.Instance().m_Config.m_Log_Save_Folder2 = textBox_Folder2.Text;
+                        textBox_SaveImageFolder_Server.Text = worksheet.Cells[22, 4].Value.ToString();
                     }
                     else
                     {
-                        textBox_Folder2.Text = "";
+                        textBox_SaveImageFolder_Server.Text = "";
                     }
 
                     if (worksheet.Cells[16, 3].Value != null)
@@ -728,6 +751,51 @@ namespace LV_Inspection_System.GUI.Control
                     {
                         textBox_MEMORY.Text = "100";
                     }
+
+                    if (worksheet.Cells[23, 2].Value !=null)
+                    {
+                        comboBox_SAVEMETHOD_Server.SelectedIndex = comboBox_SAVEMETHOD_Server.FindStringExact(worksheet.Cells[23, 2].Value.ToString());
+
+                    }
+                    else
+                    {
+                        comboBox_SAVEMETHOD_Server.SelectedIndex = 1;
+                    }
+
+                    if (worksheet.Cells[23, 3].Value != null)
+                    {
+                        comboBox_SAVEFORMAT_Server.SelectedIndex = comboBox_SAVEFORMAT_Server.FindStringExact(worksheet.Cells[23, 3].Value.ToString());
+                    }
+                    else
+                    {
+                        comboBox_SAVEFORMAT_Server.SelectedIndex = 1;
+                    }
+
+                    if (worksheet.Cells[24, 2].Value != null)
+                    {
+                        textBox_ImageFileName_Server_Prefix1.Text = worksheet.Cells[24, 2].Value.ToString();
+                    }
+                    else
+                    {
+                        textBox_ImageFileName_Server_Prefix1.Text = "";
+                    }
+                    if (worksheet.Cells[24, 3].Value != null)
+                    {
+                        textBox_ImageFileName_Server_Prefix2.Text = worksheet.Cells[24, 3].Value.ToString();
+                    }
+                    else
+                    {
+                        textBox_ImageFileName_Server_Prefix2.Text = "";
+                    }
+                    if (worksheet.Cells[24, 4].Value != null)
+                    {
+                        textBox_ImageFileName_Server_Suffix.Text = worksheet.Cells[24, 4].Value.ToString();
+                    }
+                    else
+                    {
+                        textBox_ImageFileName_Server_Suffix.Text = "";
+                    }
+
                     double.TryParse(textBox_MEMORY.Text, out LVApp.Instance().m_Config.NG_Log_Memory);
                     Update_NG_Log_Max_CNT();
                     LVApp.Instance().m_Config.AI_Image_Save = checkBox_AISAVE.Checked;
@@ -772,99 +840,8 @@ namespace LV_Inspection_System.GUI.Control
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    LVApp.Instance().m_Config.m_Cam_Log_Use_Check[0] = checkBox_CAM0.Checked;
-                    LVApp.Instance().m_Config.m_Cam_Log_Use_Check[1] = checkBox_CAM1.Checked;
-                    LVApp.Instance().m_Config.m_Cam_Log_Use_Check[2] = checkBox_CAM2.Checked;
-                    LVApp.Instance().m_Config.m_Cam_Log_Use_Check[3] = checkBox_CAM3.Checked;
-                    //LVApp.Instance().m_Config.m_Cam_Log_Use_Check[4] = checkBox_CAM4.Checked;
-                    //LVApp.Instance().m_Config.m_Cam_Log_Use_Check[5] = checkBox_CAM5.Checked;
-                    //LVApp.Instance().m_Config.m_Cam_Log_Use_Check[6] = checkBox_CAM6.Checked;
-                    //LVApp.Instance().m_Config.m_Cam_Log_Use_Check[7] = checkBox_CAM7.Checked;
-
-                    if (comboBox_SAVEMETHOD.SelectedIndex < 0)
-                    {
-                        comboBox_SAVEMETHOD.SelectedIndex = 1;
-                    }
-                    if (comboBox_SAVEFORMAT.SelectedIndex < 0)
-                    {
-                        comboBox_SAVEFORMAT.SelectedIndex = 1;
-                    }
-
-                    LVApp.Instance().m_Config.m_Cam_Log_Method = comboBox_SAVEMETHOD.SelectedIndex;
-                    LVApp.Instance().m_Config.m_Cam_Log_Format = comboBox_SAVEFORMAT.SelectedIndex;
-                    LVApp.Instance().m_Config.m_Data_Log_Use_Check = checkBox_LOGUSE.Checked;
-
-                    int m_date = Convert.ToInt32(textBox_SAVE_DATE.Text);
-                    LVApp.Instance().m_Config.m_Cam_Log_Date = m_date;
-
-                    m_date = Convert.ToInt32(textBox_LOGDAY.Text);
-                    LVApp.Instance().m_Config.m_Data_Log_Date = m_date;
-
-                    LVApp.Instance().m_Config.m_Log_Save_Num = Convert.ToInt32(textBox_LOGCOUNT.Text);
-                    LVApp.Instance().m_Config.m_Log_Save_Folder = textBox_Folder.Text;
-
-                    if (checkBox_Display.Checked)
-                    {
-                        LVApp.Instance().m_Config.Realtime_View_Check = true;
-                    }
-                    else
-                    {
-                        LVApp.Instance().m_Config.Realtime_View_Check = false;
-                    }
-                    if (checkBox_Debugging.Checked)
-                    {
-                        LVApp.Instance().m_Config.Alg_Debugging = true;
-                    }
-                    else
-                    {
-                        LVApp.Instance().m_Config.Alg_Debugging = false;
-                    }
-                    if (checkBox_TextView.Checked)
-                    {
-                        LVApp.Instance().m_Config.Alg_TextView = true;
-                    }
-                    else
-                    {
-                        LVApp.Instance().m_Config.Alg_TextView = false;
-                    }
-
-                    if (checkBox_NG_Display.Checked)
-                    {
-                        LVApp.Instance().m_Config.Diplay_Only_NG = true;
-                    }
-                    else
-                    {
-                        LVApp.Instance().m_Config.Diplay_Only_NG = false;
-                    }
-                    if (checkBox_NG_LOG.Checked)
-                    {
-                        LVApp.Instance().m_Config.NG_Log_Use = true;
-                    }
-                    else
-                    {
-                        LVApp.Instance().m_Config.NG_Log_Use = false;
-                    }
-                    LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Global_Parameters(LVApp.Instance().m_Config.Alg_TextView, LVApp.Instance().m_Config.Alg_Debugging);
-
-
-                    for (int i = 0; i < LVApp.Instance().m_Config.m_Cam_Total_Num; i++)
-                    {
-                        LVApp.Instance().m_Config.Initialize_Data_Log(i);
-                    }
-
-                    //LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Global_Parameters(LVApp.Instance().m_Config.Alg_TextView, LVApp.Instance().m_Config.m_Alg_Type, LVApp.Instance().m_Config.Alg_Debugging);
-
-                    if (LVApp.Instance().m_Config.Alg_Debugging)
-                    {
-                        DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\Images\\Debugging");
-                        // 폴더가 존재하지 않으면
-                        if (dir.Exists == false)
-                        {
-                            // 새로 생성합니다.
-                            dir.Create();
-                        }
-                    }
-                    DebugLogger.Instance().LogRecord("Log 设置已更新!");
+                    Refresh_Log_Data();
+                    return;
                 });
             }
             else
@@ -878,9 +855,32 @@ namespace LV_Inspection_System.GUI.Control
                 //LVApp.Instance().m_Config.m_Cam_Log_Use_Check[6] = checkBox_CAM6.Checked;
                 //LVApp.Instance().m_Config.m_Cam_Log_Use_Check[7] = checkBox_CAM7.Checked;
 
-                LVApp.Instance().m_Config.m_Cam_Log_Method = comboBox_SAVEMETHOD.SelectedIndex;
-                LVApp.Instance().m_Config.m_Cam_Log_Format = comboBox_SAVEFORMAT.SelectedIndex;
+                if (comboBox_SAVEMETHOD_Local.SelectedIndex < 0)
+                {
+                    comboBox_SAVEMETHOD_Local.SelectedIndex = 1;
+                }
+                if (comboBox_SAVEFORMAT_Local.SelectedIndex < 0)
+                {
+                    comboBox_SAVEFORMAT_Local.SelectedIndex = 1;
+                }
+                if (comboBox_SAVEMETHOD_Server.SelectedIndex < 0)
+                {
+                    comboBox_SAVEMETHOD_Server.SelectedIndex = 1;
+                }
+                if (comboBox_SAVEFORMAT_Server.SelectedIndex < 0)
+                {
+                    comboBox_SAVEFORMAT_Server.SelectedIndex = 1;
+                }
+
+                LVApp.Instance().m_Config.m_Cam_Log_Method_Local = comboBox_SAVEMETHOD_Local.SelectedIndex;
+                LVApp.Instance().m_Config.m_Cam_Log_Format_Local = comboBox_SAVEFORMAT_Local.SelectedIndex;
+                LVApp.Instance().m_Config.m_Cam_Log_Method_Server = comboBox_SAVEMETHOD_Server.SelectedIndex;
+                LVApp.Instance().m_Config.Cam_Log_Format_Server = comboBox_SAVEFORMAT_Server.SelectedIndex;
                 LVApp.Instance().m_Config.m_Data_Log_Use_Check = checkBox_LOGUSE.Checked;
+
+                LVApp.Instance().m_Config.m_ServerImageFileName_Prefix1 = textBox_ImageFileName_Server_Prefix1.Text;
+                LVApp.Instance().m_Config.m_ServerImageFileName_Prefix2 = textBox_ImageFileName_Server_Prefix2.Text;
+                LVApp.Instance().m_Config.m_ServerImageFileName_Suffix = textBox_ImageFileName_Server_Suffix.Text;
 
                 int m_date = Convert.ToInt32(textBox_SAVE_DATE.Text);
                 LVApp.Instance().m_Config.m_Cam_Log_Date = m_date;
@@ -889,7 +889,8 @@ namespace LV_Inspection_System.GUI.Control
                 LVApp.Instance().m_Config.m_Data_Log_Date = m_date;
 
                 LVApp.Instance().m_Config.m_Log_Save_Num = Convert.ToInt32(textBox_LOGCOUNT.Text);
-                LVApp.Instance().m_Config.m_Log_Save_Folder = textBox_Folder.Text;
+                LVApp.Instance().m_Config.m_Log_Save_Folder_Local = textBox_SaveDataAndImageFolder_Local.Text;
+                LVApp.Instance().m_Config.m_Log_Save_Folder_Server = textBox_SaveImageFolder_Server.Text;
 
                 if (checkBox_Display.Checked)
                 {
@@ -915,6 +916,7 @@ namespace LV_Inspection_System.GUI.Control
                 {
                     LVApp.Instance().m_Config.Alg_TextView = false;
                 }
+
                 if (checkBox_NG_Display.Checked)
                 {
                     LVApp.Instance().m_Config.Diplay_Only_NG = true;
@@ -933,12 +935,14 @@ namespace LV_Inspection_System.GUI.Control
                 }
                 LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Global_Parameters(LVApp.Instance().m_Config.Alg_TextView, LVApp.Instance().m_Config.Alg_Debugging);
 
+
                 for (int i = 0; i < LVApp.Instance().m_Config.m_Cam_Total_Num; i++)
                 {
                     LVApp.Instance().m_Config.Initialize_Data_Log(i);
                 }
 
                 //LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Global_Parameters(LVApp.Instance().m_Config.Alg_TextView, LVApp.Instance().m_Config.m_Alg_Type, LVApp.Instance().m_Config.Alg_Debugging);
+
                 if (LVApp.Instance().m_Config.Alg_Debugging)
                 {
                     DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\Images\\Debugging");
@@ -949,7 +953,6 @@ namespace LV_Inspection_System.GUI.Control
                         dir.Create();
                     }
                 }
-
                 DebugLogger.Instance().LogRecord("Log 设置已更新!");
             }
         }
@@ -1068,22 +1071,22 @@ namespace LV_Inspection_System.GUI.Control
                     worksheet.Cells[7, 2].Value = checkBox_CAM5.Checked == true ? "1" : "0";
                     worksheet.Cells[8, 2].Value = checkBox_CAM6.Checked == true ? "1" : "0";
                     worksheet.Cells[9, 2].Value = checkBox_CAM7.Checked == true ? "1" : "0";
-                    if (comboBox_SAVEMETHOD.SelectedIndex < 0)
+                    if (comboBox_SAVEMETHOD_Local.SelectedIndex < 0)
                     {
-                        comboBox_SAVEMETHOD.SelectedIndex = 1;
+                        comboBox_SAVEMETHOD_Local.SelectedIndex = 1;
                     }
-                    worksheet.Cells[10, 2].Value = comboBox_SAVEMETHOD.Items[comboBox_SAVEMETHOD.SelectedIndex].ToString();
+                    worksheet.Cells[10, 2].Value = comboBox_SAVEMETHOD_Local.Items[comboBox_SAVEMETHOD_Local.SelectedIndex].ToString();
                     worksheet.Cells[11, 2].Value = textBox_SAVE_DATE.Text;
-                    if (comboBox_SAVEFORMAT.SelectedIndex < 0)
+                    if (comboBox_SAVEFORMAT_Local.SelectedIndex < 0)
                     {
-                        comboBox_SAVEFORMAT.SelectedIndex = 1;
+                        comboBox_SAVEFORMAT_Local.SelectedIndex = 1;
                     }
-                    worksheet.Cells[12, 2].Value = comboBox_SAVEFORMAT.Items[comboBox_SAVEFORMAT.SelectedIndex].ToString();
+                    worksheet.Cells[12, 2].Value = comboBox_SAVEFORMAT_Local.Items[comboBox_SAVEFORMAT_Local.SelectedIndex].ToString();
 
                     worksheet.Cells[13, 2].Value = checkBox_LOGUSE.Checked == true ? "1" : "0";
                     worksheet.Cells[14, 2].Value = textBox_LOGDAY.Text;
                     worksheet.Cells[15, 2].Value = textBox_LOGCOUNT.Text;
-                    worksheet.Cells[16, 2].Value = textBox_Folder.Text;
+                    worksheet.Cells[16, 2].Value = textBox_SaveDataAndImageFolder_Local.Text;
                     worksheet.Cells[16, 3].Value = textBox_Data_Folder.Text;
                     worksheet.Cells[17, 2].Value = checkBox_Display.Checked == true ? "1" : "0";
                     worksheet.Cells[18, 2].Value = checkBox_Debugging.Checked == true ? "1" : "0";
@@ -1093,7 +1096,13 @@ namespace LV_Inspection_System.GUI.Control
                     worksheet.Cells[22, 3].Value = textBox_MEMORY.Text;
 
                     worksheet.Cells[20, 2].Value = textBox_GRAPH.Text;
-                    worksheet.Cells[22, 4].Value = textBox_Folder2.Text;
+                    worksheet.Cells[22, 4].Value = textBox_SaveImageFolder_Server.Text;
+
+                    worksheet.Cells[23, 2].Value = comboBox_SAVEMETHOD_Server.SelectedItem?.ToString();
+                    worksheet.Cells[23, 3].Value = comboBox_SAVEFORMAT_Server.SelectedItem?.ToString();
+                    worksheet.Cells[24, 2].Value = textBox_ImageFileName_Server_Prefix1.Text.ToString();
+                    worksheet.Cells[24, 3].Value = textBox_ImageFileName_Server_Prefix2.Text.ToString();
+                    worksheet.Cells[24, 4].Value = textBox_ImageFileName_Server_Suffix.Text.ToString();
 
                     int.TryParse(textBox_GRAPH.Text, out LVApp.Instance().m_Config.m_Graph_Update_sec);
                     package.Save();
@@ -1112,13 +1121,13 @@ namespace LV_Inspection_System.GUI.Control
                 }
 
                 bool t_space_check = true;
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder == "")
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
                 {
                     t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().excute_path);
                 }
                 else
                 {
-                    t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder);
+                    t_space_check = LVApp.Instance().m_mainform.Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
                 }
                 if (t_space_check)
                 {
@@ -1166,7 +1175,7 @@ namespace LV_Inspection_System.GUI.Control
 
         private void comboBox_SAVEMETHOD_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LVApp.Instance().m_Config.m_Cam_Log_Method = comboBox_SAVEMETHOD.SelectedIndex;
+            LVApp.Instance().m_Config.m_Cam_Log_Method_Local = comboBox_SAVEMETHOD_Local.SelectedIndex;
         }
 
         private void textBox_SAVE_DATE_TextChanged(object sender, EventArgs e)
@@ -1179,15 +1188,15 @@ namespace LV_Inspection_System.GUI.Control
 
         }
 
-        private void button_Folder_setting_Click(object sender, EventArgs e)
+        private void button_SaveDataAndImageFolder_Local_Setting_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();  //폴더 다이알로그 호출
 
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                textBox_Folder.ResetText();
-                textBox_Folder.Text = folderBrowserDialog1.SelectedPath;
-                LVApp.Instance().m_Config.m_Log_Save_Folder = folderBrowserDialog1.SelectedPath;
+                textBox_SaveDataAndImageFolder_Local.ResetText();
+                textBox_SaveDataAndImageFolder_Local.Text = folderBrowserDialog1.SelectedPath;
+                LVApp.Instance().m_Config.m_Log_Save_Folder_Local = folderBrowserDialog1.SelectedPath;
             }
         }
 
@@ -1268,27 +1277,27 @@ namespace LV_Inspection_System.GUI.Control
 
         }
 
-        private void button_Folder_setting2_Click(object sender, EventArgs e)
+        private void button_SaveImageFolder_Server_Setting_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();  //폴더 다이알로그 호출
 
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                textBox_Folder2.ResetText();
+                textBox_SaveImageFolder_Server.ResetText();
 
                 if (folderBrowserDialog1.SelectedPath.Length == 3)
                 {
-                    textBox_Folder2.Text = folderBrowserDialog1.SelectedPath.Substring(0,2);
+                    textBox_SaveImageFolder_Server.Text = folderBrowserDialog1.SelectedPath.Substring(0,2);
                 }
                 else
                 {
-                    textBox_Folder2.Text = folderBrowserDialog1.SelectedPath;
+                    textBox_SaveImageFolder_Server.Text = folderBrowserDialog1.SelectedPath;
                 }
-                LVApp.Instance().m_Config.m_Log_Save_Folder2 = folderBrowserDialog1.SelectedPath;
+                LVApp.Instance().m_Config.m_Log_Save_Folder_Server = folderBrowserDialog1.SelectedPath;
             }
         }
 
-        private void button_OPEN2_Click(object sender, EventArgs e)
+        private void button_SaveImageFolder_Server_Open_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1304,13 +1313,13 @@ namespace LV_Inspection_System.GUI.Control
                 //    }
                 //}
                 // Check the folder exists
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder2 == "")
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Server == "")
                 {
 
                 }
                 else
                 {
-                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name))
+                    if (Directory.Exists(LVApp.Instance().m_Config.m_Log_Save_Folder_Server))
                     {
                         try
                         {
@@ -1318,7 +1327,7 @@ namespace LV_Inspection_System.GUI.Control
                             // in this location
                             ProcessStartInfo l_psi = new ProcessStartInfo();
                             l_psi.FileName = "explorer";
-                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder2 + "\\" + LVApp.Instance().m_Config.m_Model_Name);
+                            l_psi.Arguments = string.Format("/root,{0}", LVApp.Instance().m_Config.m_Log_Save_Folder_Server);
                             l_psi.UseShellExecute = true;
 
                             Process l_newProcess = new Process();

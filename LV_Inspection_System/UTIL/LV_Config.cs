@@ -13,7 +13,6 @@ using System.Threading;
 using ZedGraph;
 using System.Diagnostics;
 using OpenCvSharp;
-using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 namespace LV_Inspection_System.UTIL
@@ -40,15 +39,90 @@ namespace LV_Inspection_System.UTIL
         // 4 : 3<1<2
         // 5 : 3<2<1
         public bool[] m_Cam_Log_Use_Check = new bool[10];                   // 카메라 이미지 저장 유무
-        public int m_Cam_Log_Method = 1;                                    // 카메라 이미지 저장 방법 0:OK만, 1:NG만, 2:모두
+        public int m_Cam_Log_Method_Local = 1;                              // 카메라 이미지 저장 방법 0:OK만, 1:NG만, 2:모두 - 검사기 로컬
+        public int m_Cam_Log_Method_Server = 1;                             // 카메라 이미지 저장 방법 0:OK만, 1:NG만, 2:모두 - (MES 등 고객사) 원격 서버
         public int m_Cam_Log_Date = 30;                                     // 카메라 이미지 저장 일수(Day)
-        public int m_Cam_Log_Format = 1;                                    // 카메라 이미지 저장 포멧 0:bmp, 1:jpg, 2:png
+        public int m_Cam_Log_Format_Local = 1;                              // 카메라 이미지 저장 포멧 0:bmp, 1:jpg, 2:png - 검사기 로컬
+        private int m_Cam_Log_Format_Server = 1;                             // 카메라 이미지 저장 포멧 0:bmp, 1:jpg, 2:png- (MES 등 고객사) 원격 서버
+
+        private System.Drawing.Imaging.ImageFormat _imageFormat_Local = System.Drawing.Imaging.ImageFormat.Jpeg;
+        private System.Drawing.Imaging.ImageFormat _imageFormat_Server = System.Drawing.Imaging.ImageFormat.Jpeg;
+        private string _imageExtension_Local = "jpg";
+        private string _imageExtension_Server = "jpg";
+
+        public System.Drawing.Imaging.ImageFormat ImageFormat_Local => _imageFormat_Local;
+        public System.Drawing.Imaging.ImageFormat ImageFormat_Server => _imageFormat_Server;
+        public string ImageExtension_Local => _imageExtension_Local;
+        public string ImageExtension_Server => _imageExtension_Server;
+
+        public int Cam_Log_Format_Local
+        {
+            set
+            {
+                if (value < 0 || value > 2)
+                {
+                    return;
+                }
+                m_Cam_Log_Format_Local = value;
+                switch(value)
+                {
+                    case 0:
+                        _imageFormat_Local = System.Drawing.Imaging.ImageFormat.Bmp;
+                        _imageExtension_Local = "bmp";
+                        break;
+                    case 1:
+                        _imageFormat_Local = System.Drawing.Imaging.ImageFormat.Jpeg;
+                        _imageExtension_Local = "jpg";
+                        break;
+                    case 2:
+                        _imageFormat_Local = System.Drawing.Imaging.ImageFormat.Png;
+                        _imageExtension_Local = "png";
+                        break;
+                }
+            }
+            get { return m_Cam_Log_Format_Local; }
+        }
+
+        public int Cam_Log_Format_Server
+        {
+            set
+            {
+                if (value < 0 || value > 2)
+                {
+                    return;
+                }
+                m_Cam_Log_Format_Server = value;
+                switch(value)
+                {
+                    case 0:
+                        _imageFormat_Server = System.Drawing.Imaging.ImageFormat.Bmp;
+                        _imageExtension_Server = "bmp";
+                        break;
+                    case 1:
+                        _imageFormat_Server = System.Drawing.Imaging.ImageFormat.Jpeg;
+                        _imageExtension_Server = "jpg";
+                        break;
+                    case 2:
+                        _imageFormat_Server = System.Drawing.Imaging.ImageFormat.Png;
+                        _imageExtension_Server = "png";
+                        break;
+                }
+            }
+            get
+            {
+                return m_Cam_Log_Format_Server;
+            }
+        }
+
         public bool m_Data_Log_Use_Check = true;                            // Data 저장 유무
         public int m_Data_Log_Date = 30;                                    // Data 저장 일수(Day)
-        public int m_Log_Save_Num = 30;                                   // 검사 결과 저장 개수
-        public string m_Log_Save_Folder = "";                               // 검사 결과 저장 폴더 - 검사기 로컬
-        public string m_Log_Save_Folder2 = "";                               // 검사 결과 저장 폴더 - (MES 등 고객사) 원격 서버
-        public string m_Data_Save_Folder = "";                               // 검사 결과 저장 폴더
+        public int m_Log_Save_Num = 30;                                     // 검사 결과 저장 개수
+        public string m_Log_Save_Folder_Local = "";                         // 검사 결과 저장 폴더 - 검사기 로컬
+        public string m_Log_Save_Folder_Server = "";                        // 검사 결과 저장 폴더 - (MES 등 고객사) 원격 서버, 하위 폴더를 생성하지 않도록 변경됨(250714 - L 프로젝트)
+        public string m_ServerImageFileName_Prefix1 = "";                   // (MES 등 고객사) 원격 서버에 이미지를 저장할 때, 파일 명의 접두사1
+        public string m_ServerImageFileName_Prefix2 = "";                   // (MES 등 고객사) 원격 서버에 이미지를 저장할 때, 파일 명의 접두사2
+        public string m_ServerImageFileName_Suffix = "";                    // (MES 등 고객사) 원격 서버에 이미지를 저장할 때, 파일 명의 접미사
+        public string m_Data_Save_Folder = "";                              // 검사 결과 저장 폴더
         private DataTable[] destinationTable = new DataTable[5];
 
         public int[] m_Error_Flag = new int[10];                            // 검사 결과가 OK(0) 인지 NG(1)인지 무(-1)인지?
@@ -2404,9 +2478,9 @@ namespace LV_Inspection_System.UTIL
                     }
 
                     String m_Log_folder = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                     {
-                        m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                        m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                     }
 
                     DirectoryInfo dir = new DirectoryInfo(m_Log_folder);
@@ -2418,9 +2492,9 @@ namespace LV_Inspection_System.UTIL
                     if (CSVLog[Cam_num] == null)
                     {
                         String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
-                        if (m_Log_Save_Folder != "")
+                        if (m_Log_Save_Folder_Local != "")
                         {
-                            m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
+                            m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
                         }
                         bool t_HeadersWritten = false;
                         if (File.Exists(m_Log_File_Name))
@@ -2447,9 +2521,9 @@ namespace LV_Inspection_System.UTIL
                         {
                             CSVLog[Cam_num].Close();
                             String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
-                            if (m_Log_Save_Folder != "")
+                            if (m_Log_Save_Folder_Local != "")
                             {
-                                m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
+                                m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
                             }
                             bool t_HeadersWritten = false;
                             if (File.Exists(m_Log_File_Name))
@@ -2475,9 +2549,9 @@ namespace LV_Inspection_System.UTIL
                             CSVLog[Cam_num].Close();
                             CSVLog[Cam_num] = null;
                             String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
-                            if (m_Log_Save_Folder != "")
+                            if (m_Log_Save_Folder_Local != "")
                             {
-                                m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
+                                m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\" + "CAM" + Cam_num.ToString() + ".csv"; //파일경로
                             }
                             bool t_HeadersWritten = false;
                             if (File.Exists(m_Log_File_Name))
@@ -2518,9 +2592,9 @@ namespace LV_Inspection_System.UTIL
                     t_Result_log_Total[3] = true;
 
                     String m_Log_folder = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                     {
-                        m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                        m_Log_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                     }
 
                     DirectoryInfo dir = new DirectoryInfo(m_Log_folder);
@@ -2532,9 +2606,9 @@ namespace LV_Inspection_System.UTIL
                     if (CSVLog[Cam_num] == null)
                     {
                         String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
-                        if (m_Log_Save_Folder != "")
+                        if (m_Log_Save_Folder_Local != "")
                         {
-                            m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
+                            m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
                         }
                         bool t_HeadersWritten = false;
                         if (File.Exists(m_Log_File_Name))
@@ -2595,9 +2669,9 @@ namespace LV_Inspection_System.UTIL
                         {
                             CSVLog[Cam_num].Close();
                             String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
-                            if (m_Log_Save_Folder != "")
+                            if (m_Log_Save_Folder_Local != "")
                             {
-                                m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
+                                m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
                             }
                             bool t_HeadersWritten = false;
                             if (File.Exists(m_Log_File_Name))
@@ -2658,9 +2732,9 @@ namespace LV_Inspection_System.UTIL
                             CSVLog[Cam_num].Close();
                             CSVLog[Cam_num] = null;
                             String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
-                            if (m_Log_Save_Folder != "")
+                            if (m_Log_Save_Folder_Local != "")
                             {
-                                m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
+                                m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Total.csv"; //파일경로
                             }
                             bool t_HeadersWritten = false;
                             if (File.Exists(m_Log_File_Name))
@@ -3167,10 +3241,10 @@ namespace LV_Inspection_System.UTIL
             try
             {
                 String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Spec.csv"; //파일경로
-                if (m_Log_Save_Folder != "")
+                if (m_Log_Save_Folder_Local != "")
                 {
-                    m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Spec.csv"; //파일경로
-                    DirectoryInfo root_dir = new DirectoryInfo(m_Log_Save_Folder.Substring(0, 3));
+                    m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\Spec.csv"; //파일경로
+                    DirectoryInfo root_dir = new DirectoryInfo(m_Log_Save_Folder_Local.Substring(0, 3));
                     if (root_dir.Exists == false)
                     {
                         return;
@@ -4985,9 +5059,9 @@ namespace LV_Inspection_System.UTIL
                     //destinationTable.WriteToCsvFile(m_Log_File_Name);
 
                     String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM0\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
-                    if (m_Log_Save_Folder != "")
+                    if (m_Log_Save_Folder_Local != "")
                     {
-                        m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM0\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
+                        m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM0\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
                     }
 
                     FileInfo templateFile = new FileInfo(m_Log_File_Name.Substring(0, m_Log_File_Name.Length - 3) + "xlsx");
@@ -5107,9 +5181,9 @@ namespace LV_Inspection_System.UTIL
                     //destinationTable.WriteToCsvFile(m_Log_File_Name);
 
                     String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM1\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
-                    if (m_Log_Save_Folder != "")
+                    if (m_Log_Save_Folder_Local != "")
                     {
-                        m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM1\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
+                        m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM1\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
                     }
 
                     FileInfo templateFile = new FileInfo(m_Log_File_Name.Substring(0, m_Log_File_Name.Length - 3) + "xlsx");
@@ -5229,9 +5303,9 @@ namespace LV_Inspection_System.UTIL
                     //destinationTable.WriteToCsvFile(m_Log_File_Name);
 
                     String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM2\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
-                    if (m_Log_Save_Folder != "")
+                    if (m_Log_Save_Folder_Local != "")
                     {
-                        m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM2\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
+                        m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM2\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
                     }
 
                     FileInfo templateFile = new FileInfo(m_Log_File_Name.Substring(0, m_Log_File_Name.Length - 3) + "xlsx");
@@ -5352,9 +5426,9 @@ namespace LV_Inspection_System.UTIL
                     //destinationTable.WriteToCsvFile(m_Log_File_Name);
 
                     String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM3\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
-                    if (m_Log_Save_Folder != "")
+                    if (m_Log_Save_Folder_Local != "")
                     {
-                        m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM3\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
+                        m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM3\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
                     }
 
                     FileInfo templateFile = new FileInfo(m_Log_File_Name.Substring(0, m_Log_File_Name.Length - 3) + "xlsx");
@@ -5483,9 +5557,9 @@ namespace LV_Inspection_System.UTIL
                 //destinationTable.WriteToCsvFile(m_Log_File_Name);
 
                 String m_Log_File_Name = LVApp.Instance().excute_path + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM4\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
-                if (m_Log_Save_Folder != "")
+                if (m_Log_Save_Folder_Local != "")
                 {
-                    m_Log_File_Name = m_Log_Save_Folder + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM4\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
+                    m_Log_File_Name = m_Log_Save_Folder_Local + "\\Data\\" + LVApp.Instance().m_Config.m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd") + "\\CAM4\\" + DateTime.Now.ToString("HHmmss_fff") + ".csv"; //파일경로
                 }
 
                 FileInfo templateFile = new FileInfo(m_Log_File_Name.Substring(0, m_Log_File_Name.Length - 3) + "xlsx");
@@ -5759,7 +5833,7 @@ namespace LV_Inspection_System.UTIL
                     fn += "_" + dt.Month.ToString("00");
                     fn += "_" + dt.Day.ToString("00") + "";
 
-                    if (m_Log_Save_Folder == "")
+                    if (m_Log_Save_Folder_Local == "")
                     {
                         DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\Images");
                         // 폴더가 존재하지 않으면
@@ -5872,33 +5946,33 @@ namespace LV_Inspection_System.UTIL
                     }
                     else
                     {
-                        DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder);
+                        DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder_Local);
                         if (dir.Exists == false)
                         {
                             return;
                         }
-                        dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images");
+                        dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images");
                         // 폴더가 존재하지 않으면
                         if (dir.Exists == false)
                         {
                             // 새로 생성합니다.
                             dir.Create();
                         }
-                        dir = new DirectoryInfo(m_Log_Save_Folder + "\\Data");
+                        dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Data");
                         // 폴더가 존재하지 않으면
                         if (dir.Exists == false)
                         {
                             // 새로 생성합니다.
                             dir.Create();
                         }
-                        dir = new DirectoryInfo(m_Log_Save_Folder + "\\Data\\" + m_Model_Name);
+                        dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Data\\" + m_Model_Name);
                         // 폴더가 존재하지 않으면
                         if (dir.Exists == false)
                         {
                             // 새로 생성합니다.
                             dir.Create();
                         }
-                        dir = new DirectoryInfo(m_Log_Save_Folder + "\\Data\\" + m_Model_Name + "\\" + fn);
+                        dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Data\\" + m_Model_Name + "\\" + fn);
                         // 폴더가 존재하지 않으면
                         if (dir.Exists == false)
                         {
@@ -5950,42 +6024,42 @@ namespace LV_Inspection_System.UTIL
                                 //    // 새로 생성합니다.
                                 //    dir.Create();
                                 //}
-                                dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name);
+                                dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name);
                                 // 폴더가 존재하지 않으면
                                 if (dir.Exists == false)
                                 {
                                     // 새로 생성합니다.
                                     dir.Create();
                                 }
-                                dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn);
+                                dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn);
                                 // 폴더가 존재하지 않으면
                                 if (dir.Exists == false)
                                 {
                                     // 새로 생성합니다.
                                     dir.Create();
                                 }
-                                dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
+                                dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
                                 // 폴더가 존재하지 않으면
                                 if (dir.Exists == false)
                                 {
                                     // 새로 생성합니다.
                                     dir.Create();
                                 }
-                                dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
+                                dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
                                 // 폴더가 존재하지 않으면
                                 if (dir.Exists == false)
                                 {
                                     // 새로 생성합니다.
                                     dir.Create();
                                 }
-                                dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" +  (cam_num).ToString() + "\\NG");
+                                dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" +  (cam_num).ToString() + "\\NG");
                                 // 폴더가 존재하지 않으면
                                 if (dir.Exists == false)
                                 {
                                     // 새로 생성합니다.
                                     dir.Create();
                                 }
-                                dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
+                                dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
                                 // 폴더가 존재하지 않으면
                                 if (dir.Exists == false)
                                 {
@@ -5996,110 +6070,122 @@ namespace LV_Inspection_System.UTIL
                         }
                     }
 
-                    if (m_Log_Save_Folder2 != "")
+                    #region 250715 - 베스텍L 반영 : 서버에 이미지 저장 시, 지정된 경로에 모두 저장(별도 하위 폴더를 생성하지 않음)
+                    if (m_Log_Save_Folder_Server != "")
                     {
-                        DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder2);
+                        #region 신규 코드
+                        DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder_Server);
                         if (dir.Exists == false)
                         {
-                            return;
-                        }
-                        dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
-                        // 폴더가 존재하지 않으면
-                        if (dir.Exists == false)
-                        {
-                            // 새로 생성합니다.
                             dir.Create();
                         }
-                        dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
-                        // 폴더가 존재하지 않으면
-                        if (dir.Exists == false)
-                        {
-                            // 새로 생성합니다.
-                            dir.Create();
-                        }
+                        #endregion
 
-                        for (int i = 0; i < m_Cam_Total_Num; i++)
-                        {
-                            int cam_num = i;
-                            if (i == 0)
-                            {
-                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam1.Camera_Name.Substring(3, 1), out cam_num))
-                                {
-                                }
-                            }
-                            else if (i == 1)
-                            {
-                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam2.Camera_Name.Substring(3, 1), out cam_num))
-                                {
-                                }
-                            }
-                            else if (i == 2)
-                            {
-                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam3.Camera_Name.Substring(3, 1), out cam_num))
-                                {
-                                }
-                            }
-                            else if (i == 3)
-                            {
-                                if (int.TryParse(LVApp.Instance().m_mainform.ctrCam4.Camera_Name.Substring(3, 1), out cam_num))
-                                {
-                                }
-                            }
+                        #region 기존 코드 - 모두 주석 처리함
+                        //DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder_Server);
+                        //if (dir.Exists == false)
+                        //{
+                        //    return;
+                        //}
+                        //dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name);
+                        //// 폴더가 존재하지 않으면
+                        //if (dir.Exists == false)
+                        //{
+                        //    // 새로 생성합니다.
+                        //    dir.Create();
+                        //}
+                        //dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn);
+                        //// 폴더가 존재하지 않으면
+                        //if (dir.Exists == false)
+                        //{
+                        //    // 새로 생성합니다.
+                        //    dir.Create();
+                        //}
 
-                            if (m_Cam_Log_Use_Check[i] || LVApp.Instance().m_Config.SSF_Image_Save)
-                            {
-                                //dir = new DirectoryInfo(m_Log_Save_Folder + "\\" + m_Model_Name);
-                                //// 폴더가 존재하지 않으면
-                                //if (dir.Exists == false)
-                                //{
-                                //    // 새로 생성합니다.
-                                //    dir.Create();
-                                //}
-                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
-                                // 폴더가 존재하지 않으면
-                                if (dir.Exists == false)
-                                {
-                                    // 새로 생성합니다.
-                                    dir.Create();
-                                }
-                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
-                                // 폴더가 존재하지 않으면
-                                if (dir.Exists == false)
-                                {
-                                    // 새로 생성합니다.
-                                    dir.Create();
-                                }
-                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
-                                // 폴더가 존재하지 않으면
-                                if (dir.Exists == false)
-                                {
-                                    // 새로 생성합니다.
-                                    dir.Create();
-                                }
-                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
-                                // 폴더가 존재하지 않으면
-                                if (dir.Exists == false)
-                                {
-                                    // 새로 생성합니다.
-                                    dir.Create();
-                                }
-                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
-                                // 폴더가 존재하지 않으면
-                                if (dir.Exists == false)
-                                {
-                                    // 새로 생성합니다.
-                                    dir.Create();
-                                }
-                                dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
-                                // 폴더가 존재하지 않으면
-                                if (dir.Exists == false)
-                                {
-                                    // 새로 생성합니다.
-                                    dir.Create();
-                                }
-                            }
-                        }
+                        //for (int i = 0; i < m_Cam_Total_Num; i++)
+                        //{
+                        //    int cam_num = i;
+                        //    if (i == 0)
+                        //    {
+                        //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam1.Camera_Name.Substring(3, 1), out cam_num))
+                        //        {
+                        //        }
+                        //    }
+                        //    else if (i == 1)
+                        //    {
+                        //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam2.Camera_Name.Substring(3, 1), out cam_num))
+                        //        {
+                        //        }
+                        //    }
+                        //    else if (i == 2)
+                        //    {
+                        //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam3.Camera_Name.Substring(3, 1), out cam_num))
+                        //        {
+                        //        }
+                        //    }
+                        //    else if (i == 3)
+                        //    {
+                        //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam4.Camera_Name.Substring(3, 1), out cam_num))
+                        //        {
+                        //        }
+                        //    }
+
+                        //    if (m_Cam_Log_Use_Check[i] || LVApp.Instance().m_Config.SSF_Image_Save)
+                        //    {
+                        //        //dir = new DirectoryInfo(m_Log_Save_Folder + "\\" + m_Model_Name);
+                        //        //// 폴더가 존재하지 않으면
+                        //        //if (dir.Exists == false)
+                        //        //{
+                        //        //    // 새로 생성합니다.
+                        //        //    dir.Create();
+                        //        //}
+                        //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name);
+                        //        // 폴더가 존재하지 않으면
+                        //        if (dir.Exists == false)
+                        //        {
+                        //            // 새로 생성합니다.
+                        //            dir.Create();
+                        //        }
+                        //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn);
+                        //        // 폴더가 존재하지 않으면
+                        //        if (dir.Exists == false)
+                        //        {
+                        //            // 새로 생성합니다.
+                        //            dir.Create();
+                        //        }
+                        //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
+                        //        // 폴더가 존재하지 않으면
+                        //        if (dir.Exists == false)
+                        //        {
+                        //            // 새로 생성합니다.
+                        //            dir.Create();
+                        //        }
+                        //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
+                        //        // 폴더가 존재하지 않으면
+                        //        if (dir.Exists == false)
+                        //        {
+                        //            // 새로 생성합니다.
+                        //            dir.Create();
+                        //        }
+                        //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
+                        //        // 폴더가 존재하지 않으면
+                        //        if (dir.Exists == false)
+                        //        {
+                        //            // 새로 생성합니다.
+                        //            dir.Create();
+                        //        }
+                        //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
+                        //        // 폴더가 존재하지 않으면
+                        //        if (dir.Exists == false)
+                        //        {
+                        //            // 새로 생성합니다.
+                        //            dir.Create();
+                        //        }
+                        //    }
+                        //}
+                        #endregion
                     }
+                    #endregion
 
                     if (m_Data_Save_Folder.Length > 0)
                     {
@@ -6159,7 +6245,7 @@ namespace LV_Inspection_System.UTIL
                 fn += "_" + dt.Month.ToString("00");
                 fn += "_" + dt.Day.ToString("00") + "";
 
-                if (m_Log_Save_Folder == "")
+                if (m_Log_Save_Folder_Local == "")
                 {
                     DirectoryInfo dir = new DirectoryInfo(LVApp.Instance().excute_path + "\\Images");
                     // 폴더가 존재하지 않으면
@@ -6266,13 +6352,13 @@ namespace LV_Inspection_System.UTIL
                 }
                 else
                 {
-                    DirectoryInfo root_dir = new DirectoryInfo(m_Log_Save_Folder.Substring(0,3));
+                    DirectoryInfo root_dir = new DirectoryInfo(m_Log_Save_Folder_Local.Substring(0,3));
                     if (root_dir.Exists == false)
                     {
                         return;
                     }
 
-                    DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images");
+                    DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images");
 
                     // 폴더가 존재하지 않으면
                     if (dir.Exists == false)
@@ -6280,21 +6366,21 @@ namespace LV_Inspection_System.UTIL
                         // 새로 생성합니다.
                         dir.Create();
                     }
-                    dir = new DirectoryInfo(m_Log_Save_Folder + "\\Data");
+                    dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Data");
                     // 폴더가 존재하지 않으면
                     if (dir.Exists == false)
                     {
                         // 새로 생성합니다.
                         dir.Create();
                     }
-                    dir = new DirectoryInfo(m_Log_Save_Folder + "\\Data\\" + m_Model_Name);
+                    dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Data\\" + m_Model_Name);
                     // 폴더가 존재하지 않으면
                     if (dir.Exists == false)
                     {
                         // 새로 생성합니다.
                         dir.Create();
                     }
-                    dir = new DirectoryInfo(m_Log_Save_Folder + "\\Data\\" + m_Model_Name + "\\" + fn);
+                    dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Data\\" + m_Model_Name + "\\" + fn);
                     // 폴더가 존재하지 않으면
                     if (dir.Exists == false)
                     {
@@ -6338,42 +6424,42 @@ namespace LV_Inspection_System.UTIL
                             //    // 새로 생성합니다.
                             //    dir.Create();
                             //}
-                            dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name);
+                            dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name);
                             // 폴더가 존재하지 않으면
                             if (dir.Exists == false)
                             {
                                 // 새로 생성합니다.
                                 dir.Create();
                             }
-                            dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn);
+                            dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn);
                             // 폴더가 존재하지 않으면
                             if (dir.Exists == false)
                             {
                                 // 새로 생성합니다.
                                 dir.Create();
                             }
-                            dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
+                            dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
                             // 폴더가 존재하지 않으면
                             if (dir.Exists == false)
                             {
                                 // 새로 생성합니다.
                                 dir.Create();
                             }
-                            dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
+                            dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
                             // 폴더가 존재하지 않으면
                             if (dir.Exists == false)
                             {
                                 // 새로 생성합니다.
                                 dir.Create();
                             }
-                            dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
+                            dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
                             // 폴더가 존재하지 않으면
                             if (dir.Exists == false)
                             {
                                 // 새로 생성합니다.
                                 dir.Create();
                             }
-                            dir = new DirectoryInfo(m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
+                            dir = new DirectoryInfo(m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
                             // 폴더가 존재하지 않으면
                             if (dir.Exists == false)
                             {
@@ -6384,111 +6470,122 @@ namespace LV_Inspection_System.UTIL
                     }
                 }
 
-                if (m_Log_Save_Folder2 != "")
+                #region 250715 - 베스텍L 반영 : 서버에 이미지 저장 시, 지정된 경로에 모두 저장(별도 하위 폴더를 생성하지 않음)
+                if (m_Log_Save_Folder_Server != "")
                 {
-                    DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder2);
+                    #region 신규 코드
+                    DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder_Server);
                     if (dir.Exists == false)
                     {
-                        return;
-                    }
-                    dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
-                    // 폴더가 존재하지 않으면
-                    if (dir.Exists == false)
-                    {
-                        // 새로 생성합니다.
                         dir.Create();
                     }
-                    dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
-                    // 폴더가 존재하지 않으면
-                    if (dir.Exists == false)
-                    {
-                        // 새로 생성합니다.
-                        dir.Create();
-                    }
+                    #endregion
 
-                    for (int i = 0; i < m_Cam_Total_Num; i++)
-                    {
-                        int cam_num = i;
-                        if (i == 0)
-                        {
-                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam1.Camera_Name.Substring(3, 1), out cam_num))
-                            {
-                            }
-                        }
-                        else if (i == 1)
-                        {
-                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam2.Camera_Name.Substring(3, 1), out cam_num))
-                            {
-                            }
-                        }
-                        else if (i == 2)
-                        {
-                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam3.Camera_Name.Substring(3, 1), out cam_num))
-                            {
-                            }
-                        }
-                        else if (i == 3)
-                        {
-                            if (int.TryParse(LVApp.Instance().m_mainform.ctrCam4.Camera_Name.Substring(3, 1), out cam_num))
-                            {
-                            }
-                        }
+                    #region 기존 코드 - 모두 주석 처리함
+                    //DirectoryInfo dir = new DirectoryInfo(m_Log_Save_Folder_Server);
+                    //if (dir.Exists == false)
+                    //{
+                    //    return;
+                    //}
+                    //dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name);
+                    //// 폴더가 존재하지 않으면
+                    //if (dir.Exists == false)
+                    //{
+                    //    // 새로 생성합니다.
+                    //    dir.Create();
+                    //}
+                    //dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn);
+                    //// 폴더가 존재하지 않으면
+                    //if (dir.Exists == false)
+                    //{
+                    //    // 새로 생성합니다.
+                    //    dir.Create();
+                    //}
 
-                        if (m_Cam_Log_Use_Check[i] || LVApp.Instance().m_Config.SSF_Image_Save)
-                        {
-                            //dir = new DirectoryInfo(m_Log_Save_Folder + "\\" + m_Model_Name);
-                            //// 폴더가 존재하지 않으면
-                            //if (dir.Exists == false)
-                            //{
-                            //    // 새로 생성합니다.
-                            //    dir.Create();
-                            //}
-                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name);
-                            // 폴더가 존재하지 않으면
-                            if (dir.Exists == false)
-                            {
-                                // 새로 생성합니다.
-                                dir.Create();
-                            }
-                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn);
-                            // 폴더가 존재하지 않으면
-                            if (dir.Exists == false)
-                            {
-                                // 새로 생성합니다.
-                                dir.Create();
-                            }
-                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
-                            // 폴더가 존재하지 않으면
-                            if (dir.Exists == false)
-                            {
-                                // 새로 생성합니다.
-                                dir.Create();
-                            }
-                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
-                            // 폴더가 존재하지 않으면
-                            if (dir.Exists == false)
-                            {
-                                // 새로 생성합니다.
-                                dir.Create();
-                            }
-                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
-                            // 폴더가 존재하지 않으면
-                            if (dir.Exists == false)
-                            {
-                                // 새로 생성합니다.
-                                dir.Create();
-                            }
-                            dir = new DirectoryInfo(m_Log_Save_Folder2 + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
-                            // 폴더가 존재하지 않으면
-                            if (dir.Exists == false)
-                            {
-                                // 새로 생성합니다.
-                                dir.Create();
-                            }
-                        }
-                    }
+                    //for (int i = 0; i < m_Cam_Total_Num; i++)
+                    //{
+                    //    int cam_num = i;
+                    //    if (i == 0)
+                    //    {
+                    //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam1.Camera_Name.Substring(3, 1), out cam_num))
+                    //        {
+                    //        }
+                    //    }
+                    //    else if (i == 1)
+                    //    {
+                    //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam2.Camera_Name.Substring(3, 1), out cam_num))
+                    //        {
+                    //        }
+                    //    }
+                    //    else if (i == 2)
+                    //    {
+                    //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam3.Camera_Name.Substring(3, 1), out cam_num))
+                    //        {
+                    //        }
+                    //    }
+                    //    else if (i == 3)
+                    //    {
+                    //        if (int.TryParse(LVApp.Instance().m_mainform.ctrCam4.Camera_Name.Substring(3, 1), out cam_num))
+                    //        {
+                    //        }
+                    //    }
+
+                    //    if (m_Cam_Log_Use_Check[i] || LVApp.Instance().m_Config.SSF_Image_Save)
+                    //    {
+                    //        //dir = new DirectoryInfo(m_Log_Save_Folder + "\\" + m_Model_Name);
+                    //        //// 폴더가 존재하지 않으면
+                    //        //if (dir.Exists == false)
+                    //        //{
+                    //        //    // 새로 생성합니다.
+                    //        //    dir.Create();
+                    //        //}
+                    //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name);
+                    //        // 폴더가 존재하지 않으면
+                    //        if (dir.Exists == false)
+                    //        {
+                    //            // 새로 생성합니다.
+                    //            dir.Create();
+                    //        }
+                    //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn);
+                    //        // 폴더가 존재하지 않으면
+                    //        if (dir.Exists == false)
+                    //        {
+                    //            // 새로 생성합니다.
+                    //            dir.Create();
+                    //        }
+                    //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString());
+                    //        // 폴더가 존재하지 않으면
+                    //        if (dir.Exists == false)
+                    //        {
+                    //            // 새로 생성합니다.
+                    //            dir.Create();
+                    //        }
+                    //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\OK");
+                    //        // 폴더가 존재하지 않으면
+                    //        if (dir.Exists == false)
+                    //        {
+                    //            // 새로 생성합니다.
+                    //            dir.Create();
+                    //        }
+                    //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\NG");
+                    //        // 폴더가 존재하지 않으면
+                    //        if (dir.Exists == false)
+                    //        {
+                    //            // 새로 생성합니다.
+                    //            dir.Create();
+                    //        }
+                    //        dir = new DirectoryInfo(m_Log_Save_Folder_Server + "\\" + m_Model_Name + "\\" + fn + "\\CAM" + (cam_num).ToString() + "\\No Object");
+                    //        // 폴더가 존재하지 않으면
+                    //        if (dir.Exists == false)
+                    //        {
+                    //            // 새로 생성합니다.
+                    //            dir.Create();
+                    //        }
+                    //    }
+                    //}
+                    #endregion
                 }
-
+                #endregion
                 if (m_Data_Save_Folder.Length > 0)
                 {
                     DirectoryInfo dir = new DirectoryInfo(m_Data_Save_Folder);
@@ -8331,11 +8428,11 @@ namespace LV_Inspection_System.UTIL
                 {
                     ofilename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_NO OBJECT";
                 }
-                if (OK_NG_NONE_Flag == 0 && LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                if (OK_NG_NONE_Flag == 0 && LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                 {
                     ofilename = DateTime.Now.ToString("yyyyMMdd HH_mm_ss_fff") + "_NONE";
                 }
-                else if (OK_NG_NONE_Flag != 0 && LVApp.Instance().m_Config.m_Cam_Log_Method == 3)
+                else if (OK_NG_NONE_Flag != 0 && LVApp.Instance().m_Config.m_Cam_Log_Method_Local == 3)
                 {
                     return ofilename;
                 }
@@ -8623,9 +8720,9 @@ namespace LV_Inspection_System.UTIL
                 LVApp.Instance().m_mainform.m_ImProClr_Class.Set_Global_Parameters(Alg_TextView, Alg_Debugging);
 
                 String m_AI_folder = LVApp.Instance().excute_path + "\\Images\\" + m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                 {
-                    m_AI_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                    m_AI_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                 }
                 if (AI_Image_Save)
                 {
@@ -8774,13 +8871,13 @@ namespace LV_Inspection_System.UTIL
                 LVApp.Instance().m_mainform.m_ImProClr_Class.Set_ModelName(m_Model_Name, m_AI_folder + "\\AI", false);
 
                 String m_SSF_folder = LVApp.Instance().excute_path + "\\Images\\" + m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
-                if (LVApp.Instance().m_Config.m_Log_Save_Folder.Length > 1)
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local.Length > 1)
                 {
-                    m_SSF_folder = LVApp.Instance().m_Config.m_Log_Save_Folder + "\\Images\\" + m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
+                    m_SSF_folder = LVApp.Instance().m_Config.m_Log_Save_Folder_Local + "\\Images\\" + m_Model_Name + "\\" + DateTime.Now.ToString("yyyy_MM_dd");
                 }
                 for (int i = 0; i < 4; i++)
                 {
-                    LVApp.Instance().m_mainform.m_ImProClr_Class.Set_SSFSAVEFOLDER(m_SSF_folder, SSF_Image_Save, LVApp.Instance().m_Config.m_Cam_Log_Format, i);
+                    LVApp.Instance().m_mainform.m_ImProClr_Class.Set_SSFSAVEFOLDER(m_SSF_folder, SSF_Image_Save, LVApp.Instance().m_Config.m_Cam_Log_Format_Local, i);
                 }
 
                 LVApp.Instance().m_mainform.ctr_Yield1.Update_UI();
@@ -9320,7 +9417,7 @@ namespace LV_Inspection_System.UTIL
 
         public static Byte[] BmpToArray(Bitmap value)
         {
-            BitmapData data = value.LockBits(new Rectangle(0, 0, value.Width, value.Height), ImageLockMode.ReadOnly, value.PixelFormat);
+            System.Drawing.Imaging.BitmapData data = value.LockBits(new Rectangle(0, 0, value.Width, value.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, value.PixelFormat);
             try
             {
                 IntPtr ptr = data.Scan0;
