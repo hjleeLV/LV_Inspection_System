@@ -4072,12 +4072,20 @@ namespace LV_Inspection_System.UTIL
                             table_data_0.Columns.Add(ds_DATA_0.Tables[0].Rows[i][1].ToString() + "_" + ds_DATA_0.Tables[0].Rows[i][2].ToString());
                         }
                     }
+
                     if (ds_LOG.Tables.Count == 0)
                     {
                         ds_LOG.Tables.Add(table_data_0);
                     }
 
-                    LVApp.Instance().m_mainform.ctr_DataGrid1.dataGridView.DataSource = ds_LOG.Tables[0];
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid1.dataGridView.DataSource = ds_LOG.Tables[0];
+                    }
+                    else
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid1.dataGridView.DataSource = null;
+                    }
 
                     for (int i = 0; i < m_Log_Save_Num; i++)
                     {
@@ -4118,11 +4126,20 @@ namespace LV_Inspection_System.UTIL
                         }
                         table_data_1.Columns.Add(ds_DATA_1.Tables[0].Rows[i][1].ToString() + "_" + ds_DATA_1.Tables[0].Rows[i][2].ToString());
                     }
+
                     if (ds_LOG.Tables.Count == 1)
                     {
                         ds_LOG.Tables.Add(table_data_1);
                     }
-                    LVApp.Instance().m_mainform.ctr_DataGrid2.dataGridView.DataSource = ds_LOG.Tables[1];
+
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid2.dataGridView.DataSource = ds_LOG.Tables[1];
+                    }
+                    else
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid2.dataGridView.DataSource = null;
+                    }
 
                     for (int i = 0; i < m_Log_Save_Num; i++)
                     {
@@ -4162,11 +4179,20 @@ namespace LV_Inspection_System.UTIL
                         }
                         table_data_2.Columns.Add(ds_DATA_2.Tables[0].Rows[i][1].ToString() + "_" + ds_DATA_2.Tables[0].Rows[i][2].ToString());
                     }
+
                     if (ds_LOG.Tables.Count == 2)
                     {
                         ds_LOG.Tables.Add(table_data_2);
                     }
-                    LVApp.Instance().m_mainform.ctr_DataGrid3.dataGridView.DataSource = ds_LOG.Tables[2];
+
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid3.dataGridView.DataSource = ds_LOG.Tables[2];
+                    }
+                    else
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid3.dataGridView.DataSource = null;
+                    }
 
                     for (int i = 0; i < m_Log_Save_Num; i++)
                     {
@@ -4211,7 +4237,15 @@ namespace LV_Inspection_System.UTIL
                     {
                         ds_LOG.Tables.Add(table_data_3);
                     }
-                    LVApp.Instance().m_mainform.ctr_DataGrid4.dataGridView.DataSource = ds_LOG.Tables[3];
+
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid4.dataGridView.DataSource = ds_LOG.Tables[3];
+                    }
+                    else
+                    {
+                        LVApp.Instance().m_mainform.ctr_DataGrid4.dataGridView.DataSource = null;
+                    }
 
                     for (int i = 0; i < m_Log_Save_Num; i++)
                     {
@@ -4232,6 +4266,10 @@ namespace LV_Inspection_System.UTIL
 
         public void Add_Log_Data(int Cam_num, string t_filename)
         {
+            if (!LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+            {
+                return;
+            }
             //return;
             try
             {
