@@ -55,6 +55,10 @@ namespace LV_Inspection_System.GUI.Control
 
         public void Min_Max_Update(int Cam_Num)
         {
+            if (!LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+            {
+                return;
+            }
             try
             {
                 if (InvokeRequired)
@@ -62,8 +66,6 @@ namespace LV_Inspection_System.GUI.Control
                     BeginInvoke(new MethodInvoker(delegate() {
 
                         Min_Max_Update(Cam_Num); 
-                    
-                    
                     }));
                 }
                 else
@@ -184,12 +186,21 @@ namespace LV_Inspection_System.GUI.Control
                             }
                         }
                     }
-                    dataGridView_MINMAX.DataSource = table;
-                    dataGridView_MINMAX.ClearSelection();
-                    dataGridView_MINMAX.Refresh();
+
+                    // ToDo: 이 부분은 개선의 여지가 있음
+                    if (LVApp.Instance().m_Config.m_Data_Log_Use_Check)
+                    {
+                        dataGridView_MINMAX.DataSource = table;
+                        dataGridView_MINMAX.ClearSelection();
+                        dataGridView_MINMAX.Refresh();
+                    }
+                    else
+                    {
+                        dataGridView_MINMAX.DataSource = null;
+                        dataGridView_MINMAX.ClearSelection();
+                        dataGridView_MINMAX.Refresh();
+                    }
                 }
-
-
             }
             catch
             { }
