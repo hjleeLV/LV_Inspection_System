@@ -40,6 +40,7 @@ namespace LV_Inspection_System.GUI
         public bool t_cam_setting_view_mode = false;
         private bool t_cam_ROI_view_mode = false;
 
+
         private DongleKey t_DongleKey = new DongleKey();
 
         public Stopwatch[] Run_SW = new Stopwatch[4];
@@ -51,11 +52,13 @@ namespace LV_Inspection_System.GUI
         // 250314_LHJ - 알고리즘 처리 쓰레드에서 Dispose 부분의 지연이 생기는 현상 완화 테스트
         Thread[] imageDispose_Thread = new Thread[4];
 
+
         Thread ImageSavethread = null;
         public bool m_ImageSavethread_Check = false;
 
         Thread Monitoringthread = null;
         public bool m_Monitoringthread_Check = false;
+
 
         private bool[] m_ViewThreads_Check = new bool[4];
         private bool[] m_Threads_Check = new bool[4];

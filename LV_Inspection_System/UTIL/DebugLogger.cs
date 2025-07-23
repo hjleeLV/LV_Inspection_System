@@ -1,10 +1,10 @@
-﻿using Python.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Windows.Forms;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.IO;
+using Python.Runtime;
 
 namespace LV_Inspection_System
 {
@@ -27,8 +27,8 @@ namespace LV_Inspection_System
             Log_file_Name = CreateTimeStampFileName("");
             SetLogFile($"{LVApp.Instance().excute_path}\\Logs\\{CurTime:yyyy}\\{CurTime:yyyy-MM}\\{Log_file_Name}");
 
-            _cts_Log = new CancellationTokenSource();
-            logQueue = new System.Collections.Concurrent.BlockingCollection<string>(new System.Collections.Concurrent.ConcurrentQueue<string>()/*최대 용량 지정 할 수 있음*/);            // 데이터를 더 추가하지 않으려면 CompleteAdding을 호출하면 됨.
+            logQueue = new System.Collections.Concurrent.ConcurrentQueue<string>();
+            flag_LogThread = true;
             logThread = new System.Threading.Thread(WriteLog);
             logThread.IsBackground = true;
             logThread.Start();
@@ -44,8 +44,7 @@ namespace LV_Inspection_System
         /// </summary>
         ~DebugLogger()
         {
-            logQueue.CompleteAdding();
-            //_cts_Log.Cancel();    // 즉시 종료하려면 주석 해제
+            flag_LogThread = false;
             logThread.Join(100);
             if (logThread.IsAlive)
             {
@@ -53,7 +52,7 @@ namespace LV_Inspection_System
             }
             while (logQueue.Count > 0)
             {
-                logQueue.GetConsumingEnumerable();
+                logQueue.TryDequeue(out string str);
             }
             CloseLogFile();
             _instance = null;
@@ -88,8 +87,7 @@ namespace LV_Inspection_System
                 }
 
                 MsgOut = $"{CurTime:HH:mm:ss.fff}> {OutStr}";
-                logQueue.Add(MsgOut);
-
+                logQueue.Enqueue(MsgOut);
                 //base.LogRecord(MsgOut);
                 //m_logs.Add(MsgOut);
             }
@@ -123,18 +121,18 @@ namespace LV_Inspection_System
         }
 
         #region 250228 LHJ - Log 개선 : 동일한 로그가 여러 줄에 쓰여지거나, 로그 일부가 쓰여지지 않는 현상 보완
-        // ConcurrentQueue -> BlockingCollection 으로 변경
-        //private System.Collections.Concurrent.ConcurrentQueue<string> logQueue;
-        private System.Collections.Concurrent.BlockingCollection<string> logQueue;
-
+        private System.Collections.Concurrent.ConcurrentQueue<string> logQueue;
         System.Threading.Thread logThread;
-        private CancellationTokenSource _cts_Log;   // (참고)_logMessage.CompleteAdding()으로도 _logProcess를 종료 시킬 수는 있지만, 남은 메시지(로그)가 있다면 다 처리하고 종료 됨. _cts_Log는 즉시 종료 시킬 수 있음
-        //bool flag_LogThread = false;
+        bool flag_LogThread = false;
         private void WriteLog()
         {
-            foreach (string log in logQueue.GetConsumingEnumerable(_cts_Log.Token))
+            while (flag_LogThread)
             {
-                base.LogRecord(log);
+                if (logQueue.TryDequeue(out string msg))
+                {
+                    base.LogRecord(msg);
+                }
+                System.Threading.Thread.Sleep(5);
             }
         }
         #endregion
