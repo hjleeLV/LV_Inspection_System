@@ -94,7 +94,6 @@ CImPro_Library::CImPro_Library(void)
 	setUseOptimized(true);
 }
 
-
 CImPro_Library::~CImPro_Library(void)
 {
 }
@@ -403,8 +402,8 @@ void CImPro_Library::Set_Mask_Image(unsigned char* src_u8, long size_x, long siz
 	}
 	else if (channel == 1)
 	{
-		//CString msg;
-		//msg.Format(L"%d,%d,%d,%d", size_y, BOLT_Param[Cam_num].nRect[ROI_Idx].height, size_x, BOLT_Param[Cam_num].nRect[ROI_Idx].width);
+		//CStringA msg;
+		//msg.Format("%d,%d,%d,%d", size_y, BOLT_Param[Cam_num].nRect[ROI_Idx].height, size_x, BOLT_Param[Cam_num].nRect[ROI_Idx].width);
 		//AfxMessageBox(msg);
 		Mat src = Mat(size_y, size_x, CV_8UC1, src_u8);
 		BOLT_Param[Cam_num].nMaskImage[ROI_Idx] = src.clone();
@@ -871,11 +870,12 @@ Vec3f rotationMatrixToEulerAngles(Mat& R)
 
 Point2f CImPro_Library::J_Model_Find(int Cam_num)
 {
-	USES_CONVERSION;
+	//USES_CONVERSION;
 	bool t_license = Easy::CheckLicense(LicenseFeatures::EasyFind);
 	if (t_license == false)
 	{// 유레시스 없으면
-		CString msg;
+		CStringA msg;
+
 		int t_first_resize_rate = (int)BOLT_Param[Cam_num].nFindAngleTolerance[0];
 		int t_second_resize_rate = 1;
 
@@ -1029,11 +1029,11 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 				circle(Dst_Img[Cam_num], R_Center, 3, CV_RGB(0, 0, 255), 1);
 				circle(Dst_Img[Cam_num], R_Center, 1, CV_RGB(255, 0, 0), 1);
 
-				msg.Format(L"CD find tool");
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
-				msg.Format(L"(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", R_Center.x, R_Center.y, c_angle, c_score * 100);
+				msg.Format("CD find tool");
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
+				msg.Format("(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", R_Center.x, R_Center.y, c_angle, c_score * 100);
 				MatchRate[Cam_num] = c_score * 100;
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 2000, CV_RGB(0, 255, 0), (double)1, 8);
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 2000, CV_RGB(0, 255, 0), (double)1, 8);
 				J_Model_Find_Recursive_check = false;
 				//AfxMessageBox(L"1-2");
 				return R_Center;// Point2f(-1, -1);
@@ -1088,17 +1088,17 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 				circle(Dst_Img[Cam_num], R_Center, 3, CV_RGB(0, 0, 255), 1);
 				circle(Dst_Img[Cam_num], R_Center, 1, CV_RGB(255, 0, 0), 1);
 
-				msg.Format(L"CD find tool");
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
-				msg.Format(L"(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", R_Center.x, R_Center.y, c_angle, c_score * 100);
+				msg.Format("CD find tool");
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
+				msg.Format("(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", R_Center.x, R_Center.y, c_angle, c_score * 100);
 				MatchRate[Cam_num] = c_score * 100;
 				if (BOLT_Param[Cam_num].nFindScore[0] > c_score * 100.0f)
 				{
-					putText(Dst_Img[Cam_num], W2A(msg), Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(255, 50, 0), (double)2, 8);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(255, 50, 0), (double)2, 8);
 				}
 				else
 				{
-					putText(Dst_Img[Cam_num], W2A(msg), Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 255, 0), (double)2, 8);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 255, 0), (double)2, 8);
 				}
 				//AfxMessageBox(L"2");
 			}
@@ -1145,17 +1145,17 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 			circle(Dst_Img[Cam_num], R_Center, 3, CV_RGB(0, 0, 255), 1);
 			circle(Dst_Img[Cam_num], R_Center, 1, CV_RGB(255, 0, 0), 1);
 
-			msg.Format(L"CD find tool");
-			putText(Dst_Img[Cam_num], W2A(msg), Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
-			msg.Format(L"(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", R_Center.x, R_Center.y, c_angle, c_score * 100);
+			msg.Format("CD find tool");
+			putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
+			msg.Format("(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", R_Center.x, R_Center.y, c_angle, c_score * 100);
 			MatchRate[Cam_num] = c_score * 100;
 			if (BOLT_Param[Cam_num].nFindScore[0] > c_score * 100.0f)
 			{
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(255, 50, 0), (double)2, 8);
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(255, 50, 0), (double)2, 8);
 			}
 			else
 			{
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 255, 0), (double)2, 8);
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 255, 0), (double)2, 8);
 			}
 		}
 	}
@@ -1218,7 +1218,7 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 					int offsetx = (int)((float)BOLT_Param[Cam_num].Object_Postion.x - c_x);
 					int offsety = (int)((float)BOLT_Param[Cam_num].Object_Postion.y - c_y);
 
-					//CString msga;
+					//CStringA msga;
 					//msga.Format(L"%d,%d,%1.3f,%1.3f,%d,%d", BOLT_Param[Cam_num].Object_Postion.x, BOLT_Param[Cam_num].Object_Postion.y,c_x, c_y, offsetx, offsety);
 					//AfxMessageBox(msga.GetBuffer());
 
@@ -1248,22 +1248,22 @@ Point2f CImPro_Library::J_Model_Find(int Cam_num)
 
 				Dst_Img[Cam_num] = Mat::zeros(BOLT_Param[Cam_num].Gray_Obj_Img.size(), CV_8UC3);
 				cvtColor(BOLT_Param[Cam_num].Gray_Obj_Img, Dst_Img[Cam_num], CV_GRAY2BGR);
-				CString msg;
-				msg.Format(L"Find tool");
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
-				msg.Format(L"(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", c_x, c_y, c_angle, c_score * 100);
+				CStringA msg;
+				msg.Format("Find tool");
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, 2 + Dst_Img[Cam_num].rows / 50), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 1500, CV_RGB(0, 200, 255), (double)Dst_Img[Cam_num].rows / 960, 8);
+				msg.Format("(Cx,Cy),Angle,Score=(%1.3f,%1.3f),%1.3f,%1.2f", c_x, c_y, c_angle, c_score * 100);
 				MatchRate[Cam_num] = c_score * 100;
-				putText(Dst_Img[Cam_num], W2A(msg), Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 2000, CV_RGB(255, 180, 0), (double)Dst_Img[Cam_num].rows / 960, 8);
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(5, Dst_Img[Cam_num].rows - Dst_Img[Cam_num].rows / 50 + 2), FONT_HERSHEY_SIMPLEX, (double)Dst_Img[Cam_num].rows / 2000, CV_RGB(255, 180, 0), (double)Dst_Img[Cam_num].rows / 960, 8);
 
 				////warp_mat = cv::getRotationMatrix2D(Point2f(c_x,c_y), 10, 1);
 				////Mat r_img = temp_img.clone();
 				////warpAffine( temp_img, r_img, warp_mat, Gray_Img[Cam_num].size(),1, BORDER_TRANSPARENT,CV_RGB(255,255,255));
 				//////imwrite("00.bmp",r_img);
 
-				////msg.Format(L"00_%1.3f_%1.3f.bmp",c_angle,c_scale);
-				////imwrite(W2A(msg),r_img);
-				//CString msg;
-				//msg.Format(L"%d_Cx=%1.3f,Cy=%1.3f,Ca=%1.3f,Cs=%1.3f",Cam_num,c_x,c_y,c_angle,c_scale);
+				////msg.Format("00_%1.3f_%1.3f.bmp",c_angle,c_scale);
+				////imwrite((LPCSTR)msg,r_img);
+				//CStringA msg;
+				//msg.Format("%d_Cx=%1.3f,Cy=%1.3f,Ca=%1.3f,Cs=%1.3f",Cam_num,c_x,c_y,c_angle,c_scale);
 				//AfxMessageBox(msg);
 				//imwrite("01_0.bmp",temp_img);
 				//imwrite("01_1.bmp",Gray_Img[Cam_num]);
@@ -1330,8 +1330,8 @@ void CImPro_Library::J_fitLineToPoints(CvPoint* points,
 	//cout << "cvmGet( eigenVec, 1, 0 )=" << cvmGet( eigenVec, 1, 0 ) << ", cvmGet( eigenVec, 1, 1 )=" << cvmGet( eigenVec, 1, 1 ) << endl;
 
 	theta = atan2(cvmGet(eigenVec, 1, 0), cvmGet(eigenVec, 0, 0));
-	//CString msg;
-	//msg.Format(L"%1.3f", theta*180/CV_PI);
+	//CStringA msg;
+	//msg.Format("%1.3f", theta*180/CV_PI);
 	//AfxMessageBox(msg);
 	if (theta > -CV_PI / 4 && theta < CV_PI / 4)
 	{
@@ -1434,15 +1434,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 			return true;
 		}
 		Result_Info[Cam_num] = "";
-		CString msg;
+		CStringA msg;
 		//if (Cam_num == 0 && BOLT_Param[Cam_num].nTableType == 5 && BOLT_Param[Cam_num].nROI0_FilterSize[0] == 7496)
 		//{
 		//	RUN_Algorithm_SUGIYAMA();
 		//	Alg_Run_Check[Cam_num] = false;
 		//	return true;
 		//}
-		//msg.Format(L"CAM%1d_Gray_Img.jpg",Cam_num);
-		//imwrite(W2A(msg),Gray_Img[Cam_num]);
+		//msg.Format("CAM%1d_Gray_Img.jpg",Cam_num);
+		//imwrite((LPCSTR)msg,Gray_Img[Cam_num]);
 		// 변수 설정
 		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
@@ -1513,8 +1513,6 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					//Result_Info[Cam_num].Format(L"%sC%d:%02d_-2_",Result_Info[Cam_num],Cam_num,s);
 					continue;
 				}
-
-
 				//else if (s == 0)
 				//{
 				//	Result_Info[Cam_num] = "";
@@ -1571,12 +1569,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				if (!t_ROI_Check)
 				{
 					rectangle(Dst_Img[Cam_num], tROI, CV_RGB(0, 255, 0), 1);
-					msg.Format(L"ROI#%d", s);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(tROI.x + 1, tROI.y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+					msg.Format("ROI#%d", s);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(tROI.x + 1, tROI.y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 
 					rectangle(Dst_Img[Cam_num](tROI), Rect(10, 10, tROI.width - 20, tROI.height - 20), Scalar(0, 0, 255), 2);
-					msg.Format(L"ROI Error!");
-					putText(Dst_Img[Cam_num], W2A(msg), Point(tROI.x + tROI.width / 3, tROI.y + tROI.height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 50, 0), 2, 8);
+					msg.Format("ROI Error!");
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(tROI.x + tROI.width / 3, tROI.y + tROI.height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 50, 0), 2, 8);
 					Result_Info[Cam_num] = "";
 					for (int ss = 1; ss < 41; ss++)
 					{
@@ -1594,12 +1592,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				//if (!t_ROI_Check)
 				//{
 				//	rectangle(Dst_Img[Cam_num],tROI,CV_RGB(0,255,0),1);
-				//	msg.Format(L"ROI#%d", s);
-				//	putText(Dst_Img[Cam_num], W2A(msg), Point(tROI.x+1,tROI.y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
+				//	msg.Format("ROI#%d", s);
+				//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(tROI.x+1,tROI.y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
 
 				//	rectangle(Dst_Img[Cam_num](tROI),Rect(10,10,tROI.width-20,tROI.height-20),Scalar(0,0,255),2);
-				//	msg.Format(L"ROI Error!");
-				//	putText(Dst_Img[Cam_num], W2A(msg), Point(tROI.x+tROI.width/3,tROI.y + tROI.height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+				//	msg.Format("ROI Error!");
+				//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(tROI.x+tROI.width/3,tROI.y + tROI.height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 				//	Result_Info[Cam_num] = "";
 				//	for (int ss=1;ss<41;ss++)
 				//	{
@@ -1700,7 +1698,6 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						{
 							cvtColor(HSV_channel1[1], Dst_Img[Cam_num], CV_GRAY2BGR);
 						}
-
 					}
 				}
 				else
@@ -1713,14 +1710,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nCamPosition == 0)
 					{
 						//rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,50),1);
-						//msg.Format(L"Obj. ROI");
-						//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,50), 1, 8);
+						//msg.Format("Obj. ROI");
+						//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,50), 1, 8);
 					}
 					if (ROI_Mode && ROI_CAM_Num == Cam_num && BOLT_Param[Cam_num].nCamPosition == 0)
 					{
 						rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 50), 1);
-						msg.Format(L"Obj. ROI");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 50), 1, 8);
+						msg.Format("Obj. ROI");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 50), 1, 8);
 					}
 				}
 				BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1); //SSF용 예외처리 버퍼 초기화
@@ -1775,7 +1772,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 				//if (Cam_num == 1)
 				//{
-				//	msg.Format(L"%d", s);
+				//	msg.Format("%d", s);
 				//	//AfxMessageBox(msg);
 				//}
 				CP_Gray_Img = BOLT_Param[Cam_num].Gray_Obj_Img(tROI).clone();
@@ -1783,7 +1780,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				//imwrite("Gray_Obj_Img.bmp",BOLT_Param[Cam_num].Gray_Obj_Img);
 				//if (Cam_num == 1)
 				//{
-				//	msg.Format(L"%d", s);
+				//	msg.Format("%d", s);
 				//	imwrite("CP_Gray_Img.bmp",CP_Gray_Img);
 				//	AfxMessageBox(msg);
 				//}
@@ -1799,8 +1796,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 			if (Result_Debugging)
 			{
-				msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Gray_Img.bmp", Cam_num, s);
-				imwrite(W2A(msg), CP_Gray_Img);
+				msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Gray_Img.bmp", Cam_num, s);
+				imwrite((LPCSTR)msg, CP_Gray_Img);
 			}
 
 			if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -1813,8 +1810,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				{
 					rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 30, 255), 2);
 				}
-				//msg.Format(L"Obj. ROI");
-				//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,50), 1, 8);
+				//msg.Format("Obj. ROI");
+				//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,50), 1, 8);
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
 			// [끝] ROI 설정 및 이미지 자르기
@@ -1941,13 +1938,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					{
 						if (m_Text_View[Cam_num] && !ROI_Mode)
 						{
-							msg.Format(L"Avg = %1.3f", myMAtMean);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+							msg.Format("Avg = %1.3f", myMAtMean);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 						}
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
-							msg.Format(L"Avg = %1.3f", myMAtMean);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+							msg.Format("Avg = %1.3f", myMAtMean);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 						}
 					}
 				}
@@ -2049,8 +2046,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						comp_rect.x += BOLT_Param[Cam_num].Offset_Object_Postion.x;
 						comp_rect.y += BOLT_Param[Cam_num].Offset_Object_Postion.y;
 
-						//CString msgs;
-						//msgs.Format(L"%d,%d,%d,%d / %d,%d,%d,%d",BOLT_Param[Cam_num].nRect[0].x,BOLT_Param[Cam_num].nRect[0].y,BOLT_Param[Cam_num].nRect[0].width,BOLT_Param[Cam_num].nRect[0].height,
+						//CStringA msgs;
+						//msgs.Format("%d,%d,%d,%d / %d,%d,%d,%d",BOLT_Param[Cam_num].nRect[0].x,BOLT_Param[Cam_num].nRect[0].y,BOLT_Param[Cam_num].nRect[0].width,BOLT_Param[Cam_num].nRect[0].height,
 						//	comp_rect.x,comp_rect.y,comp_rect.width,comp_rect.height);
 						//AfxMessageBox(msgs);
 						Mat bin_dark_model_img = Mat::zeros(comp_rect.size(), CV_8UC1);
@@ -2151,8 +2148,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 			if (Result_Debugging)
 			{
-				msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Binary_Img.bmp", Cam_num, s);
-				imwrite(W2A(msg), Out_binary);
+				msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Binary_Img.bmp", Cam_num, s);
+				imwrite((LPCSTR)msg, Out_binary);
 			}
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2200,10 +2197,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					merge(channels, Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 					//drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255, 0, 0), 1, 1, hierarchy);
 					////drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-					//msg.Format(L"BLOB(%1.0f)", area);
-					//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-					//msg.Format(L"%1.0f", area);
-					//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+					//msg.Format("BLOB(%1.0f)", area);
+					//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+					//msg.Format("%1.0f", area);
+					//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 				}
 			}
 
@@ -2227,8 +2224,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						if (Model_Img[Cam_num].rows != Gray_Img[Cam_num].rows || Model_Img[Cam_num].cols != Gray_Img[Cam_num].cols)
 						{
 							rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-							msg.Format(L"Input image size is different to the setting image!");
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 50, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 50, 0), 2, 8);
+							msg.Format("Input image size is different to the setting image!");
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 50, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 50, 0), 2, 8);
 							Result_Info[Cam_num] = "";
 							for (int ss = 1; ss < 41; ss++)
 							{
@@ -2251,8 +2248,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						if (R_Center.x == -1 || R_Center.y == -1)
 						{
 							rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-							msg.Format(L"No Object!");
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+							msg.Format("No Object!");
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 							//return true;
 						}
 						else
@@ -2276,11 +2273,11 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//if (t_size >= 9*Out_binary.rows * Out_binary.cols / 10 || t_size < 10)
 						//{
 						//	rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,0),1);
-						//	msg.Format(L"ROI#%d", s);
-						//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
+						//	msg.Format("ROI#%d", s);
+						//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
 						//	rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-						//	msg.Format(L"No Object!");
-						//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+						//	msg.Format("No Object!");
+						//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 						//	Result_Info[Cam_num] = "";
 						//	for (int ss=1;ss<41;ss++)
 						//	{
@@ -2382,8 +2379,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											int x = left + width / 2; //중심좌표
 											int y = top + height / 2;
 
-											msg.Format(L"%d", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(x - 5, y - 10), fontFace, fontScale, CV_RGB(0, 100, 255), 1, 8);
+											msg.Format("%d", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(x - 5, y - 10), fontFace, fontScale, CV_RGB(0, 100, 255), 1, 8);
 										}
 
 
@@ -2515,8 +2512,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 										}
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-										msg.Format(L"Out of ROI!");
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("Out of ROI!");
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 										BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 										Alg_Run_Check[Cam_num] = false;
 										return true;
@@ -2617,8 +2614,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 										}
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-										msg.Format(L"Out of ROI!");
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("Out of ROI!");
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 										BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 										Alg_Run_Check[Cam_num] = false;
 										return true;
@@ -2659,8 +2656,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//					int x = left+width/2; //중심좌표
 							//					int y = top+height/2;
 
-							//					msg.Format(L"%d",area);
-							//					putText(Dst_Img[Cam_num], W2A(msg), Point(x-5,y-10), fontFace, fontScale, CV_RGB(0,100,255), 1, 8);
+							//					msg.Format("%d",area);
+							//					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(x-5,y-10), fontFace, fontScale, CV_RGB(0,100,255), 1, 8);
 							//				}
 
 							//				if (BOLT_Param[Cam_num].nMethod_Direc[s] == POSITION_METHOD::LEFT_END)
@@ -2788,8 +2785,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//				//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 							//			}
 							//			rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-							//			msg.Format(L"Out of ROI!");
-							//			putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+							//			msg.Format("Out of ROI!");
+							//			putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 							//			BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 							//			Alg_Run_Check[Cam_num] = false;
 							//			return true;
@@ -2860,8 +2857,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//				//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 							//			}
 							//			rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-							//			msg.Format(L"Out of ROI!");
-							//			putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+							//			msg.Format("Out of ROI!");
+							//			putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 							//			BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 							//			Alg_Run_Check[Cam_num] = false;
 							//			return true;
@@ -2892,8 +2889,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 								}
 								rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-								msg.Format(L"No Object!");
-								putText(Dst_Img[Cam_num], (LPSTR)(W2A(msg)), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+								msg.Format("No Object!");
+								putText(Dst_Img[Cam_num], (LPSTR)((LPCSTR)msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 								BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 								Alg_Run_Check[Cam_num] = false;
 								return true;
@@ -2953,8 +2950,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 																		Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 																	}
 																	rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-																	msg.Format(L"No Object!");
-																	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+																	msg.Format("No Object!");
+																	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 																	BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 																	return true;
 																}*/
@@ -2991,12 +2988,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//		Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 								//	}
 								//	rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-								//	msg.Format(L"No Object!");
-								//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+								//	msg.Format("No Object!");
+								//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 								//	BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 								//	return true;
 								//}
-								//msg.Format(L"%1f,%1f",t_Left_y,t_Right_y);
+								//msg.Format("%1f,%1f",t_Left_y,t_Right_y);
 								//AfxMessageBox(msg);
 
 								//if (abs(t_Left_y - t_Right_y) > (double)Out_binary.rows/5)
@@ -3011,8 +3008,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//		//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 								//	}
 								//	rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-								//	msg.Format(L"No Object!");
-								//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+								//	msg.Format("No Object!");
+								//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 								//	BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 								//	Alg_Run_Check[Cam_num] = false;
 								//	return true;
@@ -3216,8 +3213,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 								//if (Result_Debugging) // 오링 사이드 바닦 라인 이미지
 								//{
-								//	msg.Format(L"Save\\Debugging\\Cam%d_%2d_Line_Thres_ROI_Gray_Img.bmp",Cam_num, s);
-								//	imwrite(W2A(msg),Out_binary);
+								//	msg.Format("Save\\Debugging\\Cam%d_%2d_Line_Thres_ROI_Gray_Img.bmp",Cam_num, s);
+								//	imwrite((LPCSTR)msg,Out_binary);
 								//}
 								/*imwrite("00.bmp",Out_binary);*/
 
@@ -3241,8 +3238,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 									}
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 									Alg_Run_Check[Cam_num] = false;
 									return true;
@@ -3278,8 +3275,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 									}
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 									Alg_Run_Check[Cam_num] = false;
 									return true;
@@ -3356,7 +3353,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												t_angle -= 90;
 											}
-											//msg.Format(L"%1.3f",t_angle-90);
+											//msg.Format("%1.3f",t_angle-90);
 											//AfxMessageBox(msg);
 										}
 										/*
@@ -3555,8 +3552,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 											}
 											rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-											msg.Format(L"No Object!");
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("No Object!");
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 											BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 											Alg_Run_Check[Cam_num] = false;
 											return true;
@@ -3743,12 +3740,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//BOLT_Param[Cam_num].Offset_Object_Postion.y = boundRect[m_max_object_num].y - BOLT_Param[Cam_num].Object_Postion.y;
 									if (Result_Debugging)
 									{
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", Cam_num, s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Gray_Obj_Img);
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", Cam_num, s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Thres_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", Cam_num, s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Gray_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", Cam_num, s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Thres_Obj_Img);
 									}
-									//msg.Format(L"%d,%d",BOLT_Param[Cam_num].Offset_Object_Postion.x,BOLT_Param[Cam_num].Offset_Object_Postion.y);
+									//msg.Format("%d,%d",BOLT_Param[Cam_num].Offset_Object_Postion.x,BOLT_Param[Cam_num].Offset_Object_Postion.y);
 									//AfxMessageBox(msg);
 
 									if (abs(BOLT_Param[Cam_num].Offset_Object_Postion.y) > BOLT_Param[Cam_num].nRect[0].height / 3)
@@ -3764,8 +3761,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 										}
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-										msg.Format(L"No Object!");
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("No Object!");
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 										BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 										Alg_Run_Check[Cam_num] = false;
 										return true;
@@ -3778,17 +3775,17 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									BOLT_Param[Cam_num].Gray_Obj_Img = Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]).clone();
 									if (Result_Debugging)
 									{
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", Cam_num, s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Gray_Obj_Img);
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", Cam_num, s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Thres_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", Cam_num, s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Gray_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", Cam_num, s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Thres_Obj_Img);
 									}
 								}
 							}
 							else if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::INDEX_TYPE) //Index판일때
 							{
-								//msg.Format(L"00.bmp");
-								//imwrite(W2A(msg),Out_binary);
+								//msg.Format("00.bmp");
+								//imwrite((LPCSTR)msg,Out_binary);
 
 								// 사이드 상부 바닦 찾기
 								double t_Left_x = 0; double t_Left_y = 0; double t_cnt = 0;
@@ -3931,8 +3928,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								erode(t_morph, Out_binary_tmp, element_v, Point(-1, -1), 2);
 								dilate(Out_binary_tmp, t_morph, element_v, Point(-1, -1), 2);
 
-								//msg.Format(L"01.bmp");
-								//imwrite(W2A(msg),t_morph);
+								//msg.Format("01.bmp");
+								//imwrite((LPCSTR)msg,t_morph);
 
 								//imwrite("00.bmp",t_morph);
 
@@ -3979,12 +3976,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//AfxMessageBox("1");
 									rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-									msg.Format(L"ROI#%d", s);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("ROI#%d", s);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4082,7 +4079,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//{
 									//	t_angle -= 180;
 									//}
-									//msg.Format(L"%1.2f",t_angle);
+									//msg.Format("%1.2f",t_angle);
 									//AfxMessageBox(msg);
 								}
 								//AfxMessageBox("1");
@@ -4091,19 +4088,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4306,19 +4303,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4528,12 +4525,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//AfxMessageBox(L"1");
 									rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-									msg.Format(L"ROI#%d", s);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("ROI#%d", s);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4555,19 +4552,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4614,19 +4611,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
 									}
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4655,19 +4652,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//	if (m_Text_View[Cam_num] && !ROI_Mode)
 								//	{
 								//		rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,0),1);
-								//		msg.Format(L"ROI#%d", s);
-								//		putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
+								//		msg.Format("ROI#%d", s);
+								//		putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
 								//		rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
 								//	}
 								//	if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 								//	{
 								//		rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,0),1);
-								//		msg.Format(L"ROI#%d", s);
-								//		putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
+								//		msg.Format("ROI#%d", s);
+								//		putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
 								//		rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
 								//	}
-								//	msg.Format(L"No Object!");
-								//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+								//	msg.Format("No Object!");
+								//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 								//	Result_Info[Cam_num] = "";
 								//	for (int s=1;s<41;s++)
 								//	{
@@ -4686,19 +4683,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
 									}
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4773,7 +4770,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									}
 
 									//x += BOLT_Param[Cam_num].nRect[s].x; y += BOLT_Param[Cam_num].nRect[s].y;
-									//msg.Format(L"%d, %d, %d, %d", x, BOLT_Param[Cam_num].Object_Postion.x, y, BOLT_Param[Cam_num].Object_Postion.y);
+									//msg.Format("%d, %d, %d, %d", x, BOLT_Param[Cam_num].Object_Postion.x, y, BOLT_Param[Cam_num].Object_Postion.y);
 									//AfxMessageBox(msg);
 									BOLT_Param[Cam_num].Offset_Object_Postion = Point(x - BOLT_Param[Cam_num].Object_Postion.x, y - BOLT_Param[Cam_num].Object_Postion.y);
 									//BOLT_Param[Cam_num].Offset_Object_Postion = Point(BOLT_Param[Cam_num].Object_Postion.x - x, BOLT_Param[Cam_num].Object_Postion.y - y);
@@ -4871,12 +4868,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								if (!t_check_roi)
 								{
 									rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-									msg.Format(L"ROI#%d", s);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("ROI#%d", s);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -4938,8 +4935,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//J_Rotate_PRE(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),t_angle,Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),1);
 									rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 0, 255), 1);
-									//msg.Format(L"Obj. ROI");
-									//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(0,0,255), 1, 8);
+									//msg.Format("Obj. ROI");
+									//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(0,0,255), 1, 8);
 								}
 								if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 								{
@@ -4956,19 +4953,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -5005,19 +5002,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 0), 1);
-										msg.Format(L"ROI#%d", s);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("ROI#%d", s);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
 									}
-									msg.Format(L"No Object!");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("No Object!");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 									Result_Info[Cam_num] = "";
 									for (int ss = 1; ss < 41; ss++)
 									{
@@ -5114,10 +5111,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//BOLT_Param[Cam_num].Gray_Obj_Img = Rotate_Target_Thres_ROI_Gray_Img.clone();
 									if (Result_Debugging)
 									{
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Gray_Obj_Img);
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Thres_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Gray_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Thres_Obj_Img);
 									}
 								}
 								else
@@ -5126,10 +5123,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									BOLT_Param[Cam_num].Gray_Obj_Img = Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]).clone();
 									if (Result_Debugging)
 									{
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Gray_Obj_Img);
-										msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", s);
-										imwrite(W2A(msg), BOLT_Param[Cam_num].Thres_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Gray_Img.bmp", s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Gray_Obj_Img);
+										msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Obj_Thres_Img.bmp", s);
+										imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Thres_Obj_Img);
 									}
 								}
 							}
@@ -5163,8 +5160,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					{
 						SYSTEMTIME cur_time;
 						GetLocalTime(&cur_time);
-						msg.Format(L"%s\\CAM%d\\ROI%02d_%02d%02d%02d_%03d.png", Model_Save_Folder, Cam_num, s, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
-						imwrite(W2A(msg), Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
+						msg.Format("%s\\CAM%d\\ROI%02d_%02d%02d%02d_%03d.png", Model_Save_Folder, Cam_num, s, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
+						imwrite((LPCSTR)msg, Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 						//AfxMessageBox(msg);
 					}
 				}
@@ -5449,8 +5446,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							dist_vec.push_back(0);
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
-								msg.Format(L"OMIT");
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+								msg.Format("OMIT");
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
 							}
 
 							// 위에서 부터 검색해서 SSF이고 Omit이 없으면 초기화함.
@@ -5541,9 +5538,9 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									BOLT_Param[Cam_num].vecSSF_BLOB[j].AI_Result = AI_Inspect(Src_Img[Cam_num](t_Mask_ROI), Cam_num, s, v_ID, v_Confidence);
 									if (model_save_flag)
 									{
-										CString str_Result;
-										str_Result.Format(L"%s\\CAM%d_Class%02d_%04d.png", model_save, Cam_num, v_ID, j);
-										imwrite(W2A(str_Result), Src_Img[Cam_num](t_Mask_ROI));
+										CStringA str_Result;
+										str_Result.Format("%s\\CAM%d_Class%02d_%04d.png", model_save, Cam_num, v_ID, j);
+										imwrite((LPCSTR)str_Result, Src_Img[Cam_num](t_Mask_ROI));
 									}
 									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].AI_Result.GetLength() > 0)
 									{
@@ -5637,22 +5634,22 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
-										msg.Format(L"S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+										msg.Format("S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
 									}
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-										msg.Format(L"Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+										msg.Format("Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
 									}
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
-										msg.Format(L"Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+										msg.Format("Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
 									}
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 5)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
-										msg.Format(L"Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+										msg.Format("Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
 									}
 									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - End
 									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
@@ -5662,30 +5659,30 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											/*msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);*/
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											/*msg.Format("Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);*/
 										}
 									}
 									else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
@@ -5695,30 +5692,30 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											//msg.Format("Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 								}
@@ -5746,37 +5743,37 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-										msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-										msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == 0)
 										{
-											msg.Format(L"AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										else
 										{
-											msg.Format(L"AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-										msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-										msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == 0)
 										{
-											msg.Format(L"AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										else
 										{
-											msg.Format(L"AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 								}
@@ -5873,7 +5870,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -6019,7 +6016,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -6141,7 +6138,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), pt1_Right, pt2_Right, CV_RGB(255, 100, 0), 1);
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Left, pt_Right_D, CV_RGB(0, 255, 0), 1);
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Right, pt_Left_D, CV_RGB(0, 255, 0), 1);
-								//msg.Format(L"A_L(%1.3f), A_R(%1.3f)",theta_Left, theta_Right);
+								//msg.Format("A_L(%1.3f), A_R(%1.3f)",theta_Left, theta_Right);
 								//AfxMessageBox(msg);
 							}
 						}
@@ -6178,7 +6175,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -6262,7 +6259,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -6408,7 +6405,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -6550,7 +6547,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -6670,7 +6667,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), pt1_Top, pt2_Top, CV_RGB(255, 100, 0), 1);
 								//line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Bottom, pt_Top_D,CV_RGB(0,255,0),1);
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Top, pt_Bottom_D, CV_RGB(0, 255, 0), 1);
-								//msg.Format(L"A_L(%1.3f), A_R(%1.3f)",theta_Bottom, theta_Top);
+								//msg.Format("A_L(%1.3f), A_R(%1.3f)",theta_Bottom, theta_Top);
 								//AfxMessageBox(msg);
 							}
 						}
@@ -6765,7 +6762,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -6846,7 +6843,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -6980,16 +6977,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//				//line( Dst_Img[Cam_num], Point2f(x + BOLT_Param[Cam_num].nRect[s].x,y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//				//	Point2f(CenterLoc.x + BOLT_Param[Cam_num].nRect[s].x,CenterLoc.y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(0,100,255), 1, 8 );
 						//				//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(x,y),2,CV_RGB(255,0,0),1);
-						//				//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-						//				//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x+5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.35, CV_RGB(255,100,0), 1, 8);
+						//				//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+						//				//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x+5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.35, CV_RGB(255,100,0), 1, 8);
 						//			}
 						//			if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						//			{
 						//				line( Dst_Img[Cam_num], Point2f(x + BOLT_Param[Cam_num].nRect[s].x,y + BOLT_Param[Cam_num].nRect[s].y) ,
 						//					Point2f(CenterLoc.x + BOLT_Param[Cam_num].nRect[s].x,CenterLoc.y + BOLT_Param[Cam_num].nRect[s].y),CV_RGB(0,100,255), 1, 8 );
 						//				circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(x,y),2,CV_RGB(255,0,0),1);
-						//				msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-						//				putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x+5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.35, CV_RGB(255,100,0), 1, 8);
+						//				msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+						//				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x+5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.35, CV_RGB(255,100,0), 1, 8);
 						//			}
 						//		}
 						//		if (m_Text_View[Cam_num] && !ROI_Mode)
@@ -7151,15 +7148,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//			{
 						//				line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, minLoc,CV_RGB(255,100,0), 1, 1 );
 						//				circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), minLoc,1,CV_RGB(0,0,255),1);
-						//				msg.Format(L"%1.3f",t_max);
-						//				putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + minLoc.x + 3,BOLT_Param[Cam_num].nRect[s].y + minLoc.y), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0,150,255), 1, 8);
+						//				msg.Format("%1.3f",t_max);
+						//				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + minLoc.x + 3,BOLT_Param[Cam_num].nRect[s].y + minLoc.y), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0,150,255), 1, 8);
 						//			}
 						//			if (m_Text_View[Cam_num] && !ROI_Mode)
 						//			{
 						//				line( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, minLoc,CV_RGB(255,100,0), 1, 1 );
 						//				circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), minLoc,1,CV_RGB(0,0,255),1);
-						//				msg.Format(L"%1.3f",t_max);
-						//				putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + minLoc.x + 3,BOLT_Param[Cam_num].nRect[s].y + minLoc.y), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0,150,255), 1, 8);
+						//				msg.Format("%1.3f",t_max);
+						//				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + minLoc.x + 3,BOLT_Param[Cam_num].nRect[s].y + minLoc.y), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0,150,255), 1, 8);
 						//			}
 						//			dist_vec.push_back(t_max);
 						//		}
@@ -7360,16 +7357,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 														line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], Incircle_Info.center, CV_RGB(255, 100, 0), 1, 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], 1, CV_RGB(255, 0, 0), 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], 2, CV_RGB(0, 0, 255), 1);
-														msg.Format(L"%1.3f", t_max);
-														putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+														msg.Format("%1.3f", t_max);
+														putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 													}
 													if (m_Text_View[Cam_num] && !ROI_Mode)
 													{
 														line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], Incircle_Info.center, CV_RGB(255, 100, 0), 1, 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], 1, CV_RGB(255, 0, 0), 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], 2, CV_RGB(0, 0, 255), 1);
-														msg.Format(L"%1.3f", t_max);
-														putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+														msg.Format("%1.3f", t_max);
+														putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 													}
 												}
 											}
@@ -7578,8 +7575,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[0], 2, CV_RGB(0, 0, 255), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 1, CV_RGB(255, 0, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 2, CV_RGB(0, 0, 255), 1);
-												msg.Format(L"%1.3f", t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+												msg.Format("%1.3f", t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
@@ -7588,8 +7585,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[0], 2, CV_RGB(0, 0, 255), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 1, CV_RGB(255, 0, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 2, CV_RGB(0, 0, 255), 1);
-												msg.Format(L"%1.3f", t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+												msg.Format("%1.3f", t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 											}
 										}
 										else if (BOLT_Param[Cam_num].nCrossMethod[s] == 2)
@@ -7631,8 +7628,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[0], 2, CV_RGB(0, 0, 255), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 1, CV_RGB(255, 0, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 2, CV_RGB(0, 0, 255), 1);
-												msg.Format(L"%1.3f", t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+												msg.Format("%1.3f", t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
@@ -7641,8 +7638,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[0], 2, CV_RGB(0, 0, 255), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 1, CV_RGB(255, 0, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_PTs[1], 2, CV_RGB(0, 0, 255), 1);
-												msg.Format(L"%1.3f", t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+												msg.Format("%1.3f", t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_PTs[0].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_PTs[0].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 											}
 										}
 										else
@@ -7661,8 +7658,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], 2, CV_RGB(0, 0, 255), 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k + BOLT_Param[Cam_num].nCrossAngleNumber[s] / 2], 1, CV_RGB(255, 0, 0), 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k + BOLT_Param[Cam_num].nCrossAngleNumber[s] / 2], 2, CV_RGB(0, 0, 255), 1);
-														msg.Format(L"%1.3f", t_max);
-														putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+														msg.Format("%1.3f", t_max);
+														putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 													}
 													if (m_Text_View[Cam_num] && !ROI_Mode)
 													{
@@ -7671,8 +7668,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k], 2, CV_RGB(0, 0, 255), 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k + BOLT_Param[Cam_num].nCrossAngleNumber[s] / 2], 1, CV_RGB(255, 0, 0), 1);
 														circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_vec_point[k + BOLT_Param[Cam_num].nCrossAngleNumber[s] / 2], 2, CV_RGB(0, 0, 255), 1);
-														msg.Format(L"%1.3f", t_max);
-														putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+														msg.Format("%1.3f", t_max);
+														putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_vec_point[k].x + 3, BOLT_Param[Cam_num].nRect[s].y + t_vec_point[k].y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 													}
 												}
 											}
@@ -7748,16 +7745,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, 1, CV_RGB(255, 0, 0), 1);
 								circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, 2, CV_RGB(0, 0, 255), 1);
 								circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, maxval, CV_RGB(255, 0, 0), 1);
-								msg.Format(L"%1.3f", maxval * ((BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) / 2));
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x + 3, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+								msg.Format("%1.3f", maxval * ((BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) / 2));
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x + 3, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 							}
 							if (m_Text_View[Cam_num] && !ROI_Mode)
 							{
 								circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, 1, CV_RGB(255, 0, 0), 1);
 								circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, 2, CV_RGB(0, 0, 255), 1);
 								circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, maxval, CV_RGB(255, 0, 0), 1);
-								msg.Format(L"%1.3f", maxval * ((BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) / 2));
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x + 3, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
+								msg.Format("%1.3f", maxval * ((BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) / 2));
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x + 3, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 150, 255), 1, 8);
 							}
 							dist_vec.push_back(maxval * ((BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) / 2));
 						}
@@ -7791,7 +7788,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					//				RotatedRect minRect = minAreaRect(contours[k]);
 					//				Rect t_rect = boundingRect( Mat(contours[k]) );
 					//				//double t_v = 100.0*min(minRect.size.width,minRect.size.height) / max(minRect.size.width,minRect.size.height);
-					//				//msg.Format(L"%1.2f",t_v);
+					//				//msg.Format("%1.2f",t_v);
 					//				R_radius = max(max((minRect.size.width+minRect.size.height)/4, (float)t_rect.width/2), (float)t_rect.height/2);
 					//				P_Center = minRect.center;
 					//				//minEnclosingCircle(contours[k],P_Center,R_radius);
@@ -7802,15 +7799,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					//					if (m_Text_View[Cam_num] && !ROI_Mode)
 					//					{
 					//						circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x,P_Center.y),R_radius,CV_RGB(55,200,0),1);
-					//						//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-					//						//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
+					//						//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+					//						//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
 					//					}
 					//					if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					//					{
 					//						drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 					//						circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x,P_Center.y),R_radius,CV_RGB(255,0,0),2);
-					//						msg.Format(L"%1.3f",V_R);
-					//						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
+					//						msg.Format("%1.3f",V_R);
+					//						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
 					//					}
 					//				}
 					//			}
@@ -7966,7 +7963,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//RotatedRect minRect = minAreaRect(contours[k]);
 									//Rect t_rect = boundingRect( Mat(contours[k]) );
 									//double t_v = 100.0*min(minRect.size.width,minRect.size.height) / max(minRect.size.width,minRect.size.height);
-									//msg.Format(L"%1.2f",t_v);
+									//msg.Format("%1.2f",t_v);
 									R_radius = (float)circlef.r;//max(max((minRect.size.width+minRect.size.height)/4, (float)t_rect.width/2), (float)t_rect.height/2);
 									P_Center = Point2f((float)circlef.a, (float)circlef.b);
 
@@ -7978,14 +7975,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
 											circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x, P_Center.y), R_radius, CV_RGB(55, 200, 0), 1);
-											//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
+											//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x, P_Center.y), R_radius, CV_RGB(255, 0, 0), 2);
-											msg.Format(L"%1.3f", V_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_rect.x + t_rect.width / 3, BOLT_Param[Cam_num].nRect[s].y + t_rect.y + t_rect.height / 2), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f", V_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_rect.x + t_rect.width / 3, BOLT_Param[Cam_num].nRect[s].y + t_rect.y + t_rect.height / 2), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -8033,7 +8030,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//RotatedRect minRect = minAreaRect(contours[k]);
 										//Rect t_rect = boundingRect( Mat(contours[k]) );
 										//double t_v = 100.0*min(minRect.size.width,minRect.size.height) / max(minRect.size.width,minRect.size.height);
-										//msg.Format(L"%1.2f",t_v);
+										//msg.Format("%1.2f",t_v);
 										R_radius = (float)circlef.r;//max(max((minRect.size.width+minRect.size.height)/4, (float)t_rect.width/2), (float)t_rect.height/2);
 										P_Center = Point2f((float)circlef.a, (float)circlef.b);
 
@@ -8045,15 +8042,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x, P_Center.y), R_radius, CV_RGB(55, 200, 0), 1);
-												//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-												//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
+												//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+												//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
 											}
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0, 255, 0), 1, 1, hierarchy);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x, P_Center.y), R_radius, CV_RGB(255, 0, 0), 2);
-												msg.Format(L"%1.3f", V_R);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + P_Center.x + 5, BOLT_Param[Cam_num].nRect[s].y + P_Center.y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", V_R);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + P_Center.x + 5, BOLT_Param[Cam_num].nRect[s].y + P_Center.y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 										}
 									}
@@ -8076,16 +8073,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//	{
 						//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x,CenterLoc.y),maxval,CV_RGB(55,200,0),1);
 						//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x,CenterLoc.y),1,CV_RGB(55,200,0),1);
-						//		//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-						//		//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
+						//		//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+						//		//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
 						//	}
 						//	if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						//	{
 						//		//drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 						//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x,CenterLoc.y),maxval,CV_RGB(55,200,0),1);
 						//		circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x,CenterLoc.y),1,CV_RGB(55,200,0),1);
-						//		msg.Format(L"%1.3f",V_R);
-						//		putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+CenterLoc.x+5,BOLT_Param[Cam_num].nRect[s].y+CenterLoc.y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
+						//		msg.Format("%1.3f",V_R);
+						//		putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+CenterLoc.x+5,BOLT_Param[Cam_num].nRect[s].y+CenterLoc.y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
 						//	}
 						//}
 
@@ -8122,7 +8119,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//			//RotatedRect minRect = minAreaRect(contours[k]);
 						//			Rect t_rect = boundingRect( Mat(contours[k]) );
 						//			//double t_v = 100.0*min(minRect.size.width,minRect.size.height) / max(minRect.size.width,minRect.size.height);
-						//			//msg.Format(L"%1.2f",t_v);
+						//			//msg.Format("%1.2f",t_v);
 						//			R_radius = (Circle_Info[2] + Circle_Info[3])/4; //max(max((minRect.size.width+minRect.size.height)/4, (float)t_rect.width/2), (float)t_rect.height/2);
 						//			P_Center = Point2f(Circle_Info[0],Circle_Info[1]);
 						//			//minEnclosingCircle(contours[k],P_Center,R_radius);
@@ -8133,15 +8130,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//				if (m_Text_View[Cam_num] && !ROI_Mode)
 						//				{
 						//					circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x,P_Center.y),R_radius,CV_RGB(55,200,0),1);
-						//					//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-						//					//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
+						//					//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+						//					//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
 						//				}
 						//				if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						//				{
 						//					drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 						//					circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(P_Center.x,P_Center.y),R_radius,CV_RGB(255,0,0),2);
-						//					msg.Format(L"%1.3f",V_R);
-						//					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
+						//					msg.Format("%1.3f",V_R);
+						//					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
 						//				}
 						//			}
 						//		}
@@ -8164,16 +8161,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						{
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x, CenterLoc.y), maxval, CV_RGB(55, 200, 0), 1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x, CenterLoc.y), 1, CV_RGB(55, 200, 0), 1);
-							//msg.Format(L"%1.3f",dist_vec[dist_vec.size()-1]);
-							//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
+							//msg.Format("%1.3f",dist_vec[dist_vec.size()-1]);
+							//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+P_Center.x+5,BOLT_Param[Cam_num].nRect[s].y+P_Center.y), fontFace, 0.4, CV_RGB(255,100,0), 1, 8);
 						}
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
 							//drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(0,255,0), 1, 1, hierarchy);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x, CenterLoc.y), maxval, CV_RGB(55, 200, 0), 1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(CenterLoc.x, CenterLoc.y), 1, CV_RGB(55, 200, 0), 1);
-							msg.Format(L"%1.3f", V_R);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x + 5, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+							msg.Format("%1.3f", V_R);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x + 5, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 						}
 					}
 					else if (BOLT_Param[Cam_num].nDiameter_Method[s] >= 1 && BOLT_Param[Cam_num].nDiameter_Method[s] <= 3)
@@ -8253,8 +8250,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX, t_dist[0].CY), CV_RGB(0, 100, 255), 1, 8);
-										msg.Format(L"Min.Dist(%1.3f)", top_min_dist);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
+										msg.Format("Min.Dist(%1.3f)", top_min_dist);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 1, CV_RGB(255, 255, 0), 1);
 
@@ -8265,8 +8262,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX, t_dist[0].CY), CV_RGB(0, 100, 255), 1, 8);
-										msg.Format(L"Min.Dist(%1.3f)", top_min_dist);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
+										msg.Format("Min.Dist(%1.3f)", top_min_dist);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 1, CV_RGB(255, 255, 0), 1);
 
@@ -8284,8 +8281,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										{
 											line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size() - 1].CX, t_dist[t_dist.size() - 1].CY), CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"Max.Dist(%1.3f)", top_max_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("Max.Dist(%1.3f)", top_max_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
 										}
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 1, CV_RGB(255, 255, 0), 1);
@@ -8298,8 +8295,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										{
 											line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size() - 1].CX, t_dist[t_dist.size() - 1].CY), CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"Max.Dist(%1.3f)", top_max_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("Max.Dist(%1.3f)", top_max_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
 										}
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 1, CV_RGB(255, 255, 0), 1);
@@ -8315,8 +8312,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX, t_dist[0].CY), CV_RGB(0, 100, 255), 1, 8);
-										msg.Format(L"Min.Dist(%1.3f)", top_min_dist);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
+										msg.Format("Min.Dist(%1.3f)", top_min_dist);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 1, CV_RGB(255, 255, 0), 1);
 
@@ -8327,8 +8324,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										{
 											line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size() - 1].CX, t_dist[t_dist.size() - 1].CY), CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"Max.Dist(%1.3f)", top_max_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("Max.Dist(%1.3f)", top_max_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
 										}
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 1, CV_RGB(255, 255, 0), 1);
@@ -8339,8 +8336,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 											Point2f(t_dist[0].CX, t_dist[0].CY), CV_RGB(0, 100, 255), 1, 8);
-										msg.Format(L"Min.Dist(%1.3f)", top_min_dist);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
+										msg.Format("Min.Dist(%1.3f)", top_min_dist);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 30), fontFace, 0.4, CV_RGB(0, 150, 255), 1, 8);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point2f(t_dist[0].CX, t_dist[0].CY), 1, CV_RGB(255, 255, 0), 1);
 
@@ -8350,8 +8347,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										{
 											line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center,
 												Point2f(t_dist[t_dist.size() - 1].CX, t_dist[t_dist.size() - 1].CY), CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"Max.Dist(%1.3f)", top_max_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("Max.Dist(%1.3f)", top_max_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 5, BOLT_Param[Cam_num].nRect[s].y + 50), fontFace, 0.4, CV_RGB(255, 100, 0), 1, 8);
 										}
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 2, CV_RGB(255, 0, 0), 1);
 										circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Center, 1, CV_RGB(255, 255, 0), 1);
@@ -8506,8 +8503,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"%d", area);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%d", area);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -8698,10 +8695,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,BOLT_Param[Cam_num].nCircle2Radius[s],CV_RGB(255,255,0),1);
 							//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,BOLT_Param[Cam_num].nCircle2Radius[s]-BOLT_Param[Cam_num].nCircle2Thickness[s]/2,CV_RGB(0,255,255),1);
 							//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,BOLT_Param[Cam_num].nCircle2Radius[s]+BOLT_Param[Cam_num].nCircle2Thickness[s]/2,CV_RGB(0,255,255),1);
-							//msg.Format(L"Circle1(%1.2f)",R1_V);
-							//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
-							//msg.Format(L"Circle2(%1.2f)",R2_V);
-							//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+							//msg.Format("Circle1(%1.2f)",R1_V);
+							//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+							//msg.Format("Circle2(%1.2f)",R2_V);
+							//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 							add(Mask, Mask2, Mask);
 							bitwise_and(Mask, Out_binary, Out_binary);
 							findContours(Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
@@ -8725,10 +8722,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle2Radius[s], CV_RGB(255, 255, 0), 2);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle2Radius[s] - BOLT_Param[Cam_num].nCircle2Thickness[s] / 2, CV_RGB(0, 255, 255), 2);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle2Radius[s] + BOLT_Param[Cam_num].nCircle2Thickness[s] / 2, CV_RGB(0, 255, 255), 2);
-							msg.Format(L"Circle1(%1.2f)", R1_V);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-							msg.Format(L"Circle2(%1.2f)", R2_V);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+							msg.Format("Circle1(%1.2f)", R1_V);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+							msg.Format("Circle2(%1.2f)", R2_V);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 							add(Mask, Mask2, Mask);
 							bitwise_and(Mask, Out_binary, Out_binary);
 							findContours(Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
@@ -8816,10 +8813,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,BOLT_Param[Cam_num].nCircle2Radius[s],CV_RGB(255,255,0),1);
 							//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,BOLT_Param[Cam_num].nCircle2Radius[s]-BOLT_Param[Cam_num].nCircle2Thickness[s]/2,CV_RGB(0,255,255),1);
 							//circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center,BOLT_Param[Cam_num].nCircle2Radius[s]+BOLT_Param[Cam_num].nCircle2Thickness[s]/2,CV_RGB(0,255,255),1);
-							//msg.Format(L"Circle1(%1.2f)",R1_V);
-							//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
-							//msg.Format(L"Circle2(%1.2f)",R2_V);
-							//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+							//msg.Format("Circle1(%1.2f)",R1_V);
+							//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+							//msg.Format("Circle2(%1.2f)",R2_V);
+							//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 							//add(Mask,Mask2,Mask);
 							bitwise_and(Mask, Out_binary, Out_binary);
 							findContours(Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
@@ -8843,10 +8840,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle2Radius[s], CV_RGB(255, 255, 0), 1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle2Radius[s] - BOLT_Param[Cam_num].nCircle2Thickness[s] / 2, CV_RGB(0, 255, 255), 1);
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle2Radius[s] + BOLT_Param[Cam_num].nCircle2Thickness[s] / 2, CV_RGB(0, 255, 255), 1);
-							msg.Format(L"Circle1(%1.2f)", R1_V);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-							//msg.Format(L"Circle2(%1.2f)",R2_V);
-							//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255,100,0), 1, 8);
+							msg.Format("Circle1(%1.2f)", R1_V);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+							//msg.Format("Circle2(%1.2f)",R2_V);
+							//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255,100,0), 1, 8);
 							//add(Mask,Mask2,Mask);
 							bitwise_and(Mask, Out_binary, Out_binary);
 							findContours(Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
@@ -9060,8 +9057,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 												{
-													msg.Format(L"%1.3f", t_angle);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+													msg.Format("%1.3f", t_angle);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 												}
 											}
 										}
@@ -9109,8 +9106,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 												{
-													msg.Format(L"%1.3f", t_angle);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+													msg.Format("%1.3f", t_angle);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 												}
 											}
 										}
@@ -9154,8 +9151,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 												{
-													msg.Format(L"%1.3f", t_angle);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+													msg.Format("%1.3f", t_angle);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 												}
 											}
 										}
@@ -9198,8 +9195,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 												{
-													msg.Format(L"%1.3f", t_angle);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+													msg.Format("%1.3f", t_angle);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_Edge_PT[vec_Edge_PT.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_Edge_PT[vec_Edge_PT.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 												}
 											}
 										}
@@ -9298,8 +9295,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 
@@ -9390,8 +9387,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 								}
@@ -9484,8 +9481,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 
@@ -9576,8 +9573,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 								}
@@ -9670,8 +9667,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 
@@ -9762,8 +9759,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 								}
@@ -9856,8 +9853,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 
@@ -9948,8 +9945,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", t_dist);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", t_dist);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (t_Start_PT.x + t_End_PT.x) / 2, BOLT_Param[Cam_num].nRect[s].y + (t_Start_PT.y + t_End_PT.y) / 2), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
 								}
@@ -10241,8 +10238,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											//msg.Format(L"Angle=%1.3f", t_angle);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_x + 3, BOLT_Param[Cam_num].nRect[s].y + t_y - 15), FONT_HERSHEY_SIMPLEX, fontScale * 1.3, CV_RGB(0, 255, 0), 1, 8);
+											//msg.Format("Angle=%1.3f", t_angle);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_x + 3, BOLT_Param[Cam_num].nRect[s].y + t_y - 15), FONT_HERSHEY_SIMPLEX, fontScale * 1.3, CV_RGB(0, 255, 0), 1, 8);
 											cv::line(Dst_Img[Cam_num], PT1, PT2, CV_RGB(255, 0, 0), 1);
 										}
 									}
@@ -10357,16 +10354,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										circle(Dst_Img[Cam_num], PC, 2, CV_RGB(0, 0, 255), 2);
 										circle(Dst_Img[Cam_num], PC, 1, CV_RGB(0, 255, 0), 2);
 										circle(Dst_Img[Cam_num], PC, 0, CV_RGB(255, 0, 0), 1);
-										msg.Format(L"Cx,Cy,Theta[%1.3f, %1.3f, %1.3f]", PC.x, PC.y, t_angle);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_x + 3, BOLT_Param[Cam_num].nRect[s].y + t_y - 15), FONT_HERSHEY_SIMPLEX, fontScale * 1.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("Cx,Cy,Theta[%1.3f, %1.3f, %1.3f]", PC.x, PC.y, t_angle);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_x + 3, BOLT_Param[Cam_num].nRect[s].y + t_y - 15), FONT_HERSHEY_SIMPLEX, fontScale * 1.5, CV_RGB(0, 255, 0), 1, 8);
 									}
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										circle(Dst_Img[Cam_num], PC, 2, CV_RGB(0, 0, 255), 2);
 										circle(Dst_Img[Cam_num], PC, 1, CV_RGB(0, 255, 0), 2);
 										circle(Dst_Img[Cam_num], PC, 0, CV_RGB(255, 0, 0), 1);
-										msg.Format(L"Cx,Cy,Theta[%1.3f, %1.3f, %1.3f]", PC.x, PC.y, t_angle);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + t_x + 3, BOLT_Param[Cam_num].nRect[s].y + t_y - 15), FONT_HERSHEY_SIMPLEX, fontScale * 1.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("Cx,Cy,Theta[%1.3f, %1.3f, %1.3f]", PC.x, PC.y, t_angle);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + t_x + 3, BOLT_Param[Cam_num].nRect[s].y + t_y - 15), FONT_HERSHEY_SIMPLEX, fontScale * 1.5, CV_RGB(0, 255, 0), 1, 8);
 
 									}
 								}
@@ -10417,12 +10414,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//imwrite("02.bmp", Dst_Img[Cam_num]);//int x = centroids.at<double>(j, 0); //중심좌표
 											}
 
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
-											msg.Format(L"OMIT");
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("OMIT");
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
 										}
 										t_cnt++;
 									}
@@ -10469,10 +10466,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 											//}
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -10579,10 +10576,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//}
 											//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 											//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-											msg.Format(L"W(%1.3f/%1.3f)", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("W(%1.3f/%1.3f)", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f/%1.3f", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -10691,10 +10688,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 											//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 											//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-											msg.Format(L"H(%1.3f/%1.3f)", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("H(%1.3f/%1.3f)", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f/%1.3f", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -10728,10 +10725,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
 
-											msg.Format(L"No.(%d)", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%d", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("No.(%d)", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -10809,10 +10806,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											circle(Dst_Img[Cam_num], Point(R0x, R0y), 2, CV_RGB(0, 255, 0), 1);
 											circle(Dst_Img[Cam_num], Point(R0x, R0y), 1, CV_RGB(0, 0, 255), 1);
 
-											msg.Format(L"Dist(%1.3f)", t_D);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f", t_D);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("Dist(%1.3f)", t_D);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f", t_D);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
@@ -10855,10 +10852,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											int y = t_boundRect.center.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -10893,10 +10890,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											int y = t_boundRect.center.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, j, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -11231,13 +11228,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
-												msg.Format(L"Top_Dist(%1.3f)", v_Top_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (Top_Mid_Point.x + Top_Circle_Point.x) / 2 - 100, BOLT_Param[Cam_num].nRect[s].y + (Top_Mid_Point.y + Top_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("Top_Dist(%1.3f)", v_Top_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (Top_Mid_Point.x + Top_Circle_Point.x) / 2 - 100, BOLT_Param[Cam_num].nRect[s].y + (Top_Mid_Point.y + Top_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
-												msg.Format(L"%1.3f", v_Top_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (Top_Mid_Point.x + Top_Circle_Point.x) / 2 - 40, BOLT_Param[Cam_num].nRect[s].y + (Top_Mid_Point.y + Top_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("%1.3f", v_Top_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (Top_Mid_Point.x + Top_Circle_Point.x) / 2 - 40, BOLT_Param[Cam_num].nRect[s].y + (Top_Mid_Point.y + Top_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 											//imwrite("00.bmp",Line_Img);
 
@@ -11282,13 +11279,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
 												//t_cnt++;
-												msg.Format(L"Bottom_Dist(%1.3f)", v_Bottom_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (Bottom_Mid_Point.x + Bottom_Circle_Point.x) / 2 - 100, BOLT_Param[Cam_num].nRect[s].y + (Bottom_Mid_Point.y + Bottom_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("Bottom_Dist(%1.3f)", v_Bottom_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (Bottom_Mid_Point.x + Bottom_Circle_Point.x) / 2 - 100, BOLT_Param[Cam_num].nRect[s].y + (Bottom_Mid_Point.y + Bottom_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
-												msg.Format(L"%1.3f", v_Bottom_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (Bottom_Mid_Point.x + Bottom_Circle_Point.x) / 2 - 40, BOLT_Param[Cam_num].nRect[s].y + (Bottom_Mid_Point.y + Bottom_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("%1.3f", v_Bottom_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (Bottom_Mid_Point.x + Bottom_Circle_Point.x) / 2 - 40, BOLT_Param[Cam_num].nRect[s].y + (Bottom_Mid_Point.y + Bottom_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 
 											Line_Img = Mat::zeros(Out_binary.size(), CV_8UC1);
@@ -11332,13 +11329,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
 												//t_cnt++;
-												msg.Format(L"Left_Dist(%1.3f)", v_Left_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + Left_Mid_Point.x + 50, -15 + BOLT_Param[Cam_num].nRect[s].y + (Left_Mid_Point.y + Left_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("Left_Dist(%1.3f)", v_Left_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + Left_Mid_Point.x + 50, -15 + BOLT_Param[Cam_num].nRect[s].y + (Left_Mid_Point.y + Left_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
-												msg.Format(L"%1.3f", v_Left_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + Left_Mid_Point.x + 100, -15 + BOLT_Param[Cam_num].nRect[s].y + (Left_Mid_Point.y + Left_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("%1.3f", v_Left_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + Left_Mid_Point.x + 100, -15 + BOLT_Param[Cam_num].nRect[s].y + (Left_Mid_Point.y + Left_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 
 											Line_Img = Mat::zeros(Out_binary.size(), CV_8UC1);
@@ -11383,13 +11380,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
 												//t_cnt++;
-												msg.Format(L"Right_Dist(%1.3f)", v_Right_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + Right_Circle_Point.x + 50, -15 + BOLT_Param[Cam_num].nRect[s].y + (Right_Mid_Point.y + Right_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("Right_Dist(%1.3f)", v_Right_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + Right_Circle_Point.x + 50, -15 + BOLT_Param[Cam_num].nRect[s].y + (Right_Mid_Point.y + Right_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
-												msg.Format(L"%1.3f", v_Right_dist2);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + Right_Circle_Point.x + 100, -15 + BOLT_Param[Cam_num].nRect[s].y + (Right_Mid_Point.y + Right_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
+												msg.Format("%1.3f", v_Right_dist2);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + Right_Circle_Point.x + 100, -15 + BOLT_Param[Cam_num].nRect[s].y + (Right_Mid_Point.y + Right_Circle_Point.y) / 2), FONT_HERSHEY_SIMPLEX, fontScale + 0.5, CV_RGB(255, 0, 0), 2, 8);
 											}
 											dist_vec.push_back(abs(v_Right_dist2 - v_Left_dist2));
 											dist_vec.push_back(abs(v_Top_dist2 - v_Bottom_dist2));
@@ -11438,10 +11435,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//	circle(Dst_Img[Cam_num],Point(R0x,R0y),2,CV_RGB(0,255,0),1);
 										//	circle(Dst_Img[Cam_num],Point(R0x,R0y),1,CV_RGB(0,0,255),1);
 
-										//	msg.Format(L"Dist(%1.3f)",t_D);
-										//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255,100,0), 1, 8);
-										//	msg.Format(L"%1.3f",t_D);
-										//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x+5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
+										//	msg.Format("Dist(%1.3f)",t_D);
+										//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255,100,0), 1, 8);
+										//	msg.Format("%1.3f",t_D);
+										//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x+5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, fontScale, CV_RGB(255,100,0), 1, 8);
 										//}
 										//if (m_Text_View[Cam_num] && !ROI_Mode)
 										//{
@@ -11723,12 +11720,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 													//imwrite("02.bmp", Dst_Img[Cam_num]);//int x = centroids.at<double>(j, 0); //중심좌표
 												}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
-												msg.Format(L"OMIT");
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("OMIT");
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
 											}
 											t_cnt++;
 										}
@@ -11783,10 +11780,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -11894,10 +11891,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//}
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"W(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("W(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12006,10 +12003,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"H(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("H(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12056,10 +12053,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"No.(%d)", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("No.(%d)", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12147,10 +12144,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 2, CV_RGB(0, 255, 0), 1);
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 1, CV_RGB(0, 0, 255), 1);
 
-												msg.Format(L"Dist(%1.3f)", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("Dist(%1.3f)", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
@@ -12207,10 +12204,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12260,10 +12257,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12498,12 +12495,12 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 													//imwrite("02.bmp", Dst_Img[Cam_num]);//int x = centroids.at<double>(j, 0); //중심좌표
 												}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
-												msg.Format(L"OMIT");
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("OMIT");
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
 											}
 											t_cnt++;
 										}
@@ -12558,10 +12555,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12668,10 +12665,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//}
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"W(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("W(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12780,10 +12777,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"H(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("H(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12831,10 +12828,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"No.(%d)", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("No.(%d)", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -12922,10 +12919,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 2, CV_RGB(0, 255, 0), 1);
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 1, CV_RGB(0, 0, 255), 1);
 
-												msg.Format(L"Dist(%1.3f)", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("Dist(%1.3f)", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
@@ -12983,10 +12980,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -13037,10 +13034,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%1.0f)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.0f", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("BLOB(%1.0f)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.0f", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -13098,20 +13095,20 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//int x = centroids.at<double>(j, 0); //중심좌표
 										//int y = centroids.at<double>(j, 1);
 
-										//msg.Format(L"BLOB(%d)",area);
-										//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
-										//msg.Format(L"%d",area);
-										//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
+										//msg.Format("BLOB(%d)",area);
+										//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
+										//msg.Format("%d",area);
+										//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"No(%d)", t_cnt + 1);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%d(%d)", t_cnt + 1, area);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("No(%d)", t_cnt + 1);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%d(%d)", t_cnt + 1, area);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 									t_cnt++;
 								}
@@ -13208,20 +13205,20 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//int x = centroids.at<double>(j, 0); //중심좌표
 											//int y = centroids.at<double>(j, 1);
 
-											//msg.Format(L"BLOB(%d)",area);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
-											//msg.Format(L"%d",area);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
+											//msg.Format("BLOB(%d)",area);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
+											//msg.Format("%d",area);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											int x = centroids.at<double>(j, 0); //중심좌표
 											int y = centroids.at<double>(j, 1);
 
-											msg.Format(L"No(%d)", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%d(%d)", t_cnt + 1, area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("No(%d)", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d(%d)", t_cnt + 1, area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -13318,20 +13315,20 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//int x = centroids.at<double>(j, 0); //중심좌표
 											//int y = centroids.at<double>(j, 1);
 
-											//msg.Format(L"BLOB(%d)",area);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
-											//msg.Format(L"%d",area);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
+											//msg.Format("BLOB(%d)",area);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
+											//msg.Format("%d",area);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											int x = centroids.at<double>(j, 0); //중심좌표
 											int y = centroids.at<double>(j, 1);
 
-											msg.Format(L"No(%d)", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%d(%d)", t_cnt + 1, area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("No(%d)", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d(%d)", t_cnt + 1, area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -13535,13 +13532,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//imwrite("01.bmp",Out_binary);
 							if (m_Text_View[Cam_num] && !ROI_Mode)
 							{
-								msg.Format(L"Avg = %1.3f", myMAtMean);
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+								msg.Format("Avg = %1.3f", myMAtMean);
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 							}
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
-								msg.Format(L"Avg = %1.3f", myMAtMean);
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+								msg.Format("Avg = %1.3f", myMAtMean);
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 							}
 						}
 						bitwise_and(Mask, Out_binary, Out_binary);
@@ -13737,7 +13734,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										//}
 										//AfxMessageBox("0");
 										Point p(x, y);
-										//msg.Format(L"%d,%d,%d,%d",x,y,t_cnt,labels.at<uchar>(p));
+										//msg.Format("%d,%d,%d,%d",x,y,t_cnt,labels.at<uchar>(p));
 										//AfxMessageBox(msg);
 										if (t_cnt == labels.at<uchar>(p))
 										{
@@ -13784,7 +13781,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										}
 									}
 								}
-								//msg.Format(L"%d/%d",t_Circle1_connect_cnt,t_Circle2_connect_cnt);
+								//msg.Format("%d/%d",t_Circle1_connect_cnt,t_Circle2_connect_cnt);
 								//AfxMessageBox(msg);
 								t_Circle_Blob_Info.fBoundaryHitNum = max(t_Circle1_connect_cnt, t_Circle2_connect_cnt);
 								t_Circle_Blob_Info.fArea = (int)(contourArea(contours[i]) + 0.5);//t_Circle_Blob_Info.Pixels.size();
@@ -13839,7 +13836,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 							vec_Circle_Blob_Info[i].fHeight = max(fTemp1, fTemp2);
 							vec_Circle_Blob_Info[i].fWidth = min(fTemp1, fTemp2);
-							//msg.Format(L"%1.2f/i",vec_Circle_Blob_Info[i].fAngle,i);
+							//msg.Format("%1.2f/i",vec_Circle_Blob_Info[i].fAngle,i);
 							//AfxMessageBox(msg);
 							float tv0 = min(abs(vec_Circle_Blob_Info[i].fAngle - vec_Circle_Blob_Info[i].fAngleFromCenter), abs(vec_Circle_Blob_Info[i].fAngle - vec_Circle_Blob_Info[i].fAngleFromCenter));
 							float tv1 = min(abs(vec_Circle_Blob_Info[i].fAngle + 90.0f - vec_Circle_Blob_Info[i].fAngleFromCenter), abs(vec_Circle_Blob_Info[i].fAngle - 90.0f - vec_Circle_Blob_Info[i].fAngleFromCenter));
@@ -13919,10 +13916,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	pixel[vec_Circle_Blob_Info[i].Pixels[pp].x][1] = 0;
 												//	pixel[vec_Circle_Blob_Info[i].Pixels[pp].x][0] = 0;
 												//}
-												msg.Format(L"%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -13938,10 +13935,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double x = vec_Circle_Blob_Info[i].centerPoint.x;
 												double y = vec_Circle_Blob_Info[i].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-												msg.Format(L"H(%1.3f)", vec_Circle_Blob_Info[i].fHeight);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f", vec_Circle_Blob_Info[i].fHeight);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("H(%1.3f)", vec_Circle_Blob_Info[i].fHeight);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", vec_Circle_Blob_Info[i].fHeight);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -13957,10 +13954,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double x = vec_Circle_Blob_Info[i].centerPoint.x;
 												double y = vec_Circle_Blob_Info[i].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-												msg.Format(L"W(%1.3f)", vec_Circle_Blob_Info[i].fWidth);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f", vec_Circle_Blob_Info[i].fWidth);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("W(%1.3f)", vec_Circle_Blob_Info[i].fWidth);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", vec_Circle_Blob_Info[i].fWidth);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -13976,10 +13973,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double x = vec_Circle_Blob_Info[i].centerPoint.x;
 												double y = vec_Circle_Blob_Info[i].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-												msg.Format(L"A(%1.1f)", vec_Circle_Blob_Info[i].fAngle);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.1f", vec_Circle_Blob_Info[i].fAngle);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("A(%1.1f)", vec_Circle_Blob_Info[i].fAngle);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.1f", vec_Circle_Blob_Info[i].fAngle);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -13995,10 +13992,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double x = vec_Circle_Blob_Info[i].centerPoint.x;
 												double y = vec_Circle_Blob_Info[i].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-												msg.Format(L"A(%1.1f)", vec_Circle_Blob_Info[i].fAngleFromCenter);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.1f", vec_Circle_Blob_Info[i].fAngleFromCenter);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("A(%1.1f)", vec_Circle_Blob_Info[i].fAngleFromCenter);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.1f", vec_Circle_Blob_Info[i].fAngleFromCenter);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -14026,10 +14023,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double x2 = vec_Circle_Blob_Info[(i + 1) % vec_Circle_Blob_Info.size()].centerPoint.x;
 												double y2 = vec_Circle_Blob_Info[(i + 1) % vec_Circle_Blob_Info.size()].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-												msg.Format(L"IA(%1.1f)", t_temp);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.1f", t_temp);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (x1 + x2) / 2, BOLT_Param[Cam_num].nRect[s].y + (y1 + y2) / 2), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("IA(%1.1f)", t_temp);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.1f", t_temp);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (x1 + x2) / 2, BOLT_Param[Cam_num].nRect[s].y + (y1 + y2) / 2), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -14047,10 +14044,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 													double x = vec_Circle_Blob_Info[i].centerPoint.x;
 													double y = vec_Circle_Blob_Info[i].centerPoint.y;
 													drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-													msg.Format(L"BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-													msg.Format(L"%d", vec_Circle_Blob_Info[i].fArea);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+													msg.Format("BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+													msg.Format("%d", vec_Circle_Blob_Info[i].fArea);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 												}
 												t_cnt++;
 											}
@@ -14070,10 +14067,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 													double y = vec_Circle_Blob_Info[i].centerPoint.y;
 													drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-													msg.Format(L"BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-													msg.Format(L"%d", vec_Circle_Blob_Info[i].fArea);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+													msg.Format("BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+													msg.Format("%d", vec_Circle_Blob_Info[i].fArea);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 												}
 												t_cnt++;
 											}
@@ -14095,10 +14092,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											double y = vec_Circle_Blob_Info[i].centerPoint.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d(%d)", t_cnt + 1, vec_Circle_Blob_Info[i].fArea);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14115,10 +14112,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											double y = vec_Circle_Blob_Info[i].centerPoint.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"H(%1.3f)", vec_Circle_Blob_Info[i].fHeight);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f", vec_Circle_Blob_Info[i].fHeight);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("H(%1.3f)", vec_Circle_Blob_Info[i].fHeight);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f", vec_Circle_Blob_Info[i].fHeight);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14135,10 +14132,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											double y = vec_Circle_Blob_Info[i].centerPoint.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"W(%1.3f)", vec_Circle_Blob_Info[i].fWidth);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f", vec_Circle_Blob_Info[i].fWidth);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("W(%1.3f)", vec_Circle_Blob_Info[i].fWidth);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f", vec_Circle_Blob_Info[i].fWidth);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14155,10 +14152,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											double y = vec_Circle_Blob_Info[i].centerPoint.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"A(%1.1f)", vec_Circle_Blob_Info[i].fAngle);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.1f", vec_Circle_Blob_Info[i].fAngle);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("A(%1.1f)", vec_Circle_Blob_Info[i].fAngle);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.1f", vec_Circle_Blob_Info[i].fAngle);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14175,10 +14172,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											double y = vec_Circle_Blob_Info[i].centerPoint.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"A(%1.1f)", vec_Circle_Blob_Info[i].fAngleFromCenter);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.1f", vec_Circle_Blob_Info[i].fAngleFromCenter);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("A(%1.1f)", vec_Circle_Blob_Info[i].fAngleFromCenter);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.1f", vec_Circle_Blob_Info[i].fAngleFromCenter);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14207,10 +14204,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											double y2 = vec_Circle_Blob_Info[(i + 1) % vec_Circle_Blob_Info.size()].centerPoint.y;
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-											msg.Format(L"IA(%1.1f)", t_temp);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.1f", t_temp);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (x1 + x2) / 2, BOLT_Param[Cam_num].nRect[s].y + (y1 + y2) / 2), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("IA(%1.1f)", t_temp);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.1f", t_temp);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (x1 + x2) / 2, BOLT_Param[Cam_num].nRect[s].y + (y1 + y2) / 2), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14229,10 +14226,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double y = vec_Circle_Blob_Info[i].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-												msg.Format(L"BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", vec_Circle_Blob_Info[i].fArea);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", vec_Circle_Blob_Info[i].fArea);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -14252,10 +14249,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												double y = vec_Circle_Blob_Info[i].centerPoint.y;
 												drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, vec_Circle_Blob_Info[i].contourNum, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
 
-												msg.Format(L"BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", vec_Circle_Blob_Info[i].fArea);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
+												msg.Format("BLOB(%d)", vec_Circle_Blob_Info[i].fArea);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", vec_Circle_Blob_Info[i].fArea);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 255, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -14386,13 +14383,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//imwrite("01.bmp",Out_binary);
 						if (m_Text_View[Cam_num] && !ROI_Mode)
 						{
-							msg.Format(L"Avg = %1.3f", myMAtMean);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+							msg.Format("Avg = %1.3f", myMAtMean);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 						}
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
-							msg.Format(L"Avg = %1.3f", myMAtMean);
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+							msg.Format("Avg = %1.3f", myMAtMean);
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 						}
 					}
 
@@ -14541,18 +14538,18 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											int x = centroids.at<double>(j, 0); //중심좌표
 											int y = centroids.at<double>(j, 1);
 
-											msg.Format(L"%d", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											int x = centroids.at<double>(j, 0); //중심좌표
 											int y = centroids.at<double>(j, 1);
 
-											msg.Format(L"No(%d)", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%d", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("No(%d)", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -14563,8 +14560,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//		int x = centroids.at<double>(j, 0); //중심좌표
 									//		int y = centroids.at<double>(j, 1);
 
-									//		msg.Format(L"%d",t_cnt+1);
-									//		putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
+									//		msg.Format("%d",t_cnt+1);
+									//		putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
 									//	}
 
 									//	if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
@@ -14572,10 +14569,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									//		int x = centroids.at<double>(j, 0); //중심좌표
 									//		int y = centroids.at<double>(j, 1);
 
-									//		msg.Format(L"No(%d)",t_cnt+1);
-									//		putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
-									//		msg.Format(L"%d",t_cnt+1);
-									//		putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
+									//		msg.Format("No(%d)",t_cnt+1);
+									//		putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 12*t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255,100,0), 1, 8);
+									//		msg.Format("%d",t_cnt+1);
+									//		putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x-5,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.3, CV_RGB(255,100,0), 1, 8);
 									//	}
 									//	t_cnt++;
 									//}
@@ -14587,18 +14584,18 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"%d", t_cnt + 1);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%d", t_cnt + 1);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"No(%d)", t_cnt + 1);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%d", t_cnt + 1);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("No(%d)", t_cnt + 1);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%d", t_cnt + 1);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 									t_cnt++;
 								}
@@ -14624,8 +14621,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					findContours(Out_binary.clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 					if (contours.size() == 0) // 칸투어 갯수로 예외처리
 					{
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 						dist_vec.push_back(0);
 					}
 					else
@@ -14684,8 +14681,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								double t_v = 100.0 * min(minRect.size.width, minRect.size.height) / max(minRect.size.width, minRect.size.height);
 								//t_v *= (BOLT_Param[Cam_num].nResolution[0]+BOLT_Param[Cam_num].nResolution[1])/2;
 								//double t_v = 100.0*min(circlef.a,circlef.b) / max(circlef.a,circlef.b);
-								//msg.Format(L"%1.2f",t_v);
-								//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,100,0), 1, 8);
+								//msg.Format("%1.2f",t_v);
+								//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255,100,0), 1, 8);
 
 								if (BOLT_Param[Cam_num].nOutput[s] == 0)
 								{
@@ -14723,14 +14720,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										line(Dst_Img[Cam_num], Point2f(rect_points[j].x + BOLT_Param[Cam_num].nRect[s].x, rect_points[j].y + BOLT_Param[Cam_num].nRect[s].y),
 											Point2f(rect_points[(j + 1) % 4].x + BOLT_Param[Cam_num].nRect[s].x, rect_points[(j + 1) % 4].y + BOLT_Param[Cam_num].nRect[s].y), CV_RGB(200, 15, 15), 1, 8);
 									}
-									msg.Format(L"Min(%1.3f)", min(minRect.size.width, minRect.size.height) * (BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) * 0.5);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 1), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-									msg.Format(L"Max(%1.3f)", max(minRect.size.width, minRect.size.height) * (BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) * 0.5);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 2), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-									msg.Format(L"R(%1.3f)", t_v);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 3), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-									msg.Format(L"R=100*Min/Max");
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 4), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("Min(%1.3f)", min(minRect.size.width, minRect.size.height) * (BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) * 0.5);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 1), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("Max(%1.3f)", max(minRect.size.width, minRect.size.height) * (BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]) * 0.5);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 2), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("R(%1.3f)", t_v);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 3), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+									msg.Format("R=100*Min/Max");
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * 4), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 								}
 							}
 						}
@@ -14802,7 +14799,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										double t_R = (Pitch_Info[i + 1].CY - Pitch_Info[i].CY) * BOLT_Param[Cam_num].nResolution[1];
 										dist_vec.push_back(t_R);
-										//msg.Format(L"%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
+										//msg.Format("%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
 										//AfxMessageBox(msg);
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
@@ -14819,8 +14816,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), 1, CV_RGB(255, 100, 0), 1);
 											}
-											msg.Format(L"P%2d(%1.2f)", dist_vec.size(), t_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("P%2d(%1.2f)", dist_vec.size(), t_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -14892,7 +14889,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										double t_R = (Pitch_Info[i + 1].CX - Pitch_Info[i].CX) * BOLT_Param[Cam_num].nResolution[0];
 										dist_vec.push_back(t_R);
-										//msg.Format(L"%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
+										//msg.Format("%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
 										//AfxMessageBox(msg);
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
@@ -14910,8 +14907,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), 1, CV_RGB(255, 100, 0), 1);
 											}
-											msg.Format(L"P%2d(%1.2f)", dist_vec.size(), t_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("P%2d(%1.2f)", dist_vec.size(), t_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -15445,8 +15442,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-										msg.Format(L"S%2d(%1.2f)", dist_vec.size(), t_R);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("S%2d(%1.2f)", dist_vec.size(), t_R);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -15526,8 +15523,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-										msg.Format(L"S%2d(%1.2f)", dist_vec.size(), t_R);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("S%2d(%1.2f)", dist_vec.size(), t_R);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -15708,8 +15705,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								int x = centroids.at<double>(j, 0); //중심좌표
 								int y = centroids.at<double>(j, 1);
 
-								msg.Format(L"%d(%d)", cnt, area);
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+								msg.Format("%d(%d)", cnt, area);
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 							}
 						}
 
@@ -15854,10 +15851,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"BLOB(%d)", area);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%d", area);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("BLOB(%d)", area);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%d", area);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 								else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 1)
@@ -15868,10 +15865,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"W(%1.3f)", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%1.3f", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("W(%1.3f)", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%1.3f", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 								else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 2)
@@ -15882,10 +15879,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"W(%1.3f)", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%1.3f", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("W(%1.3f)", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%1.3f", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 
@@ -16072,7 +16069,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								//RotatedRect minRect = minAreaRect(contours[k]);
 								//Rect t_rect = boundingRect( Mat(contours[k]) );
 								//double t_v = 100.0*min(minRect.size.width,minRect.size.height) / max(minRect.size.width,minRect.size.height);
-								//msg.Format(L"%1.2f",t_v);
+								//msg.Format("%1.2f",t_v);
 								R_radius = (float)circlef.r;//max(max((minRect.size.width+minRect.size.height)/4, (float)t_rect.width/2), (float)t_rect.height/2);
 								P_Center = Point2f((float)circlef.a, (float)circlef.b);
 							}
@@ -16175,8 +16172,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, 2, CV_RGB(255, 0, 0), 1);
 									circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), CenterLoc, maxval, CV_RGB(255, 200, 0), 1);
 								}
-								msg.Format(L"%1.3f", minval);
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x - 5, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y - 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
+								msg.Format("%1.3f", minval);
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + CenterLoc.x - 5, BOLT_Param[Cam_num].nRect[s].y + CenterLoc.y - 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
 							}
 							if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nOutput[s] != 3)
 							{
@@ -16189,13 +16186,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						{
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s && BOLT_Param[Cam_num].nOutput[s] == 3)
 							{
-								msg.Format(L"%1.3f", (Outcircle_Info.size.width + Outcircle_Info.size.height) * 0.25 * (BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]));
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + Outcircle_Info.center.x - 5, BOLT_Param[Cam_num].nRect[s].y + Outcircle_Info.center.y - 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
+								msg.Format("%1.3f", (Outcircle_Info.size.width + Outcircle_Info.size.height) * 0.25 * (BOLT_Param[Cam_num].nResolution[0] + BOLT_Param[Cam_num].nResolution[1]));
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + Outcircle_Info.center.x - 5, BOLT_Param[Cam_num].nRect[s].y + Outcircle_Info.center.y - 20), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
 							}
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s && BOLT_Param[Cam_num].nOutput[s] != 3)
 							{
-								msg.Format(L"No Inner Circle");
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
+								msg.Format("No Inner Circle");
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
 							}
 						}
 					}
@@ -16203,14 +16200,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					{
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
-							msg.Format(L"No objects");
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
+							msg.Format("No objects");
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
 						}
 
 						if (m_Text_View[Cam_num] && !ROI_Mode)
 						{
-							msg.Format(L"No objects");
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
+							msg.Format("No objects");
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(0, 150, 255), 1, 8);
 						}
 					}
 				}
@@ -16220,19 +16217,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					dist_vec.push_back(MatchRate[Cam_num]);
 					if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					{
-						msg.Format(L"%1.3f", MatchRate[Cam_num]);
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+						msg.Format("%1.3f", MatchRate[Cam_num]);
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 					}
 
 					if (m_Text_View[Cam_num] && !ROI_Mode)
 					{
-						msg.Format(L"%1.3f", MatchRate[Cam_num]);
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+						msg.Format("%1.3f", MatchRate[Cam_num]);
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 					}
 				}
 				else if (BOLT_Param[Cam_num].nMethod_Direc[s] == ALGORITHM_TB::SSF_MASKED_TB)
 				{
-					USES_CONVERSION;
+					//USES_CONVERSION;
 					if (BOLT_Param[Cam_num].nSSFOutput[s] == 10)
 					{
 						dist_vec.push_back(BOLT_Param[Cam_num].nSSFResult[BOLT_Param[Cam_num].nSSFAIClass[s]]);
@@ -16500,8 +16497,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							dist_vec.push_back(0);
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
-								msg.Format(L"OMIT");
-								putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+								msg.Format("OMIT");
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
 							}
 
 							// 위에서 부터 검색해서 SSF Masked이고 Omit이 없으면 초기화함.
@@ -16592,9 +16589,9 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									BOLT_Param[Cam_num].vecSSF_BLOB[j].AI_Result = AI_Inspect(Src_Img[Cam_num](t_Mask_ROI), Cam_num, s, v_ID, v_Confidence);
 									if (model_save_flag)
 									{
-										CString str_Result;
-										str_Result.Format(L"%s\\CAM%d_Class%02d_%04d.png", model_save, Cam_num, v_ID, j);
-										imwrite(W2A(str_Result), Src_Img[Cam_num](t_Mask_ROI));
+										CStringA str_Result;
+										str_Result.Format("%s\\CAM%d_Class%02d_%04d.png", model_save, Cam_num, v_ID, j);
+										imwrite((LPCSTR)str_Result, Src_Img[Cam_num](t_Mask_ROI));
 									}
 									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].AI_Result.GetLength() > 0)
 									{
@@ -16688,22 +16685,22 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
-										msg.Format(L"S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+										msg.Format("S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
 									}
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-										msg.Format(L"Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+										msg.Format("Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
 									}
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
-										msg.Format(L"Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+										msg.Format("Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
 									}
 									else if (BOLT_Param[Cam_num].nSSFOutput[s] == 5)
 									{
 										dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
-										msg.Format(L"Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+										msg.Format("Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
 									}
 									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - End
 									if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
@@ -16713,30 +16710,30 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											/*msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);*/
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											/*msg.Format("Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);*/
 										}
 									}
 									else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
@@ -16746,30 +16743,30 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 											if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 											{
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 											}
 
 											drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-											msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-											//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											//msg.Format("Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 								}
@@ -16797,37 +16794,37 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-										msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-										msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == 0)
 										{
-											msg.Format(L"AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										else
 										{
-											msg.Format(L"AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-										msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-										msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 10), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										if (BOLT_Param[Cam_num].vecSSF_BLOB[j].Class == 0)
 										{
-											msg.Format(L"AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d Defect, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 										else
 										{
-											msg.Format(L"AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+											msg.Format("AI(%d, %1.0f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Class, BOLT_Param[Cam_num].vecSSF_BLOB[j].Confidence * 100.0f);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width + 3, BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + 20), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 										}
 									}
 								}
@@ -16844,8 +16841,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					{
 						SYSTEMTIME cur_time;
 						GetLocalTime(&cur_time);
-						msg.Format(L"%s\\CAM%d\\ROI%02d_%02d%02d%02d_%03d.png", Model_Save_Folder, Cam_num, s, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
-						imwrite(W2A(msg), Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
+						msg.Format("%s\\CAM%d\\ROI%02d_%02d%02d%02d_%03d.png", Model_Save_Folder, Cam_num, s, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
+						imwrite((LPCSTR)msg, Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 						//AfxMessageBox(msg);
 					}
 				}
@@ -17120,8 +17117,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						dist_vec.push_back(0);
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 						{
-							msg.Format(L"OMIT");
-							putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
+							msg.Format("OMIT");
+							putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height - 10), FONT_HERSHEY_SIMPLEX, 0.6, CV_RGB(255, 100, 0), 2, 8);
 						}
 
 						// 위에서 부터 검색해서 SSF이고 Omit이 없으면 초기화함.
@@ -17179,22 +17176,22 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 2)
 							{
 								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
-								msg.Format(L"S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
+								msg.Format("S_LV(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV);
 							}
 							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 3)
 							{
 								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-								msg.Format(L"Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+								msg.Format("Long(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
 							}
 							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 4)
 							{
 								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
-								msg.Format(L"Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
+								msg.Format("Short(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length);
 							}
 							else if (BOLT_Param[Cam_num].nSSFOutput[s] == 5)
 							{
 								dist_vec.push_back(BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
-								msg.Format(L"Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
+								msg.Format("Area(%d)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Area);
 							}
 							// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영 - End
 							if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD < 0)
@@ -17204,30 +17201,30 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 									{
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
-									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 								}
 								if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 								{
 									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 									{
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(0, 0, 255), CV_FILLED, 8, SSF_hierarchy);
-									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-									//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									//msg.Format("Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+									//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 								}
 							}
 							else if (BOLT_Param[Cam_num].vecSSF_BLOB[j].GD > 0)
@@ -17237,30 +17234,30 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 									{
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 								}
 								if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 								{
 									// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
 									if (BOLT_Param[Cam_num].nSSFOutput[s] != 1)
 									{
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 									}
 
 									drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 0, 0), CV_FILLED, 8, SSF_hierarchy);
-									msg.Format(L"GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									msg.Format(L"S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
-									putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
-									//msg.Format(L"Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
-									//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("GD(%1.1f)", abs(BOLT_Param[Cam_num].vecSSF_BLOB[j].GD));
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									msg.Format("S(%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Size);
+									putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 15), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
+									//msg.Format("Axis(%1.2f,%1.2f)", BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length, BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length);
+									//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.x + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.width, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.y + BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR.height / 2 + 30), FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1, 8);
 								}
 							}
 						}
@@ -17270,25 +17267,25 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						//	GetLocalTime(&cur_time);
 						//	if (SSF_Save_Format == 0)
 						//	{
-						//		msg.Format(L"%s\\CAM%d\\NG\\Result_%02d%02d%02d_%03d.bmp", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
-						//		imwrite(W2A(msg), Dst_Img[Cam_num]);
-						//		//imwrite(W2A(msg), Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
+						//		msg.Format("%s\\CAM%d\\NG\\Result_%02d%02d%02d_%03d.bmp", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
+						//		imwrite((LPCSTR)msg, Dst_Img[Cam_num]);
+						//		//imwrite((LPCSTR)msg, Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 						//	}
 						//	else if (SSF_Save_Format == 1)
 						//	{
-						//		msg.Format(L"%s\\CAM%d\\NG\\Result_%02d%02d%02d_%03d.jpg", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
-						//		imwrite(W2A(msg), Dst_Img[Cam_num]);
-						//		//imwrite(W2A(msg), Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
+						//		msg.Format("%s\\CAM%d\\NG\\Result_%02d%02d%02d_%03d.jpg", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
+						//		imwrite((LPCSTR)msg, Dst_Img[Cam_num]);
+						//		//imwrite((LPCSTR)msg, Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 						//	}
 						//	else if (SSF_Save_Format == 2)
 						//	{
-						//		msg.Format(L"%s\\CAM%d\\NG\\Result_%02d%02d%02d_%03d.png", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
-						//		imwrite(W2A(msg), Dst_Img[Cam_num]);
-						//		//imwrite(W2A(msg), Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
+						//		msg.Format("%s\\CAM%d\\NG\\Result_%02d%02d%02d_%03d.png", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
+						//		imwrite((LPCSTR)msg, Dst_Img[Cam_num]);
+						//		//imwrite((LPCSTR)msg, Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 						//	}
-						//	//msg.Format(L"%s\\CAM%d\\NG\\Cam_%02d%02d%02d_%03d.png", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
-						//	//imwrite(W2A(msg), Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
-						//	//imwrite(W2A(msg), Src_Img[Cam_num]);
+						//	//msg.Format("%s\\CAM%d\\NG\\Cam_%02d%02d%02d_%03d.png", SSF_Save_Folder, Cam_num, cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
+						//	//imwrite((LPCSTR)msg, Src_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
+						//	//imwrite((LPCSTR)msg, Src_Img[Cam_num]);
 						//}
 					}
 				}
@@ -17383,7 +17380,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -17529,7 +17526,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -17651,7 +17648,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), pt1_Right, pt2_Right, CV_RGB(255, 100, 0), 1);
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Left, pt_Right_D, CV_RGB(0, 255, 0), 1);
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Right, pt_Left_D, CV_RGB(0, 255, 0), 1);
-								//msg.Format(L"A_L(%1.3f), A_R(%1.3f)",theta_Left, theta_Right);
+								//msg.Format("A_L(%1.3f), A_R(%1.3f)",theta_Left, theta_Right);
 								//AfxMessageBox(msg);
 							}
 						}
@@ -17688,7 +17685,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -17772,7 +17769,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(0,i), Point(Out_binary.cols,ii),CV_RGB(255,255,0),2);
 									//}
@@ -17921,7 +17918,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -18063,7 +18060,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -18183,7 +18180,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), pt1_Top, pt2_Top, CV_RGB(255, 100, 0), 1);
 								//line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Bottom, pt_Top_D,CV_RGB(0,255,0),1);
 								line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), ptC_Top, pt_Bottom_D, CV_RGB(0, 255, 0), 1);
-								//msg.Format(L"A_L(%1.3f), A_R(%1.3f)",theta_Bottom, theta_Top);
+								//msg.Format("A_L(%1.3f), A_R(%1.3f)",theta_Bottom, theta_Top);
 								//AfxMessageBox(msg);
 							}
 						}
@@ -18304,7 +18301,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -18385,7 +18382,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								{
 									//if (m_Text_View[Cam_num] && !ROI_Mode)
 									//{
-									//	//msg.Format(L"P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
+									//	//msg.Format("P(%d), A(%1.3f), T(%1.3f)",ii,ALG_BOLTPIN_Param.nCalAngle[s],tan(ALG_BOLTPIN_Param.nCalAngle[s]* PI / 180.0));
 									//	//AfxMessageBox(msg);
 									//	line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(j,0), Point(jj,Out_binary.rows),CV_RGB(255,255,0),2);
 									//}
@@ -18616,7 +18613,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								}
 							}
 						}
-						//msg.Format(L"%d,%d,%d,%d",tt_ROI0.x,tt_ROI0.y,tt_ROI0.width,tt_ROI0.height);
+						//msg.Format("%d,%d,%d,%d",tt_ROI0.x,tt_ROI0.y,tt_ROI0.width,tt_ROI0.height);
 						//AfxMessageBox(msg);
 
 						int limit = std::min((int)contours.size(), MAX_CONTOUR);
@@ -18630,7 +18627,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								tt_ROI1 = tt_TROI;
 							}
 						}
-						//msg.Format(L"%d,%d,%d,%d",tt_ROI1.x,tt_ROI1.y,tt_ROI1.width,tt_ROI1.height);
+						//msg.Format("%d,%d,%d,%d",tt_ROI1.x,tt_ROI1.y,tt_ROI1.width,tt_ROI1.height);
 						//AfxMessageBox(msg);
 
 						if (tt_ROI0.x <= tt_ROI1.x)
@@ -18753,7 +18750,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										double t_R = (Pitch_Info[i + 1].CY - Pitch_Info[i].CY) * BOLT_Param[Cam_num].nResolution[1];
 										dist_vec.push_back(t_R);
-										//msg.Format(L"%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
+										//msg.Format("%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
 										//AfxMessageBox(msg);
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
@@ -18770,8 +18767,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), 1, CV_RGB(255, 100, 0), 1);
 											}
-											msg.Format(L"P%2d(%1.2f)", dist_vec.size(), t_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("P%2d(%1.2f)", dist_vec.size(), t_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -18843,7 +18840,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										double t_R = (Pitch_Info[i + 1].CX - Pitch_Info[i].CX) * BOLT_Param[Cam_num].nResolution[0];
 										dist_vec.push_back(t_R);
-										//msg.Format(L"%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
+										//msg.Format("%1.2f - %1.2f = %1.2f",Pitch_Info[i+1].CX, Pitch_Info[i].CX, dist_vec[dist_vec.size()-1]);
 										//AfxMessageBox(msg);
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
@@ -18860,8 +18857,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), 1, CV_RGB(255, 100, 0), 1);
 											}
-											msg.Format(L"P%2d(%1.2f)", dist_vec.size(), t_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("P%2d(%1.2f)", dist_vec.size(), t_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -18947,8 +18944,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-											msg.Format(L"S%2d(%1.2f)", dist_vec.size(), t_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("S%2d(%1.2f)", dist_vec.size(), t_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -19000,10 +18997,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 													int x = centroids.at<double>(j, 0); //중심좌표
 													int y = centroids.at<double>(j, 1);
 
-													msg.Format(L"BLOB(%d)", area);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-													msg.Format(L"%d", area);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+													msg.Format("BLOB(%d)", area);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+													msg.Format("%d", area);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 												}
 											}
 
@@ -19120,8 +19117,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
 											rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-											msg.Format(L"S%2d(%1.2f)", dist_vec.size(), t_R);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("S%2d(%1.2f)", dist_vec.size(), t_R);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 										}
 									}
 								}
@@ -19174,10 +19171,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 													int x = centroids.at<double>(j, 0); //중심좌표
 													int y = centroids.at<double>(j, 1);
 
-													msg.Format(L"BLOB(%d)", area);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-													msg.Format(L"%d", area);
-													putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+													msg.Format("BLOB(%d)", area);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+													msg.Format("%d", area);
+													putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 												}
 											}
 
@@ -19325,8 +19322,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), CV_RGB(255, 255, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), 1, CV_RGB(255, 100, 0), 1);
-												//msg.Format(L"A%2d(%1.2f)",i+1,angle);
-												//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+												//msg.Format("A%2d(%1.2f)",i+1,angle);
+												//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 											}
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
@@ -19345,8 +19342,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									dist_vec.push_back(t_R);
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										msg.Format(L"A%2d(%1.3f)", dist_vec.size(), t_R);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("A%2d(%1.3f)", dist_vec.size(), t_R);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -19424,8 +19421,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										{
 											line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), CV_RGB(255, 255, 0), 1);
 											circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), 1, CV_RGB(255, 100, 0), 1);
-											//msg.Format(L"A%2d(%1.2f)",i+1,angle);
-											//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+											//msg.Format("A%2d(%1.2f)",i+1,angle);
+											//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 										}
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
@@ -19443,8 +19440,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									dist_vec.push_back(t_R);
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										msg.Format(L"A%2d(%1.3f)", dist_vec.size(), t_R);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("A%2d(%1.3f)", dist_vec.size(), t_R);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -19528,8 +19525,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), CV_RGB(255, 255, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), 1, CV_RGB(255, 100, 0), 1);
-												//msg.Format(L"A%2d(%1.2f)",i+1,angle);
-												//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+												//msg.Format("A%2d(%1.2f)",i+1,angle);
+												//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 											}
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
@@ -19548,8 +19545,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									dist_vec.push_back(t_R);
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										msg.Format(L"A%2d(%1.3f)", dist_vec.size(), t_R);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("A%2d(%1.3f)", dist_vec.size(), t_R);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -19630,8 +19627,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											{
 												line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), Point(Pitch_Info[i + 1].CX, Pitch_Info[i + 1].CY), CV_RGB(255, 255, 0), 1);
 												circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(Pitch_Info[i].CX, Pitch_Info[i].CY), 1, CV_RGB(255, 100, 0), 1);
-												//msg.Format(L"A%2d(%1.2f)",i+1,angle);
-												//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+												//msg.Format("A%2d(%1.2f)",i+1,angle);
+												//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10*i), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 											}
 											if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 											{
@@ -19650,8 +19647,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									dist_vec.push_back(t_R);
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										msg.Format(L"A%2d(%1.3f)", dist_vec.size(), t_R);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("A%2d(%1.3f)", dist_vec.size(), t_R);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10 * (dist_vec.size() + 1)), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -19695,14 +19692,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-										//msg.Format(L"W(%1.3f)",dist_vec[0]);
-										//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+										//msg.Format("W(%1.3f)",dist_vec[0]);
+										//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-										msg.Format(L"W(%1.3f)", dist_vec[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("W(%1.3f)", dist_vec[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -20108,8 +20105,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), contours, k, CV_RGB(255, 0, 0), CV_FILLED, 8, hierarchy);
-										msg.Format(L"%1.3f", t_v);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x, BOLT_Param[Cam_num].nRect[s].y + boundRect.y - 30), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", t_v);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x, BOLT_Param[Cam_num].nRect[s].y + boundRect.y - 30), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 									}
 								}
 							}
@@ -20154,15 +20151,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 2);
-										msg.Format(L"%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
 									}
 
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 2);
-										msg.Format(L"%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
 									}
 								}
 								int t_max_idx2 = -1; t_max = 0;
@@ -20186,14 +20183,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 2);
-										msg.Format(L"%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 2);
-										msg.Format(L"%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", (double)boundRect.height * BOLT_Param[Cam_num].nResolution[1]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + boundRect.x + boundRect.width + 5, BOLT_Param[Cam_num].nRect[s].y + boundRect.y + boundRect.height / 2), FONT_HERSHEY_SIMPLEX, 0.7, CV_RGB(255, 100, 0), 2, 8);
 									}
 								}
 							}
@@ -20234,14 +20231,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (m_Text_View[Cam_num] && !ROI_Mode)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-										//msg.Format(L"W(%1.3f)",dist_vec[0]);
-										//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
+										//msg.Format("W(%1.3f)",dist_vec[0]);
+										//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width+3,BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255,100,0), 1, 8);
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), boundRect, CV_RGB(255, 150, 0), 1);
-										msg.Format(L"W(%1.3f)", dist_vec[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("W(%1.3f)", dist_vec[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 10), FONT_HERSHEY_SIMPLEX, 0.28, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 							}
@@ -20755,11 +20752,11 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									}
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
-										msg.Format(L"%1.3f", t_angle);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_2center[vec_2center.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_2center[vec_2center.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", t_angle);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_2center[vec_2center.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_2center[vec_2center.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 									}
 
-									//msg.Format(L"%1.3f",t_angle-90);
+									//msg.Format("%1.3f",t_angle-90);
 									//AfxMessageBox(msg);
 								}
 								//AfxMessageBox("2");
@@ -20807,7 +20804,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								vector<Point2f> vec_right_center; double Right_angle = 0;
 								if (t_min_x != 9999 && t_max_x != 0)
 								{
-									//msg.Format(L"%d,%d",left+width,t_max_x);
+									//msg.Format("%d,%d",left+width,t_max_x);
 									//AfxMessageBox(msg);
 									for (int j = top + 2 * height / 3; j <= top + height; j++)
 									{
@@ -20879,16 +20876,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", Left_angle);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_left_center[vec_left_center.size() / 2].x + 10, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", Left_angle);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_left_center[vec_left_center.size() / 2].x + 10, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
-											msg.Format(L"%1.3f", Left_angle);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_left_center[vec_left_center.size() / 2].x + 10, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", Left_angle);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_left_center[vec_left_center.size() / 2].x + 10, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
-									//msg.Format(L"%1.3f",Left_angle);
+									//msg.Format("%1.3f",Left_angle);
 									//AfxMessageBox(msg);
 								}
 								//AfxMessageBox("5");
@@ -20909,16 +20906,16 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									{
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"%1.3f", Right_angle);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_right_center[vec_right_center.size() / 2].x - 100, BOLT_Param[Cam_num].nRect[s].y + vec_right_center[vec_right_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", Right_angle);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_right_center[vec_right_center.size() / 2].x - 100, BOLT_Param[Cam_num].nRect[s].y + vec_right_center[vec_right_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
-											msg.Format(L"%1.3f", Right_angle);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_right_center[vec_right_center.size() / 2].x - 100, BOLT_Param[Cam_num].nRect[s].y + vec_right_center[vec_right_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+											msg.Format("%1.3f", Right_angle);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_right_center[vec_right_center.size() / 2].x - 100, BOLT_Param[Cam_num].nRect[s].y + vec_right_center[vec_right_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 										}
 									}
-									//msg.Format(L"%1.3f",Right_angle);
+									//msg.Format("%1.3f",Right_angle);
 									//AfxMessageBox(msg);
 								}
 								//AfxMessageBox("6");
@@ -20930,13 +20927,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										dist_vec.push_back(abs(Right_angle - Left_angle));
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"D:%1.3f", abs(Right_angle - Left_angle));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
+											msg.Format("D:%1.3f", abs(Right_angle - Left_angle));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
-											msg.Format(L"D:%1.3f", abs(Right_angle - Left_angle));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
+											msg.Format("D:%1.3f", abs(Right_angle - Left_angle));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
 										}
 									}
 								}
@@ -20947,13 +20944,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										dist_vec.push_back(abs(Left_angle));
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"L:%1.3f", abs(Left_angle));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
+											msg.Format("L:%1.3f", abs(Left_angle));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
-											msg.Format(L"L:%1.3f", abs(Left_angle));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
+											msg.Format("L:%1.3f", abs(Left_angle));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
 										}
 									}
 								}
@@ -20964,13 +20961,13 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										dist_vec.push_back(abs(Right_angle));
 										if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 										{
-											msg.Format(L"R:%1.3f", abs(Right_angle));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
+											msg.Format("R:%1.3f", abs(Right_angle));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
-											msg.Format(L"R:%1.3f", abs(Right_angle));
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
+											msg.Format("R:%1.3f", abs(Right_angle));
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + left + width / 2 - 50, BOLT_Param[Cam_num].nRect[s].y + vec_left_center[vec_left_center.size() / 2].y), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 255, 0), 2, 8);
 										}
 									}
 								}
@@ -21064,11 +21061,11 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 									{
 										line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(leftx, lefty), Point(rightx, righty), CV_RGB(255, 255, 0), 1);
-										msg.Format(L"%1.3f", t_angle);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + vec_2center[vec_2center.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_2center[vec_2center.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
+										msg.Format("%1.3f", t_angle);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + vec_2center[vec_2center.size() - 1].x - 40, BOLT_Param[Cam_num].nRect[s].y + vec_2center[vec_2center.size() - 1].y + 25), FONT_HERSHEY_SIMPLEX, 0.8, CV_RGB(255, 100, 0), 2, 8);
 									}
 
-									//msg.Format(L"%1.3f",t_angle-90);
+									//msg.Format("%1.3f",t_angle-90);
 									//AfxMessageBox(msg);
 								}
 							}
@@ -21399,7 +21396,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								drawContours(Temp_Out_binary, contours, j, Scalar(255, 255, 255), CV_FILLED, 8);
 								//imwrite("04.bmp", Temp_Out_binary);
 								area = (double)countNonZero(Temp_Out_binary);
-								//msg.Format(L"%1.0f", area);
+								//msg.Format("%1.0f", area);
 								//AfxMessageBox(msg);
 								//area = (contourArea(contours[j],false)+0.5);
 								t_x = t_boundRect.boundingRect().x;
@@ -21451,10 +21448,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//	}
 											//}
 
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(0, 0, 255), 1, 8);
 										}
 									}
 								}
@@ -21560,10 +21557,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//}
 											//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 											//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-											msg.Format(L"W(%1.3f/%1.3f)", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("W(%1.3f/%1.3f)", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f/%1.3f", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -21672,10 +21669,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 											//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 											//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-											msg.Format(L"H(%1.3f/%1.3f)", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("H(%1.3f/%1.3f)", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f/%1.3f", t_min, t_max);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -21722,10 +21719,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//		}
 											//	}
 											//}
-											msg.Format(L"No.(%d)", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%d", t_cnt + 1);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("No.(%d)", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%d", t_cnt + 1);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -21812,10 +21809,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											circle(Dst_Img[Cam_num], Point(R0x, R0y), 2, CV_RGB(0, 255, 0), 1);
 											circle(Dst_Img[Cam_num], Point(R0x, R0y), 1, CV_RGB(0, 0, 255), 1);
 
-											msg.Format(L"Dist(%1.3f)", t_D);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.3f", t_D);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("Dist(%1.3f)", t_D);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.3f", t_D);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 										}
 										if (m_Text_View[Cam_num] && !ROI_Mode)
 										{
@@ -21872,10 +21869,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//		}
 											//	}
 											//}
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -21925,10 +21922,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 											//	}
 											//}
 
-											msg.Format(L"BLOB(%1.0f)", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-											msg.Format(L"%1.0f", area);
-											putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+											msg.Format("BLOB(%1.0f)", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+											msg.Format("%1.0f", area);
+											putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 										}
 										t_cnt++;
 									}
@@ -22151,10 +22148,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%d)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("BLOB(%d)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 											}
 										}
 									}
@@ -22259,10 +22256,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//}
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"W(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("W(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -22371,10 +22368,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"H(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("H(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -22421,10 +22418,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//		}
 												//	}
 												//}
-												msg.Format(L"No.(%d)", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("No.(%d)", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -22511,10 +22508,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 2, CV_RGB(0, 255, 0), 1);
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 1, CV_RGB(0, 0, 255), 1);
 
-												msg.Format(L"Dist(%1.3f)", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("Dist(%1.3f)", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
@@ -22571,10 +22568,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//		}
 												//	}
 												//}
-												msg.Format(L"BLOB(%d)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("BLOB(%d)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -22624,10 +22621,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%d)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("BLOB(%d)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -22822,10 +22819,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//		}
 												//	}
 												//}
-												msg.Format(L"BLOB(%d)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("BLOB(%d)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 											}
 										}
 									}
@@ -22931,10 +22928,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//}
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"W(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("W(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -23043,10 +23040,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 												//double smallest_element = *min_element(dist_vec.begin(),dist_vec.end());
 												//double largest_element  = *max_element(dist_vec.begin(),dist_vec.end());
-												msg.Format(L"H(%1.3f/%1.3f)", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f/%1.3f", t_min, t_max);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
+												msg.Format("H(%1.3f/%1.3f)", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f/%1.3f", t_min, t_max);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(0, 0, 255), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -23094,10 +23091,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//		}
 												//	}
 												//}
-												msg.Format(L"No.(%d)", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", t_cnt + 1);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("No.(%d)", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", t_cnt + 1);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -23185,10 +23182,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 2, CV_RGB(0, 255, 0), 1);
 												circle(Dst_Img[Cam_num], Point(R0x, R0y), 1, CV_RGB(0, 0, 255), 1);
 
-												msg.Format(L"Dist(%1.3f)", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%1.3f", t_D);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("Dist(%1.3f)", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%1.3f", t_D);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x + 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											if (m_Text_View[Cam_num] && !ROI_Mode)
 											{
@@ -23246,10 +23243,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//		}
 												//	}
 												//}
-												msg.Format(L"BLOB(%d)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("BLOB(%d)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -23300,10 +23297,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 												//	}
 												//}
 
-												msg.Format(L"BLOB(%d)", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
-												msg.Format(L"%d", area);
-												putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("BLOB(%d)", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 1, 8);
+												msg.Format("%d", area);
+												putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, fontScale, CV_RGB(255, 100, 0), 1, 8);
 											}
 											t_cnt++;
 										}
@@ -23374,8 +23371,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					if (m_max_object_num > -1)
 					{
 						tt_TROI = boundingRect(contours[m_max_object_num]);
-						//msg.Format(L"Save\\Debugging\\CAM0_00.bmp",s);
-						//imwrite(W2A(msg),t_End_Nail);
+						//msg.Format("Save\\Debugging\\CAM0_00.bmp",s);
+						//imwrite((LPCSTR)msg,t_End_Nail);
 						int t_h = tt_TROI.height - BOLT_Param[Cam_num].nHeightforShape[s] - 1;
 						if (t_h <= 0)
 						{
@@ -23388,8 +23385,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						{
 							line(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Point(t_mask.x, t_mask.y), Point(t_mask.x + t_mask.width, t_mask.y), CV_RGB(255, 255, 0), 1);
 						}
-						//msg.Format(L"Save\\Debugging\\CAM0_01.bmp",s);
-						//imwrite(W2A(msg),t_End_Nail);
+						//msg.Format("Save\\Debugging\\CAM0_01.bmp",s);
+						//imwrite((LPCSTR)msg,t_End_Nail);
 
 					}
 					else
@@ -23450,8 +23447,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							//if (m_Text_View[Cam_num]) // 표시
 							//{
 
-							//	msg.Format(L"%d",m_max_object_value);
-							//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+x-35,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.6, CV_RGB(255,100,0), 2, 8);
+							//	msg.Format("%d",m_max_object_value);
+							//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+x-35,BOLT_Param[Cam_num].nRect[s].y+y), fontFace, 0.6, CV_RGB(255,100,0), 2, 8);
 							//}
 						}
 					}
@@ -23960,10 +23957,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"BLOB(%d)", area);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%d", area);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("BLOB(%d)", area);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%d", area);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 								else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 1)
@@ -23974,10 +23971,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"W(%1.3f)", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%1.3f", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("W(%1.3f)", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%1.3f", (double)t_w * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 								else if (BOLT_Param[Cam_num].nCirclePositionMethod[s] == 2)
@@ -23988,10 +23985,10 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 										int x = centroids.at<double>(j, 0); //중심좌표
 										int y = centroids.at<double>(j, 1);
 
-										msg.Format(L"H(%1.3f)", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
-										msg.Format(L"%1.3f", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
-										putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("H(%1.3f)", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width + 3, BOLT_Param[Cam_num].nRect[s].y + 12 * t_cnt), FONT_HERSHEY_SIMPLEX, 0.3, CV_RGB(255, 100, 0), 1, 8);
+										msg.Format("%1.3f", (double)t_h * BOLT_Param[Cam_num].nResolution[0]);
+										putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + x - 5, BOLT_Param[Cam_num].nRect[s].y + y), fontFace, 0.3, CV_RGB(255, 100, 0), 1, 8);
 									}
 								}
 
@@ -24036,14 +24033,14 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 					dist_vec.push_back(MatchRate[Cam_num]);
 					if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					{
-						msg.Format(L"%1.3f", MatchRate[Cam_num]);
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+						msg.Format("%1.3f", MatchRate[Cam_num]);
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 					}
 
 					if (m_Text_View[Cam_num] && !ROI_Mode)
 					{
-						msg.Format(L"%1.3f", MatchRate[Cam_num]);
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+						msg.Format("%1.3f", MatchRate[Cam_num]);
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2 - 5, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(0, 255, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 					}
 				}
 			}
@@ -24061,7 +24058,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 			{
 				if (dist_vec.size() == 1)
 				{
-					////msg.Format(L"%1.3f",dist_vec[0]);
+					////msg.Format("%1.3f",dist_vec[0]);
 					////AfxMessageBox(msg);
 					v_result = dist_vec[0];
 				}
@@ -24076,7 +24073,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						&& i <= (int)((double)dist_vec.size() * (double)BOLT_Param[Cam_num].nCalmax[s] / 100.0))
 					{
 						t_dist_vec.push_back(dist_vec[i]);
-						//msg.Format(L"%1.3f",dist_vec[i]);
+						//msg.Format("%1.3f",dist_vec[i]);
 						//AfxMessageBox(msg);
 					}
 				}
@@ -24170,7 +24167,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 			}
 			//						if (Cam_num == 0)
 			//{
-			//	msg.Format(L"%d", s);
+			//	msg.Format("%d", s);
 			//	AfxMessageBox(msg);
 			//}
 			if (m_Text_View[Cam_num] && s >= 1 && !ROI_Mode)
@@ -24181,26 +24178,26 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				{
 					//if (ceil(v_result) == v_result)
 					//{
-					//	msg.Format(L"ROI#%d(%1.0f)", s, v_result);
+					//	msg.Format("ROI#%d(%1.0f)", s, v_result);
 					//}
 					//else
 					//{
-					//	msg.Format(L"ROI#%d(%1.3f)", s, v_result);
+					//	msg.Format("ROI#%d(%1.3f)", s, v_result);
 					//}
 
-					//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 				else
 				{
-					msg.Format(L"AI", s);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					msg.Format("AI", s);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
-				//msg.Format(L"ROI#%d(%1.3f)", s,v_result);
-				//putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+(2*Gray_Img[Cam_num].rows/480),BOLT_Param[Cam_num].nRect[s].y + 11 + 6*Gray_Img[Cam_num].rows/480), FONT_HERSHEY_SIMPLEX, fontScale*((double)Gray_Img[Cam_num].rows/480), CV_RGB(255,100,0), 1 + (double)Gray_Img[Cam_num].rows/960, 8);
+				//msg.Format("ROI#%d(%1.3f)", s,v_result);
+				//putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+(2*Gray_Img[Cam_num].rows/480),BOLT_Param[Cam_num].nRect[s].y + 11 + 6*Gray_Img[Cam_num].rows/480), FONT_HERSHEY_SIMPLEX, fontScale*((double)Gray_Img[Cam_num].rows/480), CV_RGB(255,100,0), 1 + (double)Gray_Img[Cam_num].rows/960, 8);
 			}
 			if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 			{
-				//msg.Format(L"%d/%d", ROI_Num,s);
+				//msg.Format("%d/%d", ROI_Num,s);
 				//AfxMessageBox(msg);
 				rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 0, 255), 1);
 
@@ -24208,19 +24205,19 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 				{
 					if (ceil(v_result) == v_result)
 					{
-						msg.Format(L"ROI#%d(%1.0f)", s, v_result);
+						msg.Format("ROI#%d(%1.0f)", s, v_result);
 					}
 					else
 					{
-						msg.Format(L"ROI#%d(%1.3f)", s, v_result);
+						msg.Format("ROI#%d(%1.3f)", s, v_result);
 					}
 
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 				else
 				{
-					msg.Format(L"ROI#%d(AI)", s);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					msg.Format("ROI#%d(AI)", s);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + (2 * Gray_Img[Cam_num].rows / 480), BOLT_Param[Cam_num].nRect[s].y + 11 + 6 * Gray_Img[Cam_num].rows / 480), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 			}
 
@@ -24228,7 +24225,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 			//if (Cam_num == 1)
 			//{
-			//	msg.Format(L"%d/%d", Cam_num,s);
+			//	msg.Format("%d/%d", Cam_num,s);
 			//	AfxMessageBox(msg);
 			//}
 		}
@@ -24260,7 +24257,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 	//}
 
 	int s = 0;
-	CString msg;
+	CStringA msg;
 
 	bool t_check_roi = true;
 	if (BOLT_Param[Cam_num].nRect[s].x < 0)
@@ -24322,8 +24319,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 		if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == 0)
 		{
 			rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 255, 50), 1);
-			msg.Format(L"Obj. ROI");
-			putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 50), 1, 8);
+			msg.Format("Obj. ROI");
+			putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 255, 50), 1, 8);
 		}
 
 		return true;
@@ -24376,8 +24373,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 				BOLT_Param[Cam_num].Offset_Object_Postion = Point(0, 0);
 				BOLT_Param[Cam_num].Object_Postion = Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 2, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2);
 				rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-				msg.Format(L"No Object!");
-				putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+				msg.Format("No Object!");
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 				return true;
 			}
 			else
@@ -24478,14 +24475,14 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 			if (m_Text_View[Cam_num] && BOLT_Param[Cam_num].nCamPosition == 0)
 			{
 				rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 0, 255), 1);
-				msg.Format(L"Obj. ROI");
-				putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 0, 255), 1, 8);
+				msg.Format("Obj. ROI");
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 0, 255), 1, 8);
 			}
 			//Result_Debugging = true;
 			if (Result_Debugging)
 			{
-				msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Gray_Img.bmp", Cam_num);
-				imwrite(W2A(msg), CP_Gray_Img);
+				msg.Format("Save\\Debugging\\CAM%d_Base_Obj_Gray_Img.bmp", Cam_num);
+				imwrite((LPCSTR)msg, CP_Gray_Img);
 			}
 
 			if (BOLT_Param[Cam_num].nBlurFilterCNT[s] > 0)
@@ -24586,13 +24583,13 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 				{
 					if (m_Text_View[Cam_num] && !ROI_Mode)
 					{
-						msg.Format(L"Avg = %1.3f", myMAtMean);
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+						msg.Format("Avg = %1.3f", myMAtMean);
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 					}
 					if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 					{
-						msg.Format(L"Avg = %1.3f", myMAtMean);
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+						msg.Format("Avg = %1.3f", myMAtMean);
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 					}
 				}
 			}
@@ -24612,8 +24609,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 			if (Result_Debugging)
 			{
-				msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Binary_Img.bmp", Cam_num);
-				imwrite(W2A(msg), Out_binary);
+				msg.Format("Save\\Debugging\\CAM%d_Base_Obj_Binary_Img.bmp", Cam_num);
+				imwrite((LPCSTR)msg, Out_binary);
 			}
 			J_Delete_Boundary(Out_binary, 1);
 
@@ -24621,12 +24618,12 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 			//if (t_size >= 9*Out_binary.rows * Out_binary.cols / 10 || t_size < 10)
 			//{
 			//	rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,0),1);
-			//	msg.Format(L"ROI#%d", s);
-			//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
+			//	msg.Format("ROI#%d", s);
+			//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0,255,0), 1, 8);
 
 			//	rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-			//	msg.Format(L"No Object!");
-			//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+			//	msg.Format("No Object!");
+			//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 			//	return true;
 			//}
 
@@ -24684,7 +24681,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					}
 				}
 
-				//msg.Format(L"FilterSize:%d_MergeFilter:%d_nMethod_Direc:%d_min%d_max%d",BOLT_Param[Cam_num].nROI0_FilterSize[0], BOLT_Param[Cam_num].nROI0_MergeFilterSize[0], BOLT_Param[Cam_num].nMethod_Direc[s],(int)BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s],(int)BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s]);
+				//msg.Format("FilterSize:%d_MergeFilter:%d_nMethod_Direc:%d_min%d_max%d",BOLT_Param[Cam_num].nROI0_FilterSize[0], BOLT_Param[Cam_num].nROI0_MergeFilterSize[0], BOLT_Param[Cam_num].nMethod_Direc[s],(int)BOLT_Param[Cam_num].nROI0_BLOB_Min_Size[s],(int)BOLT_Param[Cam_num].nROI0_BLOB_Max_Size[s]);
 				//AfxMessageBox(msg);
 
 				vector<vector<Point> > contours;
@@ -24723,8 +24720,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 								int x = left + width / 2; //중심좌표
 								int y = top + height / 2;
 
-								msg.Format(L"%d", area);
-								putText(Dst_Img[Cam_num], W2A(msg), Point(x - 5, y - 10), fontFace, fontScale, CV_RGB(0, 100, 255), 1, 8);
+								msg.Format("%d", area);
+								putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(x - 5, y - 10), fontFace, fontScale, CV_RGB(0, 100, 255), 1, 8);
 							}
 
 
@@ -24953,8 +24950,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						//Result_Info[Cam_num].Format(L"%sC%d:%02d_-1_",Result_Info[Cam_num],Cam_num,ss);
 					}
 					rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-					msg.Format(L"No Object!");
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+					msg.Format("No Object!");
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 					BOLT_Param[Cam_num].nRect[s] = BOLT_Param[Cam_num].nRect_Backup[s];
 					Alg_Run_Check[Cam_num] = false;
 					return true;
@@ -25168,8 +25165,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 					//if (Result_Debugging) // 오링 사이드 바닦 라인 이미지
 					//{
-					//	msg.Format(L"Save\\Debugging\\Cam%d_%2d_Line_Thres_ROI_Gray_Img.bmp",Cam_num, s);
-					//	imwrite(W2A(msg),Out_binary);
+					//	msg.Format("Save\\Debugging\\Cam%d_%2d_Line_Thres_ROI_Gray_Img.bmp",Cam_num, s);
+					//	imwrite((LPCSTR)msg,Out_binary);
 					//}
 
 
@@ -25187,8 +25184,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (BOLT_Param[Cam_num].Object_contours.size() == 0) // 칸투어 갯수로 예외처리
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 						return true;
 					}
 
@@ -25213,8 +25210,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (m_max_object_num == -1)
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 						return true;
 					}
 
@@ -25283,7 +25280,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 								{
 									t_angle -= 90;
 								}
-								//msg.Format(L"%1.3f",t_angle-90);
+								//msg.Format("%1.3f",t_angle-90);
 								//AfxMessageBox(msg);
 							}
 							/*
@@ -25452,8 +25449,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 							//if(BOLT_Param[Cam_num].Object_contours.size() == 0) // 칸투어 갯수로 예외처리
 							//{
 							//	rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),Rect(10,10,BOLT_Param[Cam_num].nRect[s].width-20,BOLT_Param[Cam_num].nRect[s].height-20),Scalar(0,0,255),2);
-							//	msg.Format(L"No Object!");
-							//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
+							//	msg.Format("No Object!");
+							//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+BOLT_Param[Cam_num].nRect[s].width/3,BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height/2 -11), FONT_HERSHEY_SIMPLEX, fontScale*2, CV_RGB(255,100,0), 1, 8);
 							//	return true;
 							//}
 								//AfxMessageBox("0");
@@ -25521,7 +25518,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 									//BOLT_Param[Cam_num].Object_Postion = Point(boundRect[m_max_object_num].x,boundRect[m_max_object_num].y);
 									if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == 0)
 									{
-										//msg.Format(L"%d",Cam_num);
+										//msg.Format("%d",Cam_num);
 										//AfxMessageBox(msg);
 										drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]), BOLT_Param[Cam_num].Object_contours, m_max_object_num, CV_RGB(0, 0, 255), CV_FILLED, 8, BOLT_Param[Cam_num].Object_hierarchy);
 										//imwrite("01.bmp",Dst_Img[Cam_num]);
@@ -25576,7 +25573,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						//BOLT_Param[Cam_num].Object_Postion = Point(boundRect[m_max_object_num].x,boundRect[m_max_object_num].y);
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == 0)
 						{
-							//msg.Format(L"%d",Cam_num);
+							//msg.Format("%d",Cam_num);
 							//AfxMessageBox(msg);
 							drawContours(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]), BOLT_Param[Cam_num].Object_contours, m_max_object_num, CV_RGB(0, 0, 255), CV_FILLED, 8, BOLT_Param[Cam_num].Object_hierarchy);
 							//imwrite("01.bmp",Dst_Img[Cam_num]);
@@ -25593,10 +25590,10 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 					if (Result_Debugging)
 					{
-						msg.Format(L"Save\\Debugging\\CAM%d_Base_Find_Obj_Gray_Img.bmp", Cam_num);
-						imwrite(W2A(msg), BOLT_Param[Cam_num].Gray_Obj_Img);
-						msg.Format(L"Save\\Debugging\\CAM%d_Base_Find_Obj_Thres_Img.bmp", Cam_num);
-						imwrite(W2A(msg), BOLT_Param[Cam_num].Thres_Obj_Img);
+						msg.Format("Save\\Debugging\\CAM%d_Base_Find_Obj_Gray_Img.bmp", Cam_num);
+						imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Gray_Obj_Img);
+						msg.Format("Save\\Debugging\\CAM%d_Base_Find_Obj_Thres_Img.bmp", Cam_num);
+						imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Thres_Obj_Img);
 					}
 				}
 				else if (BOLT_Param[Cam_num].nTableType == GUIDE_METHOD::INDEX_TYPE) //INDEX판일때
@@ -25786,8 +25783,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					else
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 						return true;
 					}
 
@@ -25897,7 +25894,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						//{
 						//	t_angle -= 180;
 						//}
-						//msg.Format(L"%1.2f",t_angle);
+						//msg.Format("%1.2f",t_angle);
 						//AfxMessageBox(msg);
 					}
 
@@ -26062,8 +26059,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (tt_Sub_ROI.y < 0 || tt_Sub_ROI.y + tt_Sub_ROI.height >= Out_binary.rows || tt_Sub_ROI.height < 0)
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 						return true;
 					}
 					erode(Out_binary(tt_Sub_ROI), Out_binary(tt_Sub_ROI), element_v, Point(-1, -1), 1);
@@ -26208,14 +26205,14 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						{
 							x = left + width / 2; y = top;
 						}
-						//msg.Format(L"%d, %d, %d, %d", x, BOLT_Param[Cam_num].Object_Postion.x, y, BOLT_Param[Cam_num].Object_Postion.y);
+						//msg.Format("%d, %d, %d, %d", x, BOLT_Param[Cam_num].Object_Postion.x, y, BOLT_Param[Cam_num].Object_Postion.y);
 						//AfxMessageBox(msg);
 						BOLT_Param[Cam_num].Object_Postion = Point(x, y);//기준점 등록
 
 						//BOLT_Param[Cam_num].Object_Postion = Point(boundRect[m_max_object_num].x,boundRect[m_max_object_num].y);
 						if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == 0)
 						{
-							//msg.Format(L"%d",Cam_num);
+							//msg.Format("%d",Cam_num);
 							//AfxMessageBox(msg);
 							//drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]),  BOLT_Param[Cam_num].Object_contours, m_max_object_num, CV_RGB(0,0,255), CV_FILLED, 8, BOLT_Param[Cam_num].Object_hierarchy);
 							//imwrite("01.bmp",Dst_Img[Cam_num]);
@@ -26233,7 +26230,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 						////BOLT_Param[Cam_num].Object_Postion = Point(boundRect[m_max_object_num].x,boundRect[m_max_object_num].y);
 						//if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == 0)
 						//{
-						//	//msg.Format(L"%d",Cam_num);
+						//	//msg.Format("%d",Cam_num);
 						//	//AfxMessageBox(msg);
 						//	//drawContours( Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[0]),  BOLT_Param[Cam_num].Object_contours, m_max_object_num, CV_RGB(0,0,255), CV_FILLED, 8, BOLT_Param[Cam_num].Object_hierarchy);
 						//	//imwrite("01.bmp",Dst_Img[Cam_num]);
@@ -26352,8 +26349,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Sub_ROI, CV_RGB(255, 255, 0), 1);
 					}
-					//msg.Format(L"Save\\Debugging\\CAM%d_t_morph.bmp",Cam_num);
-					//imwrite(W2A(msg),t_morph(t_Sub_ROI));
+					//msg.Format("Save\\Debugging\\CAM%d_t_morph.bmp",Cam_num);
+					//imwrite((LPCSTR)msg,t_morph(t_Sub_ROI));
 					double t_angle = Cal_Angle(t_morph(t_Sub_ROI), Cam_num);
 					if (t_angle == 180)
 					{
@@ -26408,22 +26405,22 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 					if (Result_Debugging) // 못 사이드 임계화 Image Save
 					{
-						msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Target_Binary_Img.bmp", Cam_num);
-						imwrite(W2A(msg), Target_Thres_ROI_Gray_Img);
+						msg.Format("Save\\Debugging\\CAM%d_Base_Obj_Target_Binary_Img.bmp", Cam_num);
+						imwrite((LPCSTR)msg, Target_Thres_ROI_Gray_Img);
 					}
 
 					if (m_Text_View[Cam_num]) // ROI 영역 표시
 					{
 						//J_Rotate_PRE(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),t_angle,Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]),1);
 						rectangle(Dst_Img[Cam_num], BOLT_Param[Cam_num].nRect[s], CV_RGB(0, 0, 255), 1);
-						msg.Format(L"Obj. ROI");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 0, 255), 1, 8);
+						msg.Format("Obj. ROI");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(0, 0, 255), 1, 8);
 					}
 
 					if (Result_Debugging) // 못 사이드 회전 Image Save
 					{
-						msg.Format(L"Save\\Debugging\\CAM%d_Base_Obj_Rotate_Binary_Img.bmp", Cam_num);
-						imwrite(W2A(msg), Rotate_Target_Thres_ROI_Gray_Img);
+						msg.Format("Save\\Debugging\\CAM%d_Base_Obj_Rotate_Binary_Img.bmp", Cam_num);
+						imwrite((LPCSTR)msg, Rotate_Target_Thres_ROI_Gray_Img);
 					}
 
 
@@ -26434,12 +26431,12 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (BOLT_Param[Cam_num].Object_contours.size() == 0)
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Sub_ROI, CV_RGB(255, 100, 0), 2);
-						msg.Format(L"Bolt body must be in orange box!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(10, Dst_Img[Cam_num].rows - 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 2, 8);
+						msg.Format("Bolt body must be in orange box!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(10, Dst_Img[Cam_num].rows - 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 2, 8);
 						return true;
 					}
 					//AfxMessageBox("1");
@@ -26461,8 +26458,8 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (m_max_object_num == -1)
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No head object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No head object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 						return true;
 					}
 					BOLT_Param[Cam_num].Object_1st_idx = m_max_object_num;
@@ -26471,12 +26468,12 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 					if (m_max_object_num == -1)
 					{
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-						msg.Format(L"No Object!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+						msg.Format("No Object!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 
 						rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), t_Sub_ROI, CV_RGB(255, 100, 0), 2);
-						msg.Format(L"Bolt body must be in orange box!");
-						putText(Dst_Img[Cam_num], W2A(msg), Point(10, Dst_Img[Cam_num].rows - 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 2, 8);
+						msg.Format("Bolt body must be in orange box!");
+						putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(10, Dst_Img[Cam_num].rows - 20), FONT_HERSHEY_SIMPLEX, fontScale, CV_RGB(255, 100, 0), 2, 8);
 						return true;
 					}
 
@@ -26548,10 +26545,10 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 					if (Result_Debugging)
 					{
-						msg.Format(L"Save\\Debugging\\CAM%d_Base_Find_Obj_Gray_Img.bmp", Cam_num);
-						imwrite(W2A(msg), BOLT_Param[Cam_num].Gray_Obj_Img);
-						msg.Format(L"Save\\Debugging\\CAM%d_Base_Find_Obj_Thres_Img.bmp", Cam_num);
-						imwrite(W2A(msg), BOLT_Param[Cam_num].Thres_Obj_Img);
+						msg.Format("Save\\Debugging\\CAM%d_Base_Find_Obj_Gray_Img.bmp", Cam_num);
+						imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Gray_Obj_Img);
+						msg.Format("Save\\Debugging\\CAM%d_Base_Find_Obj_Thres_Img.bmp", Cam_num);
+						imwrite((LPCSTR)msg, BOLT_Param[Cam_num].Thres_Obj_Img);
 					}
 				}
 			}
@@ -26562,7 +26559,7 @@ bool CImPro_Library::ROI_Object_Find(int Cam_num)
 
 float CImPro_Library::Cal_Angle(Mat& Out_binary, int Cam_num)
 {
-	USES_CONVERSION;
+	//USES_CONVERSION;
 	vector<vector<Point>> contours;	// 검사대상 Contour 정보
 	vector<Vec4i> hierarchy;			// 검사대상 Hierarchy 정보
 
@@ -26632,9 +26629,9 @@ float CImPro_Library::Cal_Angle(Mat& Out_binary, int Cam_num)
 
 void CImPro_Library::Rotation_Calibration(int Cam_num)
 {
-	USES_CONVERSION;
+	//USES_CONVERSION;
 	int s = 0;
-	CString msg;
+	CStringA msg;
 
 	if (BOLT_Param[Cam_num].nMethod_Thres[0] == THRES_METHOD::FIRSTROI) // ROI#01 모델사용
 	{
@@ -26737,9 +26734,9 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					minRect = minAreaRect(total_contours[0]);
 					t_angle = -180 + f_angle360(CenterLoc, Point(minRect.center.x, minRect.center.y));
 
-					//CString msg;
-					//msg.Format(L"%1.3f",t_angle);
-					//AfxMessageBox(W2A(msg));
+					//CStringA msg;
+					//msg.Format("%1.3f",t_angle);
+					//AfxMessageBox((LPCSTR)msg);
 
 					Mat warp_mat2 = cv::getRotationMatrix2D(CenterLoc, t_angle, 1.0f);
 					Mat warp_img2 = Gray_Img[Cam_num].clone();
@@ -26825,9 +26822,9 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					minRect = minAreaRect(total_contours[0]);
 					t_angle = -180 + f_angle360(CenterLoc, Point(minRect.center.x, minRect.center.y));
 
-					//CString msg;
-					//msg.Format(L"%1.3f",t_angle);
-					//AfxMessageBox(W2A(msg));
+					//CStringA msg;
+					//msg.Format("%1.3f",t_angle);
+					//AfxMessageBox((LPCSTR)msg);
 
 					Mat warp_mat2 = cv::getRotationMatrix2D(CenterLoc, t_angle, 1.0f);
 					Mat warp_img2 = Gray_Img[Cam_num].clone();
@@ -27044,13 +27041,13 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			{
 				if (m_Text_View[Cam_num] && !ROI_Mode)
 				{
-					msg.Format(L"Avg = %1.3f", myMAtMean);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					msg.Format("Avg = %1.3f", myMAtMean);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 				if (m_Text_View[Cam_num] && ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 				{
-					msg.Format(L"Avg = %1.3f", myMAtMean);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					msg.Format("Avg = %1.3f", myMAtMean);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 			}
 		}
@@ -27235,8 +27232,8 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 			else
 			{
 				rectangle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), Rect(10, 10, BOLT_Param[Cam_num].nRect[s].width - 20, BOLT_Param[Cam_num].nRect[s].height - 20), Scalar(0, 0, 255), 2);
-				msg.Format(L"No Object!");
-				putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
+				msg.Format("No Object!");
+				putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + BOLT_Param[Cam_num].nRect[s].width / 3, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height / 2 - 11), FONT_HERSHEY_SIMPLEX, fontScale * 2, CV_RGB(255, 100, 0), 1, 8);
 				return;
 			}
 
@@ -27380,7 +27377,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					double t_T_Height = min(Top_Left_Height, Top_Right_Height);
 					double t_B_Height = min(Bot_Left_Height, Bot_Right_Height);
 
-					//msg.Format(L"%1.2f_%1.2f_%1.2f_%1.2f_%1.2f_%1.2f",Top_Left_Height,Top_Right_Height, t_T_Height,Bot_Left_Height,Bot_Right_Height,t_B_Height);
+					//msg.Format("%1.2f_%1.2f_%1.2f_%1.2f_%1.2f_%1.2f",Top_Left_Height,Top_Right_Height, t_T_Height,Bot_Left_Height,Bot_Right_Height,t_B_Height);
 					//AfxMessageBox(msg);
 
 					if (BOLT_Param[Cam_num].nSRotationCalMethod[0] == 1)
@@ -27522,7 +27519,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					double t_T_Width = abs(Top_left - Top_right);
 					double t_B_Width = abs(Bot_left - Bot_right);
 
-					//msg.Format(L"%1.2f_%1.2f_%1.2f_%1.2f_%1.2f_%1.2f",Top_Left_Height,Top_Right_Height, t_T_Height,Bot_Left_Height,Bot_Right_Height,t_B_Height);
+					//msg.Format("%1.2f_%1.2f_%1.2f_%1.2f_%1.2f_%1.2f",Top_Left_Height,Top_Right_Height, t_T_Height,Bot_Left_Height,Bot_Right_Height,t_B_Height);
 					//AfxMessageBox(msg);
 
 					if (BOLT_Param[Cam_num].nSRotationCalMethod[0] == 3)
@@ -27683,7 +27680,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 					t_angle -= 90.0;
 				}
 
-				//msg.Format(L"%1.3f, %1.3f",(180.0/CV_PI)*atan(lines[1]/lines[0]), t_angle);
+				//msg.Format("%1.3f, %1.3f",(180.0/CV_PI)*atan(lines[1]/lines[0]), t_angle);
 				//AfxMessageBox(msg);
 
 				//imwrite("01.bmp",Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
@@ -27779,7 +27776,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 				//float t_angle = atan((y1-y0)/(x1-x0));
 
 				float t_angle = (180.0 / CV_PI) * atan(lines[1] / lines[0]);
-				//msg.Format(L"%1.3f",t_angle);
+				//msg.Format("%1.3f",t_angle);
 				//AfxMessageBox(msg);
 				//imwrite("00.bmp",Edge_Image);
 				//imwrite("01.bmp",Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
@@ -27884,7 +27881,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 				//float t_angle = atan((y1-y0)/(x1-x0));
 
 				float t_angle = (180.0 / CV_PI) * atan(lines[1] / lines[0]) + 90.0;
-				//msg.Format(L"%1.3f, %1.3f",(180.0/CV_PI)*atan(lines[1]/lines[0]), t_angle);
+				//msg.Format("%1.3f, %1.3f",(180.0/CV_PI)*atan(lines[1]/lines[0]), t_angle);
 				//AfxMessageBox(msg);
 
 				//imwrite("01.bmp",Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
@@ -27955,7 +27952,7 @@ void CImPro_Library::Rotation_Calibration(int Cam_num)
 				//float t_angle = atan((y1-y0)/(x1-x0));
 
 				float t_angle = (180.0 / CV_PI) * atan(lines[1] / lines[0]);
-				//msg.Format(L"%1.3f",t_angle);
+				//msg.Format("%1.3f",t_angle);
 				//AfxMessageBox(msg);
 				//imwrite("01.bmp",Gray_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]));
 
@@ -27988,7 +27985,8 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 	double Inner_Circle_Info[5];			// 해드 외경 Circle 정보
 	vector<vector<Point>> contours;
 	vector<Vec4i> hierarchy;
-	CString strTemp, msg;
+	CString strTemp;
+	CStringA msg;
 	vector<double> vec_Result_Value[SGYM_INSPECTION_ITEM_END];
 
 	if (!Gray_Img[Cam_num].empty())
@@ -28021,20 +28019,20 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		//if (m_Text_View[Cam_num] && !ROI_Mode && BOLT_Param[Cam_num].nCamPosition == 0)
 		//{
 		//	rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,50),1);
-		//	msg.Format(L"Obj. ROI");
-		//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(0,255,50), 1, 8);
+		//	msg.Format("Obj. ROI");
+		//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(0,255,50), 1, 8);
 		//}
 		//if (ROI_Mode && ROI_CAM_Num == Cam_num && BOLT_Param[Cam_num].nCamPosition == 0)
 		//{
 		//	rectangle(Dst_Img[Cam_num],BOLT_Param[Cam_num].nRect[s],CV_RGB(0,255,50),1);
-		//	msg.Format(L"Obj. ROI");
-		//	putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(0,255,50), 1, 8);
+		//	msg.Format("Obj. ROI");
+		//	putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x+1,BOLT_Param[Cam_num].nRect[s].y + 11), FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(0,255,50), 1, 8);
 		//}
 
 		if (Result_Debugging)
 		{
-			msg.Format(L"Save\\Debugging\\CAM%d_ROI%2d_Gray_Img.bmp", Cam_num, s);
-			imwrite(W2A(msg), CP_Gray_Img);
+			msg.Format("Save\\Debugging\\CAM%d_ROI%2d_Gray_Img.bmp", Cam_num, s);
+			imwrite((LPCSTR)msg, CP_Gray_Img);
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		// [끝] ROI 설정 및 이미지 자르기
@@ -28102,13 +28100,13 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 			{
 				if (m_Text_View[Cam_num] && !ROI_Mode)
 				{
-					msg.Format(L"Avg = %1.3f", myMAtMean);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					msg.Format("Avg = %1.3f", myMAtMean);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 				if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 				{
-					msg.Format(L"Avg = %1.3f", myMAtMean);
-					putText(Dst_Img[Cam_num], W2A(msg), Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
+					msg.Format("Avg = %1.3f", myMAtMean);
+					putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(BOLT_Param[Cam_num].nRect[s].x + 1, BOLT_Param[Cam_num].nRect[s].y + BOLT_Param[Cam_num].nRect[s].height + 10), FONT_HERSHEY_SIMPLEX, fontScale * ((double)Gray_Img[Cam_num].rows / 480), CV_RGB(255, 100, 0), 1 + (double)Gray_Img[Cam_num].rows / 960, 8);
 				}
 			}
 		}
@@ -28588,8 +28586,8 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 		for (int i = 0; i < minSlitRect.size(); i++)
 		{
 			ALG_SGYM_Param.vec_Slit_Info[i].fAngleFromCenter = round(Slitangle[i], 2);
-			msg.Format(L"%1.1f", ALG_SGYM_Param.vec_Slit_Info[i].fAngleFromCenter);
-			putText(Dst_Img[Cam_num], W2A(msg), Point(ALG_SGYM_Param.vec_Slit_Info[i].centerPoint.x + CP_m_boundRect.x + 5, ALG_SGYM_Param.vec_Slit_Info[i].centerPoint.y + CP_m_boundRect.y), fontFace, 0.5, CV_RGB(0, 80, 255), 1, 8);
+			msg.Format("%1.1f", ALG_SGYM_Param.vec_Slit_Info[i].fAngleFromCenter);
+			putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(ALG_SGYM_Param.vec_Slit_Info[i].centerPoint.x + CP_m_boundRect.x + 5, ALG_SGYM_Param.vec_Slit_Info[i].centerPoint.y + CP_m_boundRect.y), fontFace, 0.5, CV_RGB(0, 80, 255), 1, 8);
 			if ((int)ALG_SGYM_Param.vec_Slit_Info[i].fAngle == 90 || (int)ALG_SGYM_Param.vec_Slit_Info[i].fAngle == 0 ||
 				(int)ALG_SGYM_Param.vec_Slit_Info[i].fAngle == 180 || (int)ALG_SGYM_Param.vec_Slit_Info[i].fAngle == 270 || (int)ALG_SGYM_Param.vec_Slit_Info[i].fAngle == 360) continue;
 			if (((int)Slitangle[i] >= 90 && (int)Slitangle[i] < 180) ||
@@ -28717,8 +28715,8 @@ void CImPro_Library::RUN_Algorithm_SUGIYAMA()
 			float tvm = min(tvm1, tvm2);
 			//ALG_SGYM_Param.vec_Danja_Info[i].fAngle = tvm;
 			vec_Result_Value[DANJA_EACH_ANGLE].push_back((double)tvm);
-			msg.Format(L"%1.1f/%1.1f", tvm, ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter);
-			putText(Dst_Img[Cam_num], W2A(msg), Point(ALG_SGYM_Param.vec_Danja_Info[i].centerPoint.x + CP_m_boundRect.x + 5, ALG_SGYM_Param.vec_Danja_Info[i].centerPoint.y + CP_m_boundRect.y), fontFace, 0.5, CV_RGB(255, 100, 0), 1, 8);
+			msg.Format("%1.1f/%1.1f", tvm, ALG_SGYM_Param.vec_Danja_Info[i].fAngleFromCenter);
+			putText(Dst_Img[Cam_num], (LPCSTR)msg, Point(ALG_SGYM_Param.vec_Danja_Info[i].centerPoint.x + CP_m_boundRect.x + 5, ALG_SGYM_Param.vec_Danja_Info[i].centerPoint.y + CP_m_boundRect.y), fontFace, 0.5, CV_RGB(255, 100, 0), 1, 8);
 		}
 
 		vec_Result_Value[DANJA_ROTATION_COUNT].push_back(tt_sum_cnt);
@@ -29255,13 +29253,13 @@ void CImPro_Library::AI_Model_Load(int Cam_Num, int ROI_Idx) // AI 추가
 CString CImPro_Library::AI_Inspect(Mat& Img, int Cam_Num, int ROI_Idx, int& Result_ID, float& Result_Confidence) // AI 추가
 {
 	CString str_R = L"";
-	//USES_CONVERSION;
+	USES_CONVERSION;
 	if (AI_Model[Cam_Num].model_loaded[ROI_Idx])
 	{
 		//AfxMessageBox(L"1");
-		//CString msg;
-		//msg.Format(L"%d_%d.bmp", Cam_Num, ROI_Idx);
-		//imwrite(W2A(msg), Img);
+		//CStringA msg;
+		//msg.Format("%d_%d.bmp", Cam_Num, ROI_Idx);
+		//imwrite((LPCSTR)msg, Img);
 		float scale = 1.0f / 127.0f;
 		Scalar mean = Scalar(127, 127, 127);
 		bool swapRB = false;
