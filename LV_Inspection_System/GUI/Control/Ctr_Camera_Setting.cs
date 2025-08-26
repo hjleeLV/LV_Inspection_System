@@ -876,7 +876,7 @@ namespace LV_Inspection_System.GUI.Control
                 }
             }
 
-            toolStripButtonConnect_Click(sender, e);
+            Connect_Camera();
             Grab_Num = 0;
         }
 
@@ -991,9 +991,18 @@ namespace LV_Inspection_System.GUI.Control
             }
             toolStripButtonStop.Enabled = false;
             checkBox1.Enabled = true;
+
+            LVApp.Instance().m_mainform.Camera_Connection_Check();
         }
 
-        public void toolStripButtonConnect_Click(object sender, EventArgs e)
+        private void toolStripButtonConnect_Click(object sender, EventArgs e)
+        {
+            Connect_Camera();
+
+            toolStripButton_LOAD_Click(null, null);
+        }
+
+        public void Connect_Camera()
         {
             int cam_num = Convert.ToInt32(textBox_Camera_Name.Text.Substring(3, 1)) % 4;
             if (LVApp.Instance().m_Config.m_Cam_Kind[cam_num] == 4)

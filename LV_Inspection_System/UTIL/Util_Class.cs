@@ -40,8 +40,7 @@ namespace LV_Inspection_System
         //    return fps;
         //}
 
-
-        private int[] lastTick = new int[8];
+        private Stopwatch[] stopwatches_FrameRate = new Stopwatch[8]; // 250819 - LHJ  기존의 System.Envoronment.TickCount(//private int[] lastTick = new int[8];)를 대신 함. System.Environment.TickCount는 오버플로우 위험성이 있음(윈도우 부팅 후 약 24.9일만에 발생 - 최종적으로 영상 획득이 되지 않음)
         private int[] lastFrameRate = new int[8];
         private int[] frameRate = new int[8];
 
@@ -51,16 +50,26 @@ namespace LV_Inspection_System
 
         public void CalculateFrameRate(int t_num)
         {
-            if (System.Environment.TickCount - lastTick[t_num] >= 1000)
+            // StopWatch로 대체
+            //if (System.Environment.TickCount - lastTick[t_num] >= 1000)
+            //{
+            //    lastFrameRate[t_num] = frameRate[t_num];
+            //    frameRate[t_num] = 0;
+            //    lastTick[t_num] = System.Environment.TickCount;
+            //}
+
+            if (stopwatches_FrameRate[t_num].ElapsedMilliseconds >= 1000)
             {
                 lastFrameRate[t_num] = frameRate[t_num];
                 frameRate[t_num] = 0;
-                lastTick[t_num] = System.Environment.TickCount;
+                stopwatches_FrameRate[t_num].Restart();
             }
-            frameRate[t_num]++;
+
+            ++frameRate[t_num];
 
             frameRate_sum[frameRate_idx[t_num], t_num] = lastFrameRate[t_num];
-            frameRate_idx[t_num]++; frameRate_idx[t_num] %= 10;
+            ++frameRate_idx[t_num];
+            frameRate_idx[t_num] %= 10;
 
             float t_out = 0;
             for (int i = 0; i < 10; i++)
@@ -68,10 +77,7 @@ namespace LV_Inspection_System
                 t_out += (float)frameRate_sum[i, t_num];
             }
             m_FPS[t_num] = t_out / 10f;
-            //return m_FPS[t_num];
         }
-
-
 
         private static int lastTick0;
         private static int lastFrameRate0;
@@ -293,6 +299,15 @@ namespace LV_Inspection_System
         //    return lastFrameRate3;
         //}
         #endregion
+
+        public Utility()
+        {
+            for (int i = 0; i < stopwatches_FrameRate.Length; ++i)
+            {
+                stopwatches_FrameRate[i] = new Stopwatch();
+                stopwatches_FrameRate[i].Start();
+            }
+        }
     }
 
     public static class DataTableExtensions
@@ -1842,7 +1857,6 @@ namespace LV_Inspection_System
         }
     }
 
-
     /////////////////////////////////////////////////////////////////////////////////////////////
     public class UserRect2
     {
@@ -2515,7 +2529,6 @@ namespace LV_Inspection_System
 
         }
     }
-
 
     public class DongleKey
     {

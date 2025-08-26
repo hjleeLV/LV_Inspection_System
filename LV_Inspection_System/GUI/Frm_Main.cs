@@ -1417,7 +1417,6 @@ namespace LV_Inspection_System.GUI
         {
             while (m_ImageSavethread_Check)
             {
-                int t_sum = 0;
                 for (int s = 0; s < 4; s++)
                 {
                     int t_cnt = LVApp.Instance().SAVE_IMAGE_List[s].Count;
@@ -1434,12 +1433,8 @@ namespace LV_Inspection_System.GUI
                             Thread.Sleep(1);
                         }
                     }
-                    t_sum += t_cnt;
                 }
-                if (t_sum == 0)
-                {
-                    Thread.Sleep(1);
-                }
+                Thread.Sleep(1);
                 if (!m_ImageSavethread_Check)
                 {
                     break;
@@ -2561,7 +2556,7 @@ namespace LV_Inspection_System.GUI
                     {
                         LVApp.Instance().m_mainform.ctr_Camera_Setting1.toolStripButton_LOAD_Click(sender, e);
                         ctr_Camera_Setting1.m_SetCameraName = LVApp.Instance().m_mainform.ctrCam1.Camera_Name;
-                        ctr_Camera_Setting1.toolStripButtonConnect_Click(sender, e);
+                        ctr_Camera_Setting1.Connect_Camera();
                     }
                     else
                     {
@@ -2574,7 +2569,7 @@ namespace LV_Inspection_System.GUI
                                 LVApp.Instance().m_mainform.ctrCam1.Camera_Line_Mode = true;
                             }
                             ctr_Camera_Setting1.Connect_imageProvider();
-                            ctr_Camera_Setting1.toolStripButtonConnect_Click(sender, e);
+                            ctr_Camera_Setting1.Connect_Camera();
                         }
                     }
                 }
@@ -2585,7 +2580,7 @@ namespace LV_Inspection_System.GUI
                     {
                         LVApp.Instance().m_mainform.ctr_Camera_Setting2.toolStripButton_LOAD_Click(sender, e);
                         ctr_Camera_Setting2.m_SetCameraName = LVApp.Instance().m_mainform.ctrCam2.Camera_Name;
-                        ctr_Camera_Setting2.toolStripButtonConnect_Click(sender, e);
+                        ctr_Camera_Setting2.Connect_Camera();
                     }
                     else
                     {
@@ -2598,7 +2593,7 @@ namespace LV_Inspection_System.GUI
                                 LVApp.Instance().m_mainform.ctrCam2.Camera_Line_Mode = true;
                             }
                             ctr_Camera_Setting2.Connect_imageProvider();
-                            ctr_Camera_Setting2.toolStripButtonConnect_Click(sender, e);
+                            ctr_Camera_Setting2.Connect_Camera();
                         }
                     }
                 }
@@ -2608,7 +2603,7 @@ namespace LV_Inspection_System.GUI
                     {
                         LVApp.Instance().m_mainform.ctr_Camera_Setting3.toolStripButton_LOAD_Click(sender, e);
                         ctr_Camera_Setting3.m_SetCameraName = LVApp.Instance().m_mainform.ctrCam3.Camera_Name;
-                        ctr_Camera_Setting3.toolStripButtonConnect_Click(sender, e);
+                        ctr_Camera_Setting3.Connect_Camera();
                     }
                     else
                     {
@@ -2621,7 +2616,7 @@ namespace LV_Inspection_System.GUI
                                 LVApp.Instance().m_mainform.ctrCam3.Camera_Line_Mode = true;
                             }
                             ctr_Camera_Setting3.Connect_imageProvider();
-                            ctr_Camera_Setting3.toolStripButtonConnect_Click(sender, e);
+                            ctr_Camera_Setting3.Connect_Camera();
                         }
                     }
                 }
@@ -2631,7 +2626,7 @@ namespace LV_Inspection_System.GUI
                     {
                         LVApp.Instance().m_mainform.ctr_Camera_Setting4.toolStripButton_LOAD_Click(sender, e);
                         ctr_Camera_Setting4.m_SetCameraName = LVApp.Instance().m_mainform.ctrCam4.Camera_Name;
-                        ctr_Camera_Setting4.toolStripButtonConnect_Click(sender, e);
+                        ctr_Camera_Setting4.Connect_Camera();
                     }
                     else
                     {
@@ -2644,7 +2639,7 @@ namespace LV_Inspection_System.GUI
                                 LVApp.Instance().m_mainform.ctrCam4.Camera_Line_Mode = true;
                             }
                             ctr_Camera_Setting4.Connect_imageProvider();
-                            ctr_Camera_Setting4.toolStripButtonConnect_Click(sender, e);
+                            ctr_Camera_Setting4.Connect_Camera();
                         }
                     }
                 }
@@ -5913,23 +5908,31 @@ namespace LV_Inspection_System.GUI
             isAccessible_EquipSetting = false;
             if (!LVApp.Instance().m_Config.m_Check_Inspection_Mode && !Camera_Connection_check_flag && !Simulation_mode)
             {
+                string messageBox_Message = string.Empty;
+                string messageBox_Title = string.Empty;
                 if (LVApp.Instance().m_Config.m_SetLanguage == 0)
                 {
                     add_Log("카메라 연결을 점검하세요!");
-                    MessageBox.Show("카메라 연결을 확인하세요!", "카메라 에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    messageBox_Title = "카메라 연결 경고";
+                    messageBox_Message = "카메라 연결이 되어 있지 않습니다. 계속 하시겠습니까?";
                 }
                 else if (LVApp.Instance().m_Config.m_SetLanguage == 1)
-                {
+                {//Eng
                     add_Log("Check Camera connection!");
-                    MessageBox.Show("Check Camera connection!", "Camera Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    messageBox_Title = "Camera Connection Warning";
+                    messageBox_Message = "Not all cameras are connected. Proceed with inspection?";
                 }
                 else if (LVApp.Instance().m_Config.m_SetLanguage == 2)
                 {//중국어
-                    add_Log("检查摄像机连接!");
-                    MessageBox.Show("检查摄像机连接!");
-                    MessageBox.Show("检查摄像机连接!", "Camera Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    add_Log("并非所有摄像头都已连接!");
+                    messageBox_Title = "Camera Connection Error";
+                    messageBox_Message = "并非所有摄像头都已连接. 是否继续检测？";
                 }
-                return;
+
+                if (MessageBox.Show(messageBox_Message, messageBox_Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.Cancel)
+                {
+                    return;
+                }
             }
 
             //LVApp.Instance().m_Config.m_OK_NG_Cnt[0, 0] += 100;
@@ -6101,37 +6104,21 @@ namespace LV_Inspection_System.GUI
                 {
                     ctr_Camera_Setting1.checkBox1.Checked = true;
                     ctr_ROI1.button_LOAD_Click(sender, e);
-                    if (ctr_PLC1.m_Protocal != (int)LV_Inspection_System.GUI.Control.Ctr_PLC.PROTOCAL.IPSBoard)
-                    {
-                        ctr_Camera_Setting1.button_TRIGGER_DELAY_CHANGE_Click(sender, e); Thread.Sleep(30);
-                    }
                 }
                 if (!ctr_Camera_Setting2.Force_USE.Checked)
                 {
                     ctr_Camera_Setting2.checkBox1.Checked = true;
                     ctr_ROI2.button_LOAD_Click(sender, e);
-                    if (ctr_PLC1.m_Protocal != (int)LV_Inspection_System.GUI.Control.Ctr_PLC.PROTOCAL.IPSBoard)
-                    {
-                        ctr_Camera_Setting2.button_TRIGGER_DELAY_CHANGE_Click(sender, e); Thread.Sleep(30);
-                    }
                 }
                 if (!ctr_Camera_Setting3.Force_USE.Checked)
                 {
                     ctr_Camera_Setting3.checkBox1.Checked = true;
                     ctr_ROI3.button_LOAD_Click(sender, e);
-                    if (ctr_PLC1.m_Protocal != (int)LV_Inspection_System.GUI.Control.Ctr_PLC.PROTOCAL.IPSBoard)
-                    {
-                        ctr_Camera_Setting3.button_TRIGGER_DELAY_CHANGE_Click(sender, e); Thread.Sleep(30);
-                    }
                 }
                 if (!ctr_Camera_Setting4.Force_USE.Checked)
                 {
                     ctr_Camera_Setting4.checkBox1.Checked = true;
                     ctr_ROI4.button_LOAD_Click(sender, e);
-                    if (ctr_PLC1.m_Protocal != (int)LV_Inspection_System.GUI.Control.Ctr_PLC.PROTOCAL.IPSBoard)
-                    {
-                        ctr_Camera_Setting4.button_TRIGGER_DELAY_CHANGE_Click(sender, e); Thread.Sleep(30);
-                    }
                 }
                 //if (!ctr_Camera_Setting5.Force_USE.Checked)
                 //{
@@ -6140,36 +6127,39 @@ namespace LV_Inspection_System.GUI
 
                 ctr_PLC1.button_Send_Save_Click(sender, e);
                 //add_Log("Step_04");
+
+                // 250822 LHJ - 이미지 저장 스레드가 죽었을 때만 저장경로를 체크하던 것을, 항상 체크하도록 변경 (이전까지의 이미지를 분리보관하기 위해 사용자가 (검사기가 아닌)윈도우에서 직접 폴더명을 바꾸는 경우가 종종 있었음)
+                bool t_space_check = true;
+                if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
+                {
+                    t_space_check = Check_HD_available(LVApp.Instance().excute_path);
+                }
+                else
+                {
+                    t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
+                }
+                if (t_space_check)
+                {
+                    LVApp.Instance().SAVE_IMAGE_List[0].Clear();
+                    LVApp.Instance().SAVE_IMAGE_List[1].Clear();
+                    LVApp.Instance().SAVE_IMAGE_List[2].Clear();
+                    LVApp.Instance().SAVE_IMAGE_List[3].Clear();
+                    LVApp.Instance().m_Config.Create_Save_Folders();
+                }
+
                 if (!m_ImageSavethread_Check)
                 {
-                    bool t_space_check = true;
-                    if (LVApp.Instance().m_Config.m_Log_Save_Folder_Local == "")
+                    m_ImageSavethread_Check = false;
+                    if (ImageSavethread != null && ImageSavethread.IsAlive)
                     {
-                        t_space_check = Check_HD_available(LVApp.Instance().excute_path);
-                    }
-                    else
-                    {
-                        t_space_check = Check_HD_available(LVApp.Instance().m_Config.m_Log_Save_Folder_Local);
-                    }
-                    if (t_space_check)
-                    {
-                        LVApp.Instance().SAVE_IMAGE_List[0].Clear();
-                        LVApp.Instance().SAVE_IMAGE_List[1].Clear();
-                        LVApp.Instance().SAVE_IMAGE_List[2].Clear();
-                        LVApp.Instance().SAVE_IMAGE_List[3].Clear();
-                        LVApp.Instance().m_Config.Create_Save_Folders();
-                        m_ImageSavethread_Check = false;
-                        if (ImageSavethread != null && ImageSavethread.IsAlive)
-                        {
-                            ImageSavethread.Abort();
-                            ImageSavethread = null;
+                        ImageSavethread.Abort();
+                        ImageSavethread = null;
 
-                            ImageSavethread = new Thread(ImageSavethread_Proc);
-                            m_ImageSavethread_Check = true;
-                            ImageSavethread.IsBackground = true;
-                            ImageSavethread.Start();
-                            add_Log("Image save thread restart!");
-                        }
+                        ImageSavethread = new Thread(ImageSavethread_Proc);
+                        m_ImageSavethread_Check = true;
+                        ImageSavethread.IsBackground = true;
+                        ImageSavethread.Start();
+                        add_Log("Image save thread restart!");
                     }
                 }
 

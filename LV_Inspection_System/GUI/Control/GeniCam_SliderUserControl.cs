@@ -144,7 +144,8 @@ namespace LV_Inspection_System.GUI.Control
                             min = checked((int)p.GetMinimum());
                             max = checked((int)p.GetMaximum());
                             //val = (int)IPSSTApp.Instance().m_GenICam.CAM[Cam_Num].GainRaw;//checked((int)p.GetValue());
-                            val = checked((int)p.GetValue());
+                            //val = checked((int)p.GetValue());
+                            val = checked((int)Math.Round(p.GetValue()));   // 250820 LHJ, Gain 값이 줄어드는 현상(ex - 프로그램에서 Gain 5를 입력하면, 카메라에서는 4.9xxx로 받아들이며, 프로그램에서 카메라의 값을 읽을때는 4로 읽음. 프로그램에서는 다시 4를 입력하게 되어, 카메라는 3.9xxx ... 반복) 수정
                             inc = 1;
                             if (val < min)
                             {
