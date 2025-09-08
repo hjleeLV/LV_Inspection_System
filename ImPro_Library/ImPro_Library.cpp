@@ -16256,8 +16256,8 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						double t_Circle1_mindist = (double)BOLT_Param[Cam_num].nCircle1Radius[s] - (double)(BOLT_Param[Cam_num].nCircle1Thickness[s]) / 2;
 						double t_Circle1_maxdist = (double)BOLT_Param[Cam_num].nCircle1Radius[s] + (double)(BOLT_Param[Cam_num].nCircle1Thickness[s]) / 2;
 
-						Mat Mask_Value255 = Mat::zeros(CP_Gray_Img.size(), CV_8UC1);
-						Mat Mask_Value1 = Mat(CP_Gray_Img.size(), CV_8UC1);
+						Mat Mask_Value255 = Mat::zeros(CP_Gray_Img.size(), CV_8UC1);	// Mark 이미지에 마스킹할 때 필요함
+						Mat Mask_Value1 = Mat(CP_Gray_Img.size(), CV_8UC1);				// BoxFilter 처리 과정에서 필요함
 
 						if (BOLT_Param[Cam_num].nCircle1Thickness[s] > 0 && BOLT_Param[Cam_num].nCircle1Radius[s] >= 0)
 						{
@@ -16278,13 +16278,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 							circle(Dst_Img[Cam_num](BOLT_Param[Cam_num].nRect[s]), P_Center, BOLT_Param[Cam_num].nCircle1Radius[s] + BOLT_Param[Cam_num].nCircle1Thickness[s] / 2, CV_RGB(255, 100, 0), 2);
 						}
 
-
 						cv::threshold(Mask_Value255, Mask_Value1, 128, 1, cv::ThresholdTypes::THRESH_BINARY);
-
-						cv::Mat lut(1, 256, CV_8UC1);
-						lut.setTo(0);
-						lut.at<uchar>(255) = 1;  // 255 값만 1로 매핑
-						cv::LUT(Mask_Value255, lut, Mask_Value1);
 
 					cv:Mat src_Masked;
 						cv::bitwise_and(CP_Gray_Img, Mask_Value255, src_Masked);
@@ -16337,9 +16331,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						}
 						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_BETWEENOUT) // V1이하V2이상
 						{
-							//Mat White_Out_binary = Mat::ones(CP_Gray_Img.rows, CP_Gray_Img.cols, CV_8U) * 255;
 							inRange(Mask_Value1_Base_Blur, Scalar(BOLT_Param[Cam_num].nThres_V1[s]), Scalar(BOLT_Param[Cam_num].nThres_V2[s]), Out_binary);
-							//subtract(White_Out_binary, Lifting_Out_binary, Lifting_Out_binary);
 							cv::bitwise_not(Out_binary, Out_binary);
 						}
 						else if (BOLT_Param[Cam_num].nMethod_Thres[s] == THRES_METHOD::BINARY_INV_OTSU) // Less than Auto
@@ -16357,10 +16349,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						// Omit 예외 처리
 						if (BOLT_Param[Cam_num].nSSFOutput[s] != 6)		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 						{
-							//imwrite("00.bmp", BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]));
-							//imwrite("01.bmp", Out_binary);
 							subtract(Out_binary, BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), Out_binary);
-							//imwrite("02.bmp", Out_binary);
 							if (ROI_Mode && ROI_CAM_Num == Cam_num && ROI_Num == s)
 							{
 								findContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]).clone(), contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
@@ -16396,9 +16385,15 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 
 						// GD 주변 평균 계산하기위해 불량을 1번 팽창한 이진화 이미지
 						dilate(Out_binary, Mask_Value1_Defect_Blur, element, Point(-1, -1), 1);
+#pragma region 250828- 배경 밝기를 구할 때, 원형 영역 바깥 부분을 포함하지 않기 위해 미리 배경 밝기 계산용 마스킹 이미지를 생성함
+						cv::Mat mark_Reverse = ~(Mask_Value1_Defect_Blur.clone());
+						// 원형 영역내부만 처리하도록 마스킹
+						cv::bitwise_and(mark_Reverse, Mask_Value255, mark_Reverse);
+#pragma endregion
+						
 						int t_enlarge = 5; // GD MBR 확장 pixel 수
 						//#pragma omp parallel for
-						for (int j = 0; j < numOfLables; j++)
+						for (int j = 0; j < numOfLables; ++j)
 						{
 							BOLT_Param[Cam_num].vecSSF_BLOB.push_back(t_BLOB);
 							BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No = j + 1;// Contour 번호
@@ -16432,7 +16427,7 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								t_MBR.y = Out_binary.rows - 3;
 								t_MBR.height = 1;
 							}
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].GD = (mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR))[0] - mean(CP_Gray_Img(t_MBR), 255 - Mask_Value1_Defect_Blur(t_MBR))[0]);
+							BOLT_Param[Cam_num].vecSSF_BLOB[j].GD = (mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR))[0] - mean(CP_Gray_Img(t_MBR), mark_Reverse(t_MBR))[0]);
 
 							// 장, 단축, 크기 계산
 							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect = minAreaRect(SSF_contours[j]);
@@ -16510,7 +16505,6 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									if (BOLT_Param[Cam_num].nSSFOutput[s - 1] != 6 && BOLT_Param[Cam_num].nMethod_Direc[ss] == ALGORITHM_TB::SSF_MASKED_TB)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: != 2 -> != 6
 									{
 										BOLT_Param[Cam_num].nSSFOmitImage = Mat::zeros(Gray_Img[Cam_num].size(), CV_8UC1);
-										//AfxMessageBox(L"Omit Initialized");
 									}
 									break;
 								}
@@ -16530,7 +16524,6 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 									}
 									//drawContours(BOLT_Param[Cam_num].nSSFOmitImage(BOLT_Param[Cam_num].nRect[s]), SSF_contours, BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No - 1, CV_RGB(255, 255, 255), CV_FILLED, 8, SSF_hierarchy);
 								}
-								//imwrite("00_0.bmp", BOLT_Param[Cam_num].nSSFOmitImage);
 							}
 						}
 						else if (BOLT_Param[Cam_num].nSSFOutput[s] == 7 || BOLT_Param[Cam_num].nSSFOutput[s] == 8 || BOLT_Param[Cam_num].nSSFOutput[s] == 9)	// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영: == 3, == 4, == 5 -> 7, 8, 9 로 변경

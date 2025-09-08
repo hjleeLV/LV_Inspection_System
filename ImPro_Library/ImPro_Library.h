@@ -73,7 +73,7 @@ enum ALGORITHM_TB
 	BRIGHTNESSDIFF_AREA_TB,				//5:Difference of Brightness
 	AREA_BLOB_TB,						//6:BLOB Size
 	COUNT_BLOB_TB,						//7:BLOB Count
-	CIRCLE_BLOB_SIZE_TB,				//8:Edge Crack 원형 영역의 Blob
+	CIRCLE_BLOB_SIZE_TB,				//8:Edge Crack 원형 영역의 Blob (원형영역의 Blob)
 	CIRCLE_BLOB_COUNT_TB,				//9:BLOB COUNT
 	CIRCULARITY_TB,						//10:Circularity
 	PITCH_COIN_TB,						//11:Pitch of Screw Thread
