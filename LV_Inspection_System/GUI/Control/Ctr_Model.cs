@@ -989,7 +989,7 @@ namespace LV_Inspection_System.GUI.Control
             }
             //LVApp.Instance().m_mainform.ctr_Admin_Param1.button_LOAD_Click(sender, e);
             //LVApp.Instance().m_Config.t_Create_Save_Folders_Enable = true;
-            if (sender.GetType().Name == "Button")
+            if (sender?.GetType().Name == "Button")
             {
                 //LVApp.Instance().m_mainform.Inspection_Thread_Stop();
                 
@@ -1055,6 +1055,12 @@ namespace LV_Inspection_System.GUI.Control
                 LVApp.Instance().m_mainform.ctr_DataGrid2.Min_Max_Update(1);
                 LVApp.Instance().m_mainform.ctr_DataGrid3.Min_Max_Update(2);
                 LVApp.Instance().m_mainform.ctr_DataGrid4.Min_Max_Update(3);
+            }
+
+            // 251223 - 언어를 변경하면, 모델을 모두 다시 불러오도록 보완(현재 UI의 설정 값이 제대로 표시되지 않는 현상 개선)
+            if (LVApp.Instance().m_mainform.m_Start_Check)
+            {
+                cmdLoad_Click(null, null);
             }
         }
 

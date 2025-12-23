@@ -5353,14 +5353,20 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						// GD 주변 평균 계산하기위해 불량을 1번 팽창한 이진화 이미지
 						dilate(Out_binary, Lifting_Out_binary, element, Point(-1, -1), 1);
 						int t_enlarge = 5; // GD MBR 확장 pixel 수
+						int index_ContourParent = 0;
 						//#pragma omp parallel for
-						for (int j = 0; j < numOfLables; j++)
+						for (int j = 0; j < numOfLables; ++j)
 						{
+							if (SSF_hierarchy[j][3] != -1)
+							{
+								continue;
+							}
+
 							BOLT_Param[Cam_num].vecSSF_BLOB.push_back(t_BLOB);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No = j + 1;// Contour 번호
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR = boundingRect(Mat(SSF_contours[j])); // MBR
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Label_No = j + 1;// Contour 번호
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR = boundingRect(Mat(SSF_contours[j])); // MBR
 							// GD계산
-							Rect t_MBR = BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR;
+							Rect t_MBR = BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR;
 							t_MBR.x -= t_enlarge; t_MBR.y -= t_enlarge; t_MBR.width += 2 * t_enlarge; t_MBR.height += 2 * t_enlarge;
 							if (t_MBR.x < 0)
 							{
@@ -5388,21 +5394,23 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								t_MBR.y = Out_binary.rows - 3;
 								t_MBR.height = 1;
 							}
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].GD = (mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR))[0] - mean(CP_Gray_Img(t_MBR), 255 - Lifting_Out_binary(t_MBR))[0]);
+
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].GD = mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR))[0] - mean(CP_Gray_Img(t_MBR), ~Lifting_Out_binary(t_MBR))[0];
 
 							// 장, 단축, 크기 계산
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect = minAreaRect(SSF_contours[j]);
+ 							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].minRect = minAreaRect(SSF_contours[j]);
 							Point2f rect_points[4];
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect.points(rect_points);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].minRect.points(rect_points);
 							float t_length_0to1 = sqrtf((rect_points[0].x - rect_points[1].x) * (rect_points[0].x - rect_points[1].x) * BOLT_Param[Cam_num].nResolution[0] * BOLT_Param[Cam_num].nResolution[0]
 								+ (rect_points[0].y - rect_points[1].y) * (rect_points[0].y - rect_points[1].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
 							float t_length_1to2 = sqrtf((rect_points[1].x - rect_points[2].x) * (rect_points[1].x - rect_points[2].x) * BOLT_Param[Cam_num].nResolution[0] * BOLT_Param[Cam_num].nResolution[0]
 								+ (rect_points[1].y - rect_points[2].y) * (rect_points[1].y - rect_points[2].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length = max(t_length_0to1, t_length_1to2);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length = min(t_length_0to1, t_length_1to2);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size = BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length;
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Major_Length = max(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Minor_Length = min(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Size = BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Minor_Length;
+							++index_ContourParent;
 						}
 						// Feature 계산 끝
 
@@ -16390,16 +16398,22 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 						// 원형 영역내부만 처리하도록 마스킹
 						cv::bitwise_and(mark_Reverse, Mask_Value255, mark_Reverse);
 #pragma endregion
-						
+
 						int t_enlarge = 5; // GD MBR 확장 pixel 수
+						int index_ContourParent = 0;
 						//#pragma omp parallel for
 						for (int j = 0; j < numOfLables; ++j)
 						{
+							if (SSF_hierarchy[j][3] != -1)
+							{
+								continue;
+							}
+
 							BOLT_Param[Cam_num].vecSSF_BLOB.push_back(t_BLOB);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Label_No = j + 1;// Contour 번호
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR = boundingRect(Mat(SSF_contours[j])); // MBR
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Label_No = j + 1;// Contour 번호
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR = boundingRect(Mat(SSF_contours[j])); // MBR
 							// GD계산
-							Rect t_MBR = BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR;
+							Rect t_MBR = BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR;
 							t_MBR.x -= t_enlarge; t_MBR.y -= t_enlarge; t_MBR.width += 2 * t_enlarge; t_MBR.height += 2 * t_enlarge;
 							if (t_MBR.x < 0)
 							{
@@ -16427,21 +16441,22 @@ bool CImPro_Library::RUN_Algorithm_CAM(int Cam_num)
 								t_MBR.y = Out_binary.rows - 3;
 								t_MBR.height = 1;
 							}
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].GD = (mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[j].MBR))[0] - mean(CP_Gray_Img(t_MBR), mark_Reverse(t_MBR))[0]);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].GD = (mean(CP_Gray_Img(BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR), Out_binary(BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].MBR))[0] - mean(CP_Gray_Img(t_MBR), mark_Reverse(t_MBR))[0]);
 
 							// 장, 단축, 크기 계산
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect = minAreaRect(SSF_contours[j]);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].minRect = minAreaRect(SSF_contours[j]);
 							Point2f rect_points[4];
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].minRect.points(rect_points);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].minRect.points(rect_points);
 							float t_length_0to1 = sqrtf((rect_points[0].x - rect_points[1].x) * (rect_points[0].x - rect_points[1].x) * BOLT_Param[Cam_num].nResolution[0] * BOLT_Param[Cam_num].nResolution[0]
 								+ (rect_points[0].y - rect_points[1].y) * (rect_points[0].y - rect_points[1].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
 							float t_length_1to2 = sqrtf((rect_points[1].x - rect_points[2].x) * (rect_points[1].x - rect_points[2].x) * BOLT_Param[Cam_num].nResolution[0] * BOLT_Param[Cam_num].nResolution[0]
 								+ (rect_points[1].y - rect_points[2].y) * (rect_points[1].y - rect_points[2].y) * BOLT_Param[Cam_num].nResolution[1] * BOLT_Param[Cam_num].nResolution[1]);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length = max(t_length_0to1, t_length_1to2);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length = min(t_length_0to1, t_length_1to2);
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
-							BOLT_Param[Cam_num].vecSSF_BLOB[j].Size = BOLT_Param[Cam_num].vecSSF_BLOB[j].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[j].Minor_Length;
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Major_Length = max(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Minor_Length = min(t_length_0to1, t_length_1to2);
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Size_LV = (BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Major_Length + BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Minor_Length) / 2;		// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Area = contourArea(SSF_contours[j]);																						// LHJ - 240813, Size_LV, Long, Short, Area 추가건 반영
+							BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Size = BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Major_Length * BOLT_Param[Cam_num].vecSSF_BLOB[index_ContourParent].Minor_Length;
+							++index_ContourParent;
 						}
 						// Feature 계산 끝
 

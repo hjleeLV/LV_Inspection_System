@@ -5204,10 +5204,14 @@ namespace LV_Inspection_System.GUI
 
         private void dataGridView_AUTO_STATUS_SizeChanged(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.Rows)
+            try
             {
-                row.Height = (LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.Height - LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.ColumnHeadersHeight) / LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.Rows.Count;
+                foreach (DataGridViewRow row in LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.Rows)
+                {
+                    row.Height = (LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.Height - LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.ColumnHeadersHeight) / LVApp.Instance().m_mainform.dataGridView_AUTO_STATUS.Rows.Count;
+                }
             }
+            catch { }
         }
 
         private void dataGridView_AUTO_COUNT_SizeChanged(object sender, EventArgs e)
